@@ -1,0 +1,18 @@
+{
+  "name": "Web Process Editor",
+  "authors": [
+    "sQu1rr <sQu1rr1c@gmail.com>"
+  ],
+  "description": "Univerity Final Year Project",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "jointjs": "^0.9.7",
+    "requirejs": "^2.2.0",
+    "Sortable": "RubaXa/Sortable#^1.4.2",
+    "jquery": "^2.2.3"
+  }
+}
