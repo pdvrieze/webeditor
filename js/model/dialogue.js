@@ -1,10 +1,10 @@
 define(['jquery', 'util/simple-template'], function ($, template) {
     function Gate(self) {
         this.self = self;
-        this.self.attrs = self.attrs || {};
-        this.$ptr = $('#dialogue').modal('show');
+        var attrs = self.attrs || {};
+        var $ptr = $('#dialogue');
 
-        this.$ptr.find('.modal-title').html('Gate Settings');
+        $ptr.find('.modal-title').html('Gate Settings');
 
         var mapping = {
             and: { in: 0, out: 20 },
@@ -12,17 +12,22 @@ define(['jquery', 'util/simple-template'], function ($, template) {
             xor: { in: 1, out: 1 }
         };
 
-        var $body = this.$ptr.find('.modal-body');
+        var $body = $ptr.find('.modal-body');
         template.render($body, 'dialogue-gate').done(function () {
             var $in = $body.find('#gate_in');
             var $out = $body.find('#gate_out');
             var $controls = $body.find('#gate_controls');
 
-            if (self.attrs.label) $body.find('#label').val(self.attrs.label);
+            if (attrs.label) $body.find('#label').val(attrs.label);
+
+            if (attrs.in && attrs.out) {
+                $in.val(attrs.in);
+                $out.val(attrs.out);
+            }
 
             $body.find('button').on('click', function () {
                 var $this = $(this);
-                self.attrs.gate = $this.val();
+                attrs.gate = $this.val();
 
                 $body.find('button').removeClass('active');
                 $this.addClass('active');
@@ -35,8 +40,22 @@ define(['jquery', 'util/simple-template'], function ($, template) {
 
                 if ($this.val() != 'other') $controls.hide();
                 else $controls.show();
-            }).filter('[value=' + (self.attrs.gate || 'and') + ']').click();
-        })
+            }).filter('[value=' + (attrs.gate || 'and') + ']').click();
+
+            $ptr.find('#save').off().on('click', function () {
+                if ($body.find('#label').val()) {
+                    attrs.label = $body.find('#label').val();
+                }
+                if ($body.find('[value=other].active').size()) {
+                    attrs.in = $in.val(); 
+                    attrs.out = $out.val(); 
+                }
+                self.attrs = attrs;
+                $ptr.modal('hide');
+            });
+
+            $ptr.modal('show');
+        });
     }
 
     return {
