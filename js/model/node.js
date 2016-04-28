@@ -1,4 +1,4 @@
-define(['jquery', 'joint'], function ($, joint) {
+define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
     "use strict";
 
     var SIZE = 60;
@@ -49,7 +49,6 @@ define(['jquery', 'joint'], function ($, joint) {
     var Block = Base.extend({
         type: 'block',
         canEdit: true,
-        attrs: {},
 
         edit: function (storage) {
             //Dialogues.block(this.attrs, storage);
@@ -62,10 +61,10 @@ define(['jquery', 'joint'], function ($, joint) {
 
     var Gate = Base.extend({
         canEdit: true,
-        attrs: {},
 
         edit: function () {
             //Dialogues.gate(this.attrs);
+            new Dialogue.Gate(this);
         }
     });
 

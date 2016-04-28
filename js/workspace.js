@@ -49,6 +49,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash'],
 
         paper.on('blank:pointerup', function (event, x, y) {
             if (moved) return;
+            if ($('#dialogue:visible').size()) return;
             var oe = event.originalEvent;
             if (oe.touches && oe.touches.length == 2) return;
             if (oe.changedTouches && oe.changedTouches.length) {
@@ -66,6 +67,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash'],
 
         paper.on('cell:pointerup', function (cellView, event) {
             if (moved || cellmoved) return;
+            if ($('#dialogue:visible').size()) return;
             $('.workspace-tooltip').hide();
             model.click(cellView, function (x, y) {
                 var oe = event.originalEvent;
