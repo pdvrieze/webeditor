@@ -9,7 +9,8 @@ define(function () {
             joint: '../bower_components/jointjs/dist/joint',
             lodash: '../bower_components/lodash/lodash',
             underscore: '../bower_components/underscore/underscore',
-            backbone: '../bower_components/backbone/backbone'
+            backbone: '../bower_components/backbone/backbone',
+            Sortable: '../bower_components/Sortable/Sortable'
         }
     });
 });

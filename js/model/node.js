@@ -51,7 +51,7 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
         canEdit: true,
 
         edit: function (storage) {
-            //Dialogues.block(this.attrs, storage);
+            new Dialogue.Block(this, storage);
         }
     });
 
@@ -63,7 +63,6 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
         canEdit: true,
 
         edit: function () {
-            //Dialogues.gate(this.attrs);
             new Dialogue.Gate(this);
         }
     });
