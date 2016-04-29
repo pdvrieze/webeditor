@@ -53,13 +53,31 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             var $content = $body.find('.list-group');
             var sortable = Sortable.create($content.get(0));
 
+            $body.find('#activity_type').on('change', function () {
+                var type = $(this).val();
+                if (type == 'other') $content.hide();
+                else $content.show();
+                attrs.type = type;
+            }).val(attrs.type || 'human').change();
+
             render($content);
             $body.find('#add').on('click', function () {
                 attrs.elements.push({ type: 'empty' });
                 render($content);
             });
 
+            $body.on('show.bs.collapse', '.collapse', function () {
+                var href = $(this).attr('id');
+                $body.find('a[href="#' + href + '"]').addClass('active');
+            });
+            $body.on('hide.bs.collapse', '.collapse', function () {
+                var href = $(this).attr('id');
+                $body.find('a[href="#' + href + '"]').removeClass('active');
+            });
+
             $ptr.find('#save').off().on('click', function () {
+                self.attrs = attrs;
+                $ptr.modal('hide');
             });
 
             $ptr.modal('show');
