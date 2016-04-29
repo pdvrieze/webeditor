@@ -69,12 +69,24 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             });
 
             $body.on('show.bs.collapse', '.collapse', function () {
-                var href = $(this).attr('id');
+                var $this = $(this);
+
+                $body.find('.collapse.in').collapse('hide');
+
+                var href = $this.attr('id');
                 $body.find('a[href="#' + href + '"]').addClass('active');
+
+                var index = href.replace(/^activity_item_/, '');
+                var view = attrs.elements[index];
+                var name = 'activity-selector';
+                template.render($this, name, [view]).done(function () {
+                });
             });
             $body.on('hide.bs.collapse', '.collapse', function () {
-                var href = $(this).attr('id');
+                var $this = $(this);
+                var href = $this.attr('id');
                 $body.find('a[href="#' + href + '"]').removeClass('active');
+                $this.empty();
             });
 
             $ptr.find('#save').off().on('click', function () {
