@@ -53,6 +53,8 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             var $content = $body.find('.list-group');
             var sortable = Sortable.create($content.get(0));
 
+            $body.find('#label').val(attrs.label || '');
+
             $body.find('#activity_type').on('change', function () {
                 var type = $(this).val();
                 if (type == 'other') $content.hide();
@@ -76,6 +78,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             });
 
             $ptr.find('#save').off().on('click', function () {
+                attrs.label = $body.find('#label').val();
                 self.attrs = attrs;
                 $ptr.modal('hide');
             });
