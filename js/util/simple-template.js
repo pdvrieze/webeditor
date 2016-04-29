@@ -16,7 +16,7 @@ define(['jquery'], function ($) {
 
         var regex = /{{(\s*\w+?\s*)}}/g;
         var html = templates[name].replace(regex, function (match, key) {
-            if (view && view[key]) return view[key];
+            if (view && view.hasOwnProperty(key)) return view[key];
             return match;
         })
         var $layout = $(html);
