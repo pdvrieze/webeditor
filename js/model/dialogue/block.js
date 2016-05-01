@@ -2,23 +2,13 @@ define(['jquery', 'util/simple-template', 'Sortable'],
        function ($, template, Sortable) {
     function Block(self) {
         this.self = self;
-        var attrs = self.attrs || {};
+        var attrs = $.extend(true, {}, self.attrs);
         var $ptr = $('#dialogue');
 
         $ptr.find('.modal-title').html('Activity Settings');
 
-        // TODO
-        attrs.elements = attrs.elements || [{
-            type: 'label',
-            label: 'Labl Laabel',
-            text: 'Label'
-        }, {
-            type: 'input',
-            label: 'Inpt Laabel',
-            text: 'Input',
-            value: ''
-        }];
-        //
+        attrs.elements = attrs.elements || [];
+        console.log(attrs);
         
         function toview(element, index) {
             var title = element.type;
@@ -81,9 +71,12 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             render($content);
             $body.find('#add').on('click', function () {
                 attrs.elements.push({ type: 'empty' });
-                render($content);
+                render($content).done(function () {
+                    $content.find('.collapse').last().collapse('show');
+                });
             });
 
+            console.log(1, attrs.elements);
             $body.on('show.bs.collapse', '.collapse', function () {
                 var $this = $(this);
 
@@ -93,6 +86,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                 $body.find('a[href="#' + href + '"]').addClass('active');
 
                 var index = href.replace(/^activity_item_/, '');
+                console.log(2, attrs.elements);
                 var view = attrs.elements[index];
                 var name = 'activity-selector';
                 template.render($this, name, [view]).done(function () {
@@ -139,7 +133,14 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             $ptr.find('#save').off().on('click', function () {
                 attrs.label = $body.find('#label').val();
                 self.attrs = attrs;
+                if (self.attrs.type != 'human' && self.attrs.elements) {
+                    delete self.attrs.elements;
+                }
                 $ptr.modal('hide');
+            });
+
+            $ptr.on('hide.bs.modal', function () {
+                $body.off(); 
             });
 
             $ptr.modal('show');
