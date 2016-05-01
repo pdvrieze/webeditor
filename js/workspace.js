@@ -42,7 +42,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash'],
             return false;
         });
 
-        var model = new Model(graph);
+        var model = new Model(graph, paper);
 
         var $tpCreate = $('#tooltip_create');
         var $tpEdit = $('#tooltip_edit');

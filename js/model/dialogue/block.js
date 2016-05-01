@@ -1,6 +1,6 @@
 define(['jquery', 'util/simple-template', 'Sortable'],
        function ($, template, Sortable) {
-    function Block(self) {
+    function Block(self, storage, callback) {
         this.self = self;
         var attrs = $.extend(true, {}, self.attrs);
         var $ptr = $('#dialogue');
@@ -8,7 +8,6 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         $ptr.find('.modal-title').html('Activity Settings');
 
         attrs.elements = attrs.elements || [];
-        console.log(attrs);
         
         function toview(element, index) {
             var title = element.type;
@@ -76,7 +75,6 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                 });
             });
 
-            console.log(1, attrs.elements);
             $body.on('show.bs.collapse', '.collapse', function () {
                 var $this = $(this);
 
@@ -86,7 +84,6 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                 $body.find('a[href="#' + href + '"]').addClass('active');
 
                 var index = href.replace(/^activity_item_/, '');
-                console.log(2, attrs.elements);
                 var view = attrs.elements[index];
                 var name = 'activity-selector';
                 template.render($this, name, [view]).done(function () {
@@ -132,6 +129,8 @@ define(['jquery', 'util/simple-template', 'Sortable'],
 
             $ptr.find('#save').off().on('click', function () {
                 attrs.label = $body.find('#label').val();
+                callback(attrs.label);
+
                 self.attrs = attrs;
                 if (self.attrs.type != 'human' && self.attrs.elements) {
                     delete self.attrs.elements;

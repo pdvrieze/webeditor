@@ -1,11 +1,12 @@
 define(['jquery', 'joint'], function ($, joint) {
     "use strict";
 
-    function Model(graph) {
+    function Model(graph, paper) {
         this.graph = graph;
         this.nodes = [];
         this.selected = null;
         this.mode = null;
+        this.paper = paper;
 
         this.count = {
             start: 0,
@@ -29,6 +30,7 @@ define(['jquery', 'joint'], function ($, joint) {
 
         add: function (node, offset) {
             if (!node.cell) node.create(offset);
+            node.paper = this.paper;
             this.graph.addCell(node.cell);
             this.nodes.push(node);
             this.count[node.type]++;

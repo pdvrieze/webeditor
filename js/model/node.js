@@ -7,6 +7,8 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
         markup: '<g class="rotatable"><g class="scalable">' +
                     '<image width="' + SIZE + '" height="' + SIZE + '" ' +
                            'xlink:href="svg/end.svg"/>' +
+                    '<text x="30" y="34" font-family="sans-serif" ' +
+                          'font-size="14" text-anchor="middle"></text>' +
                 '</g></g>',
 
         defaults: joint.util.deepSupplement({
@@ -51,7 +53,15 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
         canEdit: true,
 
         edit: function (storage) {
-            new Dialogue.Block(this, storage);
+            var self = this;
+            new Dialogue.Block(this, storage, function (label) {
+                self.setText(label);
+            });
+        },
+
+        setText: function (text) {
+            var id = this.cell.findView(this.paper).id;
+            $('#' + id).find('text').get(0).textContent = text;
         }
     });
 
