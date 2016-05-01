@@ -1,27 +1,17 @@
 <div class="well">
 
-<select class="form-control" id="activity_type">
-    <option value="label">Label</option>
-    <option value="input">Input</option>
-</select>
+    <select class="form-control element-type">
+        <option value="empty"></option>
+        <option value="label">Label</option>
+        <option value="input">Input</option>
+    </select>
 
-<hr>
+    <hr>
 
-<div class="form-group">
-    <label for="element_label">Label</label>
-    <input class="form-control" id="element_label" placeholder="Label">
-</div>
-<div class="form-group">
-    <label for="element_text">Text</label>
-    <input class="form-control" id="element_text" placeholder="Text">
-</div>
-<div class="form-group">
-    <label for="element_value">Value</label>
-    <input class="form-control" id="element_value" placeholder="Value">
-</div>
+    <div class="element-content"></div>
 
-<button type="button" class="btn btn-danger">Remove</button>
-<button type="button" class="btn btn-warning">Discard</button>
-<button type="button" class="btn btn-success pull-right">Save</button>
+    <button class="btn btn-danger" id="element_remove">Remove</button>
+    <button class="btn btn-warning" id="element_discard">Discard</button>
+    <button class="btn btn-success pull-right" id="element_save">Save</button>
 
 </div>
