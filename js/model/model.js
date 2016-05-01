@@ -77,9 +77,10 @@ define(['jquery', 'joint'], function ($, joint) {
             var vars = [];
             if (node.attrs && node.attrs.elements) {
                 for (var i = 0; i < node.attrs.elements.length; ++i) {
-                    var element = node.attrs.elements[i].elements[0];
-                    if (element.name) {
-                        vars.push('#' + node.cell.cid + '.r_' + element.name);
+                    var element = node.attrs.elements[i];
+                    var activity = node.attrs.label || '#' + node.cell.cid 
+                    if (element.type == 'input') {
+                        vars.push(activity + '.' + element.label);
                     }
                 }
             }

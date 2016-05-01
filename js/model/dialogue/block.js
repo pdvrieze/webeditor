@@ -1,5 +1,58 @@
 define(['jquery', 'util/simple-template', 'Sortable'],
        function ($, template, Sortable) {
+    var dropdown_index = 1;
+
+    function makeLi(label, prefix) {
+        if (!prefix) prefix = '';
+
+        var $li = $('<li>');
+        var $a = $('<a>', {
+            'href': '#',
+            'class': 'variable-reuse'
+        }).append(prefix + label).appendTo($li);
+
+        return $li;
+    }
+
+    function addStorage(view, storage, elements, name) {
+        var $div = $('<div class="dropdown pull-right">');
+
+        var $button = $('<button>', {
+            'class': 'btn btn-default dropdown-toggle',
+            'type': 'button',
+            'id': 'vars_dropdown_' + dropdown_index,
+            'data-toggle': 'dropdown',
+            'aria-haspopup': 'true',
+            'aria-expanded': 'true'
+        }).append('Variables ').append('<span class="caret">').appendTo($div);
+
+        var $ul = $('<ul>', {
+            'class': 'dropdown-menu',
+            'aria-labelledby': 'var_dropdown_' + dropdown_index
+        }).appendTo($div);
+
+        var added = false;
+        $.each(elements, function (i, val) {
+            if (val.type == 'input') {
+                added = true;
+                $ul.append(makeLi(val.label, 'this.'));
+            }
+        });
+
+        if (added) {
+            $ul.append('<li role="separator" class="divider">');
+        }
+
+        $.each(storage, function (i, val) {
+            $ul.append(makeLi(val));
+        });
+
+        view[name] = $div.get(0).outerHTML;
+        dropdown_index++;
+
+        return view;
+    }
+
     function Block(self, storage, callback) {
         this.self = self;
         var attrs = $.extend(true, {}, self.attrs);
@@ -95,7 +148,10 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                                 .prop('disabled', true);
                         }
                         var $content = $this.find('.element-content');
-                        template.render($content, name, [view]);
+                        var newview = $.extend(true, {}, view);
+                        addStorage(newview, storage, attrs.elements, 'stor1');
+                        addStorage(newview, storage, attrs.elements, 'stor2');
+                        template.render($content, name, [newview]);
                     });
                     if (view.type != 'empty') {
                         $this.find('.element-type').val(view.type).change();
@@ -125,6 +181,12 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                 var href = $this.attr('id');
                 $body.find('a[href="#' + href + '"]').removeClass('active');
                 $this.empty();
+            });
+
+            $body.on('click', 'a.variable-reuse', function () {
+                var $input = $(this).parents('.form-group').find('input');
+                var text = $input.val().trim() + ' ' + $(this).text();
+                $input.val(text.trim());
             });
 
             $ptr.find('#save').off().on('click', function () {
