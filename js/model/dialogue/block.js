@@ -184,8 +184,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             });
 
             $body.on('click', 'a.variable-reuse', function () {
-                var $input = $(this).parents('.form-group').find('input');
-                var text = $input.val().trim() + ' ' + $(this).text();
+                var $this = $(this);
+                var $input = $this.parents('.form-group').find('input');
+                var text = $input.val().trim() + ' {' + $this.text() + '}';
                 $input.val(text.trim());
             });
 
