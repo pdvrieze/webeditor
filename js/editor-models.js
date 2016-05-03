@@ -1,10 +1,13 @@
+/*
+ * Editor model page controller
+ *
+ * Handles the interactions on model page: shows the list, and allows to
+ * run, rename, remove and add models
+ */
 define(['jquery', 'store/model', 'util/simple-template', 'joint',
        'model/model', 'model/node', 'share/nav'],
        function ($, store, template, joint, Model, Nodes, links) {
     "use strict";
-
-    var HEIGHT = 120;
-    var SCALE = 10;
 
     var $content = $('#content');
     $content.on('loaded', function (event, name) {
@@ -95,6 +98,9 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         });
     };
 
+    /*
+     * Initialisation of the editor models page
+     */
     function init() {
         var $list = $('#list_models');
         var list = store.getList();
@@ -184,8 +190,6 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
     }
 
     return {
-        init: function () {
-            console.log('im here');
-        }
+        init: init
     };
 });

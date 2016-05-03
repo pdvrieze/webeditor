@@ -12,7 +12,15 @@ define(['jquery', './auth', 'util/simple-template'],
     var controllers = [ 'editor-models', 'workspace' ];
 
     var $nav = $('nav'); // navigation bar (should be one per page)
-    
+
+    /*
+     * Initialise navigation bar
+     */
+    function init() {
+        initLoginBtn();
+        initLogoutBtn();
+    }
+
     /*
      * Initialise login button in the navigation bar
      */
@@ -56,15 +64,29 @@ define(['jquery', './auth', 'util/simple-template'],
             });
         });
     }
-    
+
     /*
-     * Initialise navigation bar
+     * Sets up navigation bar for logged in user
      */
-    function init() {
-        initLoginBtn();
-        initLogoutBtn();
+    function login() {
+        autoHash().then(function () {
+            $nav.find('.hidden-guest').addClass('hidden');
+            $nav.find('.hidden-auth').removeClass('hidden');
+            $nav.find('#username').html(auth.getUser());
+        });
     }
 
+    /*
+     * Sets up navigation bar for logged out user
+     */
+    function logout() {
+        $nav.find('.hidden-auth').addClass('hidden');
+        $nav.find('.hidden-guest').removeClass('hidden');
+        changePage('index');
+    }
+
+
+    
     /*
      * Changes current page, can pass argument to the page controller
      */
@@ -111,26 +133,6 @@ define(['jquery', './auth', 'util/simple-template'],
         if (match) return changePage('workspace', parseInt(match[1]));
 
         return changePage(page);
-    }
-
-    /*
-     * Sets up navigation bar for logged in user
-     */
-    function login() {
-        autoHash().then(function () {
-            $nav.find('.hidden-guest').addClass('hidden');
-            $nav.find('.hidden-auth').removeClass('hidden');
-            $nav.find('#username').html(auth.getUser());
-        });
-    }
-
-    /*
-     * Sets up navigation bar for logged out user
-     */
-    function logout() {
-        $nav.find('.hidden-auth').addClass('hidden');
-        $nav.find('.hidden-guest').removeClass('hidden');
-        changePage('index');
     }
 
     // export

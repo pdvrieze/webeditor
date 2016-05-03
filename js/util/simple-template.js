@@ -3,7 +3,6 @@ define(['jquery'], function ($) {
 
     var $page = $('#page');
 
-    var globals = {};
     var templates = {};
     var $templates = $.getJSON('view/all').done(function (json) {
         templates = json;
@@ -42,11 +41,6 @@ define(['jquery'], function ($) {
             }
             var $render = render(insert, view);
             $this.replaceWith($render);
-        });
-
-        $layout.find('[int]').each(function () {
-            var intName = $(this).attr('int');
-            $(this).html(globals[intName]);
         });
 
         return $layout.children();
@@ -90,11 +84,6 @@ define(['jquery'], function ($) {
             });
 
             return $def;
-        },
-
-        setGlobal: function (name, value) {
-            globals[name] = value;
-            $page.find('[int=' + name + ']').html(value);
         }
     };
 });
