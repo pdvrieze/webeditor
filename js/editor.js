@@ -9,7 +9,6 @@ requirejs(['config'], function () {
         var $page = $('#page');
         $page.on('auth', function () {
             var page = $page.hasClass('user-lo') ? 'index' : 'editor-models';
-            page = 'editor-workspace'; // TODO
             $('#content').attr('page', page).trigger('page-change');
         });
 
