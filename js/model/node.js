@@ -1,7 +1,7 @@
 define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
     "use strict";
 
-    var SIZE = 60;
+    var SIZE = 30;
 
     var NodeClass = joint.dia.Element.extend({
         markup: '<g class="rotatable"><g class="scalable">' +
@@ -25,7 +25,7 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
             this.label = null;
             this.cell = new NodeClass({
                 position: offset,
-                size: { width: SIZE, height: SIZE },
+                //size: { width: SIZE, height: SIZE },
                 attrs: { image: { 'xlink:href': 'svg/' + this.type + '.svg' } }
             });
         },

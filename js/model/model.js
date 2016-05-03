@@ -1,4 +1,4 @@
-define(['jquery', 'joint'], function ($, joint) {
+define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
     "use strict";
 
     function Model(graph, paper) {
@@ -123,7 +123,32 @@ define(['jquery', 'joint'], function ($, joint) {
         },
 
         fromXml: function ($xml) {
-            console.log($xml);
+            var self = this;
+            var nodes = {};
+            $xml.find('pe\\:processModel,processModel').children()
+                .each(function () {
+                    var name = _.capitalize(this.tagName.replace(/^pe:/, ''));
+                    if (name == 'Activity') name = 'Block';
+
+                    var offset = {
+                        x: $(this).attr('x') - 0,
+                        y: $(this).attr('y') - 0,
+                    };
+
+                    var id = $(this).attr('id');
+                    var node = new Nodes[name]();
+                    nodes[id] = node;
+                    self.add(node, offset);
+                })
+                .each(function () {
+                    var id = $(this).attr('id');
+                    var predecessor = $(this).attr('predecessor');
+                    if (predecessor) self.link(nodes[predecessor], nodes[id]);
+                    $(this).find('pe\\:predecessor,predecessor')
+                        .each(function () {
+                            self.link(nodes[this.textContent], nodes[id]);
+                        })
+                });
         }
     };
 

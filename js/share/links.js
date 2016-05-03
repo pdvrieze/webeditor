@@ -1,6 +1,14 @@
 define(['jquery', 'util/simple-template'], function ($, template) {
     "use strict";
 
+    function render(what, $where) {
+        return template.render($where, what).then(function (done) {
+            $('li.active').removeClass('active');
+            $('li a[href=' + what + ']').parent().addClass('active');
+            $where.trigger('loaded', what);
+        });
+    }
+
     $('#page').on('click', '.a_content', function (event) {
         event.preventDefault();
 
@@ -12,10 +20,10 @@ define(['jquery', 'util/simple-template'], function ($, template) {
     $('#page').on('page-change', '#content', function () {
         var $this = $(this);
         var href = $this.attr('page');
-        template.render($this, href).then(function (done) {
-            $('li.active').removeClass('active');
-            $('li a[href=' + href + ']').parent().addClass('active');
-            $this.trigger('loaded', href);
-        });
+        render(href, $this);
     });
+
+    return {
+        render: render
+    }
 });
