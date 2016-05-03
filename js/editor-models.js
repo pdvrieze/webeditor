@@ -37,16 +37,20 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
     function setupPaper($xml, paper) {
         var bounds = getBounds($xml);
 
-        var x = Math.abs(bounds.max.x) + Math.abs(bounds.min.x);
-        var y = Math.abs(bounds.max.y) + Math.abs(bounds.min.y);
+        var x = bounds.max.x - bounds.min.x;
+        var y = bounds.max.y - bounds.min.y;
 
         var scale = HEIGHT / (y + Nodes.SIZE);
+        var offsetX = (paper.$el.width() - x * scale - bounds.min.x * scale) / 2;
+        var offsetY = -bounds.min.y * scale;
+        console.log(offsetX, offsetY);
 
         paper.scale(scale);
+        paper.setOrigin(offsetX, offsetY);
     }
 
     function initPreview($list) {
-        $list.on('show.bs.collapse', '.collapse', function () {
+        $list.on('shown.bs.collapse', '.collapse', function () {
             var $ptr = $(this).find('.model-preview').empty();
 
             var id = $(this).attr('id').replace(/^model_/, '');
@@ -54,17 +58,19 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             var graph = new joint.dia.Graph();
             var paper = new joint.dia.Paper({
                 el: $ptr,
-                width: '100%',
+                width: $ptr.width(),
                 height: HEIGHT,
                 gridSize: 1,
                 model: graph
             });
 
+            console.log($ptr.width())
+
             var $xml = $(store.getModel(id).xml);
             setupPaper($xml, paper);
 
             var model = new Model(graph, paper);
-            setTimeout(function () { model.fromXml($xml); }, 10);
+            model.fromXml($xml);
         });
 
         $list.on('hide.bs.collapse', '.collapse', function () {
