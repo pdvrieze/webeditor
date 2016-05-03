@@ -37,7 +37,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             if (width > 0 && height > 0) {
                 paper.setDimensions(width, height);
             }
-            origin = [$board.width() / 2, $board.height() / 2];
+            origin = [$board.width() / 2 - 100, $board.height() / 2 - 200];
             paper.setOrigin(origin[0], origin[1]);
         });
 
@@ -70,7 +70,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             if (oe.changedTouches && oe.changedTouches.length) {
                 oe = oe.changedTouches[0];
             }
-            if (oe.pageY < top) return;
+            if (oe.pageY < $('nav').height()) return;
             if ($('.workspace-tooltip:visible').size()) $('.workspace-tooltip').hide();
             else showTpCreate(x, y, oe.pageX, oe.pageY);
         });

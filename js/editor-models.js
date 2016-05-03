@@ -37,11 +37,14 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
     function setupPaper($xml, paper) {
         var bounds = getBounds($xml);
 
-        var x = bounds.max.x - bounds.min.x;
-        var y = bounds.max.y - bounds.min.y;
+        var x = bounds.max.x - bounds.min.x + Nodes.SIZE;
+        var y = bounds.max.y - bounds.min.y + Nodes.SIZE;
 
-        var scale = HEIGHT / (y + Nodes.SIZE);
-        var offsetX = (paper.$el.width() - x * scale - bounds.min.x * scale) / 2;
+        var scaleX = HEIGHT / y;
+        var scaleY = paper.$el.width() / x;
+        var scale = Math.min(scaleX, scaleY);
+
+        var offsetX = (paper.$el.width() / 2 - scale * (x / 2 + bounds.min.x));
         var offsetY = -bounds.min.y * scale;
         console.log(offsetX, offsetY);
 
