@@ -133,6 +133,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
                 y: this.cell.attributes.position.y,
             };
 
+            if (!this.attrs) this.attrs = {};
+            if (!this.attrs.elements) this.attrs.elements = [];
+
             if (this.attrs.label) params['label'] = this.attrs.label;
             if (predecessors.length == 1) {
                 params['predecessor'] = predecessors[0].cid;

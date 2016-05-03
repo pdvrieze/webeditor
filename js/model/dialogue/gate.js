@@ -45,6 +45,7 @@ define(['jquery', 'util/simple-template'], function ($, template) {
                     attrs.max = $out.val(); 
                 }
                 self.attrs = attrs;
+                $('#content').trigger('save-model');
                 $ptr.modal('hide');
             });
 

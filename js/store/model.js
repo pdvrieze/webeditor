@@ -28,7 +28,7 @@ define(['jquery', 'share/auth'], function ($, auth) {
         {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
-                    $def.resolve();
+                    $def.resolve(xhr.responseText);
                 }
                 else $def.reject();
             }
@@ -44,11 +44,27 @@ define(['jquery', 'share/auth'], function ($, auth) {
         var str = new XMLSerializer().serializeToString(xml)
             .replace('name="' + models[handle].name + '"',
                      'name="' + name + '"');
-        return beginQuoteFileUnquoteUpload(str, URL + '/' + handle);
+        return beginQuoteFileUnquoteUpload(str, URL + '/' + handle)
+            .done(function () { models[handle].name = name; })
     }
 
-    function saveModel(handle, data, $def) {
-        $def.reject();
+    function updateModel(handle, xml) {
+        return beginQuoteFileUnquoteUpload(xml, URL + '/' + handle)
+            .done(function () { models[handle].xml = $.parseXML(xml); })
+    }
+
+    function createModel(xml) {
+        var $def = $.Deferred();
+        beginQuoteFileUnquoteUpload(xml, URL).done(function (model) {
+            var $xml = $(model);
+            var handle = $xml.attr('handle');
+            fetchModel(handle, $xml.attr('name')).done(function () {
+                $def.resolve(handle);
+            });
+        }).fail(function (e) {
+            $def.reject(e);
+        });
+        return $def;
     }
 
     function fetchModel(handle, name) {
@@ -94,7 +110,8 @@ define(['jquery', 'share/auth'], function ($, auth) {
         },
 
         renameModel: renameModel,
-        saveModel: saveModel,
+        updateModel: updateModel,
+        createModel: createModel,
         deleteModel: deleteModel,
         getModel: function (id) { return models[id]; }
     };

@@ -74,6 +74,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
         });
 
         paper.on('cell:pointerup', function (cellView, event) {
+            save();
             if (cellmoved) return;
             if ($('#dialogue:visible').size()) return;
             $('.workspace-tooltip').hide();
@@ -86,6 +87,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
                 if (oe.pageY < top) return;
                 showTpEdit(cellView, oe.pageX, oe.pageY);
             });
+            save();
         });
 
         var dragging = false;
@@ -173,6 +175,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             var offset = $tpCreate.data('offset');
             var object = $(this).attr('rel');
             model.add(new Nodes[object](), offset);
+            save();
             return false;
         });
 
@@ -181,22 +184,37 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             var cellView = $tpEdit.data('cellView');
             var action = $(this).attr('rel');
             model[action](cellView);
+            save();
             return false;
         });
 
         var handle = $content.attr('handle');
         if (handle) {
             var $xml = $(store.getModel(handle).xml);
+            model.handle = handle;
             model.fromXml($xml);
             $content.removeAttr('handle');
         }
         else {
-            var name = prompt('Model Name');
+            var name = prompt('Model Name') || 'Unnamed Model';
             model.name = name;
+            store.createModel(model.toXml()).done(function (handle) {
+                model.handle = handle;
+            }).fail(function () {
+                alert('Connection Error');
+            });
         }
 
-        window.saveModel = function () {
-            console.log(model.toXml());
+        function save() {
+            store.updateModel(model.handle, model.toXml()).done(function () {
+                console.log('saved');
+            }).fail(function () {
+                alert('Connection Error');
+            });
         }
+
+        $('#content').off('save-model').on('save-model', function () {
+            save();
+        });
     }
 });

@@ -198,6 +198,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                 if (self.attrs.type != 'human' && self.attrs.elements) {
                     delete self.attrs.elements;
                 }
+                $('#content').trigger('save-model');
                 $ptr.modal('hide');
             });
 
