@@ -39,6 +39,28 @@ define(['jquery', 'share/auth'], function ($, auth) {
         return $def;
     }
 
+    function cloneModel(handle, name) {
+        var xml = models[handle].xml;
+        var str = new XMLSerializer().serializeToString(xml)
+            .replace('name="' + models[handle].name + '"',
+                     'name="' + name + '"')
+            .replace(/handle=".*?"/, '')
+            .replace(/owner=".*?"/, '')
+            .replace(/uuid=".*?"/, '');
+        var $def = $.Deferred();
+        beginQuoteFileUnquoteUpload(str, URL).done(function (model) {
+            var $xml = $(model);
+            var handle = $xml.attr('handle');
+            fetchModel(handle, $xml.attr('name')).done(function () {
+                $def.resolve(handle);
+            });
+        }).fail(function (e) {
+            $def.reject(e);
+        });
+        return $def;
+
+    }
+
     function renameModel(handle, name) {
         var xml = models[handle].xml;
         var str = new XMLSerializer().serializeToString(xml)
@@ -117,6 +139,7 @@ define(['jquery', 'share/auth'], function ($, auth) {
         updateModel: updateModel,
         createModel: createModel,
         deleteModel: deleteModel,
+        cloneModel: cloneModel,
         getModel: function (id) { return models[id]; }
     };
 });

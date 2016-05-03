@@ -94,7 +94,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
         },
 
         init: function () {
-            if (this.attrs.label) this.setText(this.attrs.label);
+            if (this.attrs && this.attrs.label) this.setText(this.attrs.label);
         },
 
         fromXml: function ($xml, $model) {

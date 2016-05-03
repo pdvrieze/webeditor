@@ -66,8 +66,6 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
                 model: graph
             });
 
-            console.log($ptr.width())
-
             var $xml = $(store.getModel(id).xml);
             setupPaper($xml, paper);
 
@@ -88,6 +86,12 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
                 });
             }
+        });
+
+        $list.on('click', '.model-clone', function () {
+            var id = $(this).attr('handle');
+            var name = prompt('New name');
+            store.cloneModel(id, name).done(function () { init(); });
         });
     };
 
