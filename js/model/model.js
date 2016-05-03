@@ -1,12 +1,13 @@
 define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
     "use strict";
 
-    function Model(graph, paper) {
+    function Model(graph, paper, name) {
         this.graph = graph;
         this.nodes = [];
         this.selected = null;
         this.mode = null;
         this.paper = paper;
+        this.name = name || '';
 
         this.count = {
             start: 0,
@@ -136,7 +137,9 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
         fromXml: function ($xml) {
             var self = this;
             var nodes = {};
-            $xml.find('pe\\:processModel,processModel').children()
+            var $model = $xml.find('pe\\:processModel,processModel');
+            this.name = $model.attr('name');
+            $model.children()
                 .each(function () {
                     var name = _.capitalize(this.tagName.replace(/^pe:/, ''));
                     if (name == 'Activity') name = 'Block';
@@ -148,10 +151,9 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
 
                     var id = $(this).attr('id');
                     var node = new Nodes[name]();
-                    node.fromXml($(this));
+                    node.fromXml($(this), $model);
                     nodes[id] = node;
                     self.add(node, offset);
-                    console.log(node);
                 })
                 .each(function () {
                     var id = $(this).attr('id');
@@ -165,17 +167,30 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
         },
 
         toXml: function () {
+            var self = this;
+            var G = this.graph;
             var $xml = $('<processModel>', {
-                name: ''
+                name: this.name,
+                'xmlns:pe': 'http://adaptivity.nl/ProcessEngine/'
             });
-            $.each(this.nodes, function (i, val) { if (val.toXml) $xml.append(val.toXml()); });
+            $.each(this.nodes, function (i, val) {
+                var links = G.getConnectedLinks(val.cell, {inbound: true});
+                var cells = [];
+                $.each(links, function (i, link) {
+                    cells.push(self.find({
+                        model: {id: link.attributes.source.id}
+                    }));
+                });
+                $xml.append(val.toXml(cells));
+            });
             return addNamespaces($('<div>').append($xml).html(), [
                 'pe:processModel', 'pe:start', 'pe:end', 'pe:join', 'pe:split',
                 'pe:activity', 'pe:predecessor', 'pe:define', 'pe:result',
                 'pe:message', 'jbi:attribute', 'umh:task', 'umh:taskParam',
                 'umh:repliesParam', 'env:Body', 'env:Envelope', 'umh:postTask',
                 'jbi:element', 'umh:item'
-            ]);
+            ]).replace('servicens', 'serviceNS')
+                .replace('servicename', 'serviceName');
         }
     };
 

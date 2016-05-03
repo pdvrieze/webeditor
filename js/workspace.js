@@ -189,6 +189,13 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             var $xml = $(store.getModel(handle).xml);
             model.fromXml($xml);
             $content.removeAttr('handle');
+        }
+        else {
+            var name = prompt('Model Name');
+            model.name = name;
+        }
+
+        window.saveModel = function () {
             console.log(model.toXml());
         }
     }

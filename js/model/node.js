@@ -57,6 +57,23 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
      * Block
      */
 
+    function addItem($cell, $item, value, name, result) {
+        if (result) {
+            var rname = 'r_' + name;
+            $('<result>', {
+                xpath: '/values/' + name + '/text()',
+                name: rname
+            }).appendTo($cell);
+        }
+        var dname = 'd_' + name;
+        $('<define>', { name: dname }).append(value).appendTo($cell);
+        $('<attribute>', {
+            'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
+            value: dname,
+            name: name
+        })
+    }
+
     var Block = Base.extend({
         type: 'block',
         canEdit: true,
@@ -73,13 +90,13 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
             $('#' + id).find('text').get(0).textContent = text;
         },
 
-        fromXml: function ($xml) {
+        fromXml: function ($xml, $model) {
             var attrs = { elements: [] };
             if ($xml.attr('label')) attrs.label = $xml.attr('label');
 
             var defines = {};
 
-            $xml.find('pe\\:define,define').each(function () {
+            $model.find('pe\\:define,define').each(function () {
                 var name = $(this).attr('name');
                 defines[name] = this.textContent;
             });
@@ -107,6 +124,80 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
             attrs.elements = elements;
 
             this.attrs = attrs;
+        },
+
+        toXml: function (predecessors) {
+            var params = {
+                id: this.cid,
+                x: this.cell.attributes.position.x,
+                y: this.cell.attributes.position.y,
+            };
+
+            if (this.attrs.label) params['label'] = this.attrs.label;
+            if (predecessors.length == 1) {
+                params['predecessor'] = predecessors[0].cid;
+            }
+
+            var $cell = $('<activity>', params);
+
+            if (!this.attrs.elements.length) return $cell;
+
+            var $message = $('<message>', {
+                type: 'application/soap+xml',
+                serviceNS: 'http://adaptivity.nl/userMessageHandler',
+                serviceName: 'userMessageHandler',
+                endpoint: 'internal',
+                operation: 'postTask'
+            }).appendTo($cell);
+            
+            var $envelope = $('<Envelope>', {
+                'xmlns:env': 'http://www.w3.org/2003/05/soap-envelope',
+                encodingStyle: 'http://www.w3.org/2003/05/soap-encoding'
+            }).appendTo($message);
+
+            var $body = $('<Body>').appendTo($envelope);
+            var $postTask = $('<postTask>', {
+                'xmlns:umh': 'http://adaptivity.nl/userMessageHandler'
+            }).appendTo($body);
+
+            var $repliesParam = $('<repliesParam>').appendTo($postTask);
+            $('<element>', {
+                'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
+                value: 'endpoint'
+            }).appendTo($repliesParam);
+
+            var $taskParam = $('<taskParam>').appendTo($postTask);
+            var $task = $('<task>').appendTo($taskParam);
+            $('<attribute>', {
+                'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
+                value: 'instancehandle',
+                name: 'instancehandle'
+            }).appendTo($task);
+            $('<attribute>', {
+                'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
+                value: 'handle',
+                name: 'remotehandle'
+            }).appendTo($task);
+            $('<attribute>', {
+                'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
+                value: 'owner',
+                name: 'owner'
+            }).appendTo($task);
+
+            $.each(this.attrs.elements, function (i, val) {
+                var $item = $('<item>', {
+                    name: val.name,
+                    type: val.type
+                }).appendTo($task)
+                if (val.label) {
+                    addItem($cell, $item, val.label, 'label');   
+                }
+                if (val.value) {
+                    addItem($cell, $item, val.value, 'value', true);   
+                }
+            }); 
+
+            return $cell;
         }
     });
 
@@ -126,7 +217,29 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
             if ($xml.attr('label')) this.attrs.label = $xml.attr('label');
             if ($xml.attr('min')) this.attrs.min = $xml.attr('min') - 0;
             if ($xml.attr('max')) this.attrs.max = $xml.attr('max') - 0;
-        }
+        },
+
+        toXml: function (predecessors) {
+            var params = {
+                id: this.cid,
+                x: this.cell.attributes.position.x,
+                y: this.cell.attributes.position.y
+            };
+            if (this.attrs.min >= 0) params.min = this.attrs.min;
+            if (this.attrs.max >= 0) params.max = this.attrs.max;
+            if (predecessors.length == 1) {
+                params['predecessor'] = predecessors[0].cid;
+            }
+            var $cell = $('<' + this.type + '>', params);
+
+            if (predecessors.length > 1) {
+                $.each(predecessors, function (i, val) {
+                    $('<predecessor>' + val.cid + '</predecessor>')
+                        .appendTo($cell);
+                });
+            }
+            return $cell;
+        },
     });
 
     var Split = Gate.extend({
@@ -146,12 +259,16 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
     var End = Base.extend({
         type: 'end',
         linkLimit: { input: 1, output: 0 },
-        toXml: function () {
-            return $('<end>', {
+        toXml: function (predecessors) {
+            var params = {
                 id: this.cid,
                 x: this.cell.attributes.position.x,
                 y: this.cell.attributes.position.y
-            })
+            };
+            if (predecessors.length) {
+                params['predecessor'] = predecessors[0].cid;
+            }
+            return $('<end>', params);
         }
     });
 
