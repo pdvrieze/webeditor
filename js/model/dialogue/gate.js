@@ -1,16 +1,10 @@
 define(['jquery', 'util/simple-template'], function ($, template) {
     function Gate(self) {
         this.self = self;
-        var attrs = self.attrs || {};
+        var attrs = self.attrs || $.extend({}, { min: 0, max: -1 });
         var $ptr = $('#dialogue');
 
         $ptr.find('.modal-title').html('Gate Settings');
-
-        var mapping = {
-            and: { in: 0, out: 20 },
-            or: { in: 1, out: 20 },
-            xor: { in: 1, out: 1 }
-        };
 
         var $body = $ptr.find('.modal-body');
         template.render($body, 'dialogue-gate').done(function () {
@@ -20,35 +14,35 @@ define(['jquery', 'util/simple-template'], function ($, template) {
 
             if (attrs.label) $body.find('#label').val(attrs.label);
 
-            if (attrs.in && attrs.out) {
-                $in.val(attrs.in);
-                $out.val(attrs.out);
-            }
+            $in.val(attrs.min);
+            $out.val(attrs.max);
 
             $body.find('button').on('click', function () {
                 var $this = $(this);
-                attrs.gate = $this.val();
 
                 $body.find('button').removeClass('active');
                 $this.addClass('active');
 
-                var values = mapping[$this.val()];
-                if (values) {
-                    $in.val(values.in);
-                    $out.val(values.out);
+                if ($this.attr('min')) {
+                    attrs.min = $this.attr('min');
+                    attrs.max = $this.attr('max');
+                    $in.val(attrs.min);
+                    $out.val(attrs.max);
                 }
 
                 if ($this.val() != 'other') $controls.hide();
                 else $controls.show();
-            }).filter('[value=' + (attrs.gate || 'and') + ']').click();
+            })
+                .filter('[min=' + attrs.min  + '][max=' + attrs.max + ']')
+                .click();
 
             $ptr.find('#save').off().on('click', function () {
                 if ($body.find('#label').val()) {
                     attrs.label = $body.find('#label').val();
                 }
                 if ($body.find('[value=other].active').size()) {
-                    attrs.in = $in.val(); 
-                    attrs.out = $out.val(); 
+                    attrs.min = $in.val(); 
+                    attrs.max = $out.val(); 
                 }
                 self.attrs = attrs;
                 $ptr.modal('hide');

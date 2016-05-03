@@ -137,6 +137,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
 
                     var id = $(this).attr('id');
                     var node = new Nodes[name]();
+                    node.fromXml($(this));
                     nodes[id] = node;
                     self.add(node, offset);
                 })

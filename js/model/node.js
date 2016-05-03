@@ -1,4 +1,5 @@
-define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
+define(['jquery', 'joint', 'model/dialogue', 'lodash'],
+       function ($, joint, Dialogue, _) {
     "use strict";
 
     var SIZE = 30;
@@ -31,7 +32,9 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
 
         tooltip: function (callback) {
             callback(this.cell.position().x, this.cell.position().y);
-        }
+        },
+
+        fromXml: function ($xml) {}
     });
 
     /*
@@ -61,6 +64,42 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
         setText: function (text) {
             var id = this.cell.findView(this.paper).id;
             $('#' + id).find('text').get(0).textContent = text;
+        },
+
+        fromXml: function ($xml) {
+            var attrs = { elements: [] };
+            if ($xml.attr('label')) attrs.label = $xml.attr('label');
+
+            var defines = {};
+
+            $xml.find('pe\\:define,define').each(function () {
+                var name = $(this).attr('name');
+                defines[name] = this.textContent;
+            });
+
+            var elements = [];
+            $xml.find('umh\\:item,item').each(function () {
+                var element = {};
+
+                var label = $(this).attr('name');
+                var type = $(this).attr('type');
+
+                element.label = label;
+                element.type = type;
+                $(this).find('jbi\\:attribute,attribute').each(function () {
+                    var attribute = $(this).attr('name');
+                    var value = $(this).attr('value');
+
+                    if (defines[value]) value = defines[value];
+
+                    element[attribute] = value;
+                });
+
+                elements.push(element);
+            });
+            attrs.elements = elements;
+
+            this.attrs = attrs;
         }
     });
 
@@ -73,6 +112,13 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
 
         edit: function () {
             new Dialogue.Gate(this);
+        },
+
+        fromXml: function ($xml) {
+            this.attrs = { min: -1, max: -1 };
+            if ($xml.attr('label')) this.attrs.label = $xml.attr('label');
+            if ($xml.attr('min')) this.attrs.min = $xml.attr('min') - 0;
+            if ($xml.attr('max')) this.attrs.max = $xml.attr('max') - 0;
         }
     });
 

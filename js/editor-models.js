@@ -64,7 +64,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             setupPaper($xml, paper);
 
             var model = new Model(graph, paper);
-            model.fromXml($xml);
+            setTimeout(function () { model.fromXml($xml); }, 10);
         });
 
         $list.on('hide.bs.collapse', '.collapse', function () {

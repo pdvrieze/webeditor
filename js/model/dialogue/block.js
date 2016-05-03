@@ -2,14 +2,14 @@ define(['jquery', 'util/simple-template', 'Sortable'],
        function ($, template, Sortable) {
     var dropdown_index = 1;
 
-    function makeLi(label, prefix) {
+    function makeLi(name, prefix) {
         if (!prefix) prefix = '';
 
         var $li = $('<li>');
         var $a = $('<a>', {
             'href': '#',
             'class': 'variable-reuse'
-        }).append(prefix + label).appendTo($li);
+        }).append(prefix + name).appendTo($li);
 
         return $li;
     }
@@ -33,9 +33,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
 
         var added = false;
         $.each(elements, function (i, val) {
-            if (val.type == 'input') {
+            if (val.type == 'text') {
                 added = true;
-                $ul.append(makeLi(val.label, 'this.'));
+                $ul.append(makeLi(val.name, 'this.'));
             }
         });
 
@@ -66,7 +66,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             var title = element.type;
 
             var description = {};
-            if (element.text) description['Label'] = element.label;
+            if (element.text) description['Name'] = element.name;
             if (element.hasOwnProperty('text')) {
                 description['Text'] = element.text;
             }
@@ -166,7 +166,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                     $this.find('#element_save').click(function () {
                         var element = { type: $type.val() };
                         if (element.type == 'empty') return;
-                        $this.find('.element-content').find('input[name]')
+                        $this.find('.element-content').find('text[name]')
                             .each(function () {
                                 var $this = $(this);
                                 element[$this.attr('name')] = $this.val();
@@ -185,9 +185,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
 
             $body.on('click', 'a.variable-reuse', function () {
                 var $this = $(this);
-                var $input = $this.parents('.form-group').find('input');
-                var text = $input.val().trim() + ' {' + $this.text() + '}';
-                $input.val(text.trim());
+                var $text = $this.parents('.form-group').find('text');
+                var text = $text.val().trim() + ' {' + $this.text() + '}';
+                $text.val(text.trim());
             });
 
             $ptr.find('#save').off().on('click', function () {
