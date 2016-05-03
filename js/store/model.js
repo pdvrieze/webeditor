@@ -23,6 +23,8 @@ define(['jquery', 'share/auth'], function ($, auth) {
         return $.ajax({
             url: '/ProcessEngine/processModels/' + handle,
             type: 'DELETE'
+        }).success(function () {
+            delete models[handle];
         });
     }
     

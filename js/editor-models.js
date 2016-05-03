@@ -71,8 +71,15 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             $(this).find('.model-preview').empty(); 
         });
 
-        $list.on('click', '.model-edit', function () {
+        $list.on('click', '.model-delete', function () {
             var id = $(this).attr('handle');
+            if (confirm('Are you sure you want to delete this model?')) {
+                store.deleteModel(id).success(function () {
+                    $list.find('#model_' + id).remove();
+                    $list.find('a[handle=' + id + ']').remove();
+
+                });
+            }
         });
     };
 
