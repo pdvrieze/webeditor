@@ -39,9 +39,8 @@
 
             // try to login
             auth.tryLogin().then(function () {
-                nav.login();
                 // automatically route to the landing page or the hashed page
-                nav.autoHash();
+                nav.login();
             }).fail(function () {
                 // go to index page which asks to login
                 nav.logout();

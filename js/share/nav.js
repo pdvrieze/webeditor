@@ -8,6 +8,9 @@ define(['jquery', './auth', 'util/simple-template'],
        function ($, auth, template) {
     "use strict";
 
+    // list of hardcoded controllers that will need to be loaded for page change
+    var controllers = [ 'editor-models', 'workspace' ];
+
     var $nav = $('nav'); // navigation bar (should be one per page)
     
     /*
@@ -69,12 +72,29 @@ define(['jquery', './auth', 'util/simple-template'],
         // content section that will be changing
         var $content = $('#content');
 
+        var $def = $.Deferred(); // we don't know if we need to load controller
+
         // render new page in content section
         template.render($content, page).then(function () {
             // reselect the buttons in the navigation if needed
             $('li.active').removeClass('active');
             $('li a[href="#' + page + '"]').parent().addClass('active');
-        });
+
+            // remove elements that have specific pages to be shown on
+            $('[show-page][show-page!="' + page + '"]').hide();
+            $('[show-page="' + page + '"]').show();
+
+            // load controller if page has one in the hardcoded list
+            if (controllers.indexOf(page) !== -1) {
+                require([page], function (controller) {
+                    // run its initialisation method
+                    controller.init(args);
+                })
+            }
+            else $def.resolve();
+        }).fail(function (e) { $def.reject(e); });
+
+        return $def;
     }
 
     /*
@@ -88,16 +108,20 @@ define(['jquery', './auth', 'util/simple-template'],
 
         // if model is needed go there and select the correct model
         var match = location.hash.match(/^#model_(\d+)/);
-        if (match) changePage('workspace', parseInt(match[1]));
+        if (match) return changePage('workspace', parseInt(match[1]));
+
+        return changePage(page);
     }
 
     /*
      * Sets up navigation bar for logged in user
      */
     function login() {
-        $nav.find('.hidden-guest').addClass('hidden');
-        $nav.find('.hidden-auth').removeClass('hidden');
-        $nav.find('#username').html(auth.getUser());
+        autoHash().then(function () {
+            $nav.find('.hidden-guest').addClass('hidden');
+            $nav.find('.hidden-auth').removeClass('hidden');
+            $nav.find('#username').html(auth.getUser());
+        });
     }
 
     /*
@@ -113,7 +137,6 @@ define(['jquery', './auth', 'util/simple-template'],
     return {
         init: init,
         login: login,
-        logout: logout,
-        autoHash: autoHash
+        logout: logout
     }
 });

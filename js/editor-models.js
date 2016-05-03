@@ -1,5 +1,5 @@
 define(['jquery', 'store/model', 'util/simple-template', 'joint',
-       'model/model', 'model/node', 'share/links'],
+       'model/model', 'model/node', 'share/nav'],
        function ($, store, template, joint, Model, Nodes, links) {
     "use strict";
 
@@ -182,4 +182,10 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             $input.replaceWith($title);
         });
     }
+
+    return {
+        init: function () {
+            console.log('im here');
+        }
+    };
 });
