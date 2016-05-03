@@ -44,6 +44,13 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
     var Start = Base.extend({
         type: 'start',
         linkLimit: { input: 0, output: 1 },
+        toXml: function () {
+            return $('<start>', {
+                id: this.cid,
+                x: this.cell.attributes.position.x,
+                y: this.cell.attributes.position.y
+            })
+        }
     });
 
     /*
@@ -138,7 +145,14 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
 
     var End = Base.extend({
         type: 'end',
-        linkLimit: { input: 1, output: 0 }
+        linkLimit: { input: 1, output: 0 },
+        toXml: function () {
+            return $('<end>', {
+                id: this.cid,
+                x: this.cell.attributes.position.x,
+                y: this.cell.attributes.position.y
+            })
+        }
     });
 
     /*

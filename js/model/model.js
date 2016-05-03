@@ -17,6 +17,14 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
         };
     }
 
+    function addNamespaces(str, items) {
+        $.each(items, function (i, val) {
+            var regex = new RegExp('(<\/?)' + val.split(':')[1], 'gi');
+            str = str.replace(regex, '$1' + val);
+        });
+        return str;
+    }
+
     Model.prototype = {
         click: function (cellView, edit) {
             var node = this.find(cellView)
@@ -143,6 +151,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
                     node.fromXml($(this));
                     nodes[id] = node;
                     self.add(node, offset);
+                    console.log(node);
                 })
                 .each(function () {
                     var id = $(this).attr('id');
@@ -153,6 +162,20 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
                             self.link(nodes[this.textContent], nodes[id]);
                         })
                 });
+        },
+
+        toXml: function () {
+            var $xml = $('<processModel>', {
+                name: ''
+            });
+            $.each(this.nodes, function (i, val) { if (val.toXml) $xml.append(val.toXml()); });
+            return addNamespaces($('<div>').append($xml).html(), [
+                'pe:processModel', 'pe:start', 'pe:end', 'pe:join', 'pe:split',
+                'pe:activity', 'pe:predecessor', 'pe:define', 'pe:result',
+                'pe:message', 'jbi:attribute', 'umh:task', 'umh:taskParam',
+                'umh:repliesParam', 'env:Body', 'env:Envelope', 'umh:postTask',
+                'jbi:element', 'umh:item'
+            ]);
         }
     };
 

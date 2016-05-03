@@ -189,6 +189,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             var $xml = $(store.getModel(handle).xml);
             model.fromXml($xml);
             $content.removeAttr('handle');
+            console.log(model.toXml());
         }
     }
 });
