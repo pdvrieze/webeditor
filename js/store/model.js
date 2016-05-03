@@ -18,6 +18,13 @@ define(['jquery', 'share/auth'], function ($, auth) {
                 };
             });
     }
+
+    function deleteModel(handle) {
+        return $.ajax({
+            url: '/ProcessEngine/processModels/' + handle,
+            type: 'DELETE'
+        });
+    }
     
     return {
         getList: function (callback) {
@@ -55,6 +62,8 @@ define(['jquery', 'share/auth'], function ($, auth) {
 
         getModel: function (id) {
             return models[id];
-        }
+        },
+
+        deleteModel: deleteModel
     };
 });

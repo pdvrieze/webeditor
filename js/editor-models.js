@@ -73,9 +73,6 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         $list.on('click', '.model-edit', function () {
             var id = $(this).attr('handle');
-            var $content = $('#content');
-            $content.attr('handle', id);
-            links.render('editor-workspace', $content);
         });
     };
 
@@ -90,7 +87,27 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         initPreview($list);
 
-        template.render($list, 'editor-model', list);
+        template.render($list, 'editor-model', list).then(function () {
+            $list.find('a.list-group-item').click(function () {
+                var handle = $(this).attr('handle');
+                var $content = $('#content');
+                $content.attr('handle', handle);
+                links.render('editor-workspace', $content);
+            });
+
+            $list.find('.clickable.edit').click(function (e) {
+                e.preventDefault();
+                var handle = $(this).parent().attr('handle');
+                $list.find('#model_' + handle).collapse('toggle');
+                return false;
+            });
+
+            $list.find('.clickable.rename').click(function (e) {
+                e.preventDefault();
+                toggle($(this).parent());
+                return false;
+            });
+        });
     }
 
     function toggle($item) {
@@ -112,7 +129,11 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             'class': 'form-control',
             placeholder: 'Title',
             value: title
-        }).click(function () { return false; }).data('old-title', title)
+        }).click(function (e) {
+            e.preventDefault();
+            return false;
+        }).data('old-title', title)
+
         $title.replaceWith($input);
         $item.find('.glyphicon')
             .removeClass('glyphicon-pencil')
@@ -130,7 +151,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         $input.prop('disabled', true);
 
-        store.renameModel($item.attr('handle'), {
+        store.saveModel($item.attr('handle'), {
             name: $input.val()
         }).done(function () {
             $input.replaceWith($title);
