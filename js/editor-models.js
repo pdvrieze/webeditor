@@ -115,6 +115,11 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
                 return false;
             });
         });
+
+        $('#refresh').off().click(function () {
+            store.reset();
+            init();
+        });
     }
 
     function toggle($item) {

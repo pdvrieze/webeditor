@@ -86,10 +86,14 @@ define(['jquery', 'share/auth'], function ($, auth) {
             delete models[handle];
         });
     }
-    
+
     return {
-        getList: function (callback) {
+        getList: function () {
             return $def ? $def : this.update();
+        },
+
+        reset: function () {
+            $def = null;
         },
 
         update: function () {
