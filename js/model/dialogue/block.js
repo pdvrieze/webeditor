@@ -2,19 +2,26 @@ define(['jquery', 'util/simple-template', 'Sortable'],
        function ($, template, Sortable) {
     var dropdown_index = 1;
 
-    function makeLi(name, prefix) {
+    function makeLi(value, name, prefix) {
         if (!prefix) prefix = '';
 
         var $li = $('<li>');
         var $a = $('<a>', {
             'href': '#',
-            'class': 'variable-reuse'
+            'class': 'variable-reuse',
+            'value': value
         }).append(prefix + name).appendTo($li);
 
         return $li;
     }
 
-    function addStorage(view, storage, elements, name) {
+    // http://stackoverflow.com/a/15710692
+    function hashCode(s) {
+        return s.split("")
+            .reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+    }
+
+    function addStorage(view, storage, elements, name, self) {
         var $div = $('<div class="dropdown pull-right">');
 
         var $button = $('<button>', {
@@ -35,7 +42,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         $.each(elements, function (i, val) {
             if (val.type == 'text') {
                 added = true;
-                $ul.append(makeLi(val.name, 'this.'));
+                $ul.append(
+                    makeLi('#' + self.cell.cid + '.r_' + hashCode(val.value),
+                           val.name, 'this.'));
             }
         });
 
@@ -44,7 +53,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         }
 
         $.each(storage, function (i, val) {
-            $ul.append(makeLi(val));
+            $ul.append(makeLi(val.value, val.title));
         });
 
         view[name] = $div.get(0).outerHTML;
@@ -149,8 +158,10 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                         }
                         var $content = $this.find('.element-content');
                         var newview = $.extend(true, {}, view);
-                        addStorage(newview, storage, attrs.elements, 'stor1');
-                        addStorage(newview, storage, attrs.elements, 'stor2');
+                        addStorage(newview, storage, attrs.elements, 'stor1',
+                                   self);
+                        addStorage(newview, storage, attrs.elements, 'stor2',
+                                   self);
                         template.render($content, name, [newview]);
                     });
                     if (view.type != 'empty') {
@@ -186,7 +197,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             $body.on('click', 'a.variable-reuse', function () {
                 var $this = $(this);
                 var $text = $this.parents('.form-group').find('input');
-                var text = $text.val().trim() + ' {' + $this.text() + '}';
+                var text = $text.val().trim() + ' ' + $this.attr('value');
                 $text.val(text.trim());
             });
 

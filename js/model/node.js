@@ -57,23 +57,28 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
      * Block
      */
 
-    var random = 0;
+    // http://stackoverflow.com/a/15710692
+    function hashCode(s) {
+        return s.split("")
+            .reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+    }
+
     function addItem($cell, $item, value, name, result) {
+        var uname = hashCode(value);
         if (result) {
-            var rname = 'r_' + name + random;
+            var rname = 'r_' + uname;
             $('<result>', {
                 xpath: '/values/' + name + '/text()',
                 name: rname
             }).appendTo($cell);
         }
-        var dname = 'd_' + name + random;
+        var dname = 'd_' + uname;
         $('<define>', { name: dname }).append(value).appendTo($cell);
         $('<attribute>', {
             'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
             value: dname,
             name: name
         }).appendTo($item);
-        random++;
     }
 
     var Block = Base.extend({
@@ -198,7 +203,6 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
                     name: val.name,
                     type: val.type
                 }).appendTo($task)
-                console.log(val);
                 if (val.label) {
                     addItem($cell, $item, val.label, 'label');   
                 }

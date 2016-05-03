@@ -92,7 +92,10 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
                     var element = node.attrs.elements[i];
                     var activity = node.attrs.label || '#' + node.cell.cid 
                     if (element.type == 'text') {
-                        vars.push(activity + '.' + element.name);
+                        vars.push({
+                            title: activity + '.' + element.name,
+                            value: '#' + node.cell.cid + '.r_' + element.uname
+                        });
                     }
                 }
             }
