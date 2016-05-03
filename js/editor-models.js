@@ -46,7 +46,6 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         var offsetX = (paper.$el.width() / 2 - scale * (x / 2 + bounds.min.x));
         var offsetY = -bounds.min.y * scale;
-        console.log(offsetX, offsetY);
 
         paper.scale(scale);
         paper.setOrigin(offsetX, offsetY);

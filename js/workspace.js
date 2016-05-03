@@ -9,6 +9,8 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
     });
 
     function init() {
+        $('#autoalign').show();
+
         var graph = new joint.dia.Graph();
 
         var $board = $('#board');
@@ -37,7 +39,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             if (width > 0 && height > 0) {
                 paper.setDimensions(width, height);
             }
-            origin = [$board.width() / 2 - 100, $board.height() / 2 - 200];
+            origin = [width / 2 - 150, height / 2 - 300];
             paper.setOrigin(origin[0], origin[1]);
         });
 
@@ -222,6 +224,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
 
         $('#content').off('save-model').on('save-model', function () {
             save();
+        });
+
+        $('#autoalign').off().click(function () {
+            model.autoalign();
         });
     }
 });

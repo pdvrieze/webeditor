@@ -138,6 +138,10 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
             return true;
         },
 
+        autoalign: function () {
+            console.log('sure');
+        },
+
         fromXml: function ($xml) {
             var self = this;
             var nodes = {};

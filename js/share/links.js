@@ -3,6 +3,7 @@ define(['jquery', 'util/simple-template'], function ($, template) {
 
     function render(what, $where) {
         return template.render($where, what).then(function (done) {
+            $('.when-needed').hide();
             $('li.active').removeClass('active');
             $('li a[href=' + what + ']').parent().addClass('active');
             $where.trigger('loaded', what);
