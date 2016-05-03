@@ -158,9 +158,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         $input.prop('disabled', true);
 
-        store.saveModel($item.attr('handle'), {
-            name: $input.val()
-        }).done(function () {
+        store.renameModel($item.attr('handle'), $input.val()).then(function () {
             $input.replaceWith($title);
         }).fail(function () {
             $title.html($input.data('old-title'));

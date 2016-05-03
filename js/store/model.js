@@ -4,6 +4,49 @@ define(['jquery', 'share/auth'], function ($, auth) {
     var models = {};
     var $def = null;
 
+    var URL = '/ProcessEngine/processModels';
+
+    // http://stackoverflow.com/a/3012611
+    function beginQuoteFileUnquoteUpload(data, url) {
+        var $def = $.Deferred();
+
+        var boundary = "---------------------------7da24f2e50046";
+        var xhr = new XMLHttpRequest();
+        var body = '--' + boundary + '\r\n'
+                 + 'Content-Disposition: form-data; name="processUpload"; '
+                 + 'filename="temp.xml"\r\n'
+                 + 'Content-type: plain/text\r\n\r\n'
+                 + data + '\r\n'
+                 + '--' + boundary + '--';
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader(
+            "Content-type", "multipart/form-data; boundary="+boundary
+        );
+
+        xhr.onreadystatechange = function ()
+        {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    $def.resolve();
+                }
+                else $def.reject();
+            }
+        }
+
+        xhr.send(body);
+
+        return $def;
+    }
+
+    function renameModel(handle, name) {
+        var xml = models[handle].xml;
+        var str = new XMLSerializer().serializeToString(xml)
+            .replace('name="' + models[handle].name + '"',
+                     'name="' + name + '"');
+        return beginQuoteFileUnquoteUpload(str, URL + '/' + handle);
+    }
+
     function saveModel(handle, data, $def) {
         $def.reject();
     }
@@ -50,22 +93,9 @@ define(['jquery', 'share/auth'], function ($, auth) {
             return $def;
         },
 
-        renameModel: function (handle, name) {
-            var $def = $.Deferred();
-            renameModel(handle, name, $def);
-            return $def;
-        },
-
-        saveModel: function (handle, data) {
-            var $def = $.Deferred();
-            saveModel(handle, data, $def);
-            return $def;
-        },
-
-        getModel: function (id) {
-            return models[id];
-        },
-
-        deleteModel: deleteModel
+        renameModel: renameModel,
+        saveModel: saveModel,
+        deleteModel: deleteModel,
+        getModel: function (id) { return models[id]; }
     };
 });
