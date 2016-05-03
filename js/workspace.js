@@ -40,6 +40,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
         var scale = 2.0;
         paper.scale(scale);
         $('#content').bind('mousewheel DOMMouseScroll', function(event){
+            if ($('#dialogue:visible').size()) return;
             if (event.originalEvent.wheelDelta > 0 ||
                     event.originalEvent.detail < 0) {
                 paper.scale(scale *= 1.1);

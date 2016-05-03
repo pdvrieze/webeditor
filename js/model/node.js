@@ -57,21 +57,23 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
      * Block
      */
 
+    var random = 0;
     function addItem($cell, $item, value, name, result) {
         if (result) {
-            var rname = 'r_' + name;
+            var rname = 'r_' + name + random;
             $('<result>', {
                 xpath: '/values/' + name + '/text()',
                 name: rname
             }).appendTo($cell);
         }
-        var dname = 'd_' + name;
+        var dname = 'd_' + name + random;
         $('<define>', { name: dname }).append(value).appendTo($cell);
         $('<attribute>', {
             'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
             value: dname,
             name: name
-        })
+        }).appendTo($item);
+        random++;
     }
 
     var Block = Base.extend({
@@ -88,6 +90,10 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
         setText: function (text) {
             var id = this.cell.findView(this.paper).id;
             $('#' + id).find('text').get(0).textContent = text;
+        },
+
+        init: function () {
+            if (this.attrs.label) this.setText(this.attrs.label);
         },
 
         fromXml: function ($xml, $model) {
@@ -108,7 +114,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
                 var label = $(this).attr('name');
                 var type = $(this).attr('type');
 
-                element.label = label;
+                element.name = label;
                 element.type = type;
                 $(this).find('jbi\\:attribute,attribute').each(function () {
                     var attribute = $(this).attr('name');
@@ -192,6 +198,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
                     name: val.name,
                     type: val.type
                 }).appendTo($task)
+                console.log(val);
                 if (val.label) {
                     addItem($cell, $item, val.label, 'label');   
                 }

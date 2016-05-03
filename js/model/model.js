@@ -91,8 +91,8 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
                 for (var i = 0; i < node.attrs.elements.length; ++i) {
                     var element = node.attrs.elements[i];
                     var activity = node.attrs.label || '#' + node.cell.cid 
-                    if (element.type == 'input') {
-                        vars.push(activity + '.' + element.label);
+                    if (element.type == 'text') {
+                        vars.push(activity + '.' + element.name);
                     }
                 }
             }
@@ -108,7 +108,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
             while (links.length == 1) {
                 cell = this.find({model: {id: links[0].attributes.source.id}});
                 storage = storage.concat(this.extract(cell));
-                links = G.getConnectedLinks(cell, {inbound: true});
+                links = G.getConnectedLinks(cell.cell, {inbound: true});
             }
 
             return storage;
@@ -154,6 +154,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
                     node.fromXml($(this), $model);
                     nodes[id] = node;
                     self.add(node, offset);
+                    if (node.init) node.init();
                 })
                 .each(function () {
                     var id = $(this).attr('id');

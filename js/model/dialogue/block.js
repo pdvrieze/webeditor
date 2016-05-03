@@ -166,7 +166,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                     $this.find('#element_save').click(function () {
                         var element = { type: $type.val() };
                         if (element.type == 'empty') return;
-                        $this.find('.element-content').find('text[name]')
+                        $this.find('.element-content').find('input[name]')
                             .each(function () {
                                 var $this = $(this);
                                 element[$this.attr('name')] = $this.val();
@@ -185,7 +185,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
 
             $body.on('click', 'a.variable-reuse', function () {
                 var $this = $(this);
-                var $text = $this.parents('.form-group').find('text');
+                var $text = $this.parents('.form-group').find('input');
                 var text = $text.val().trim() + ' {' + $this.text() + '}';
                 $text.val(text.trim());
             });
