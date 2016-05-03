@@ -37,8 +37,8 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
             else this.select(cellView, edit);
         },
 
-        add: function (node, offset) {
-            if (!node.cell) node.create(offset);
+        add: function (node, offset, id) {
+            if (!node.cell) node.create(offset, id);
             node.paper = this.paper;
             this.graph.addCell(node.cell);
             this.nodes.push(node);
@@ -94,7 +94,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
                     if (element.type == 'text') {
                         vars.push({
                             title: activity + '.' + element.name,
-                            value: '#' + node.cell.cid + '.r_' + element.uname
+                            value: '#' + node.eid + '.r_' + element.eid
                         });
                     }
                 }
@@ -156,7 +156,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
                     var node = new Nodes[name]();
                     node.fromXml($(this), $model);
                     nodes[id] = node;
-                    self.add(node, offset);
+                    self.add(node, offset, $(this).attr('id'));
                     if (node.init) node.init();
                 })
                 .each(function () {

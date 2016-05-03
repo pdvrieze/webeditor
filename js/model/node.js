@@ -17,12 +17,15 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
         }, joint.dia.Element.prototype.defaults)
     });
 
+    var random = 1;
     var Base = Backbone.Model.extend({
         type: null,
+        eid: null,
         linkLimit: { input: 1, output: 1 },
         canEdit: false,
 
-        create: function (offset) {
+        create: function (offset, id) {
+            this.eid = id || this.type + random++;
             this.label = null;
             this.cell = new NodeClass({
                 position: offset,
@@ -46,7 +49,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
         linkLimit: { input: 0, output: 1 },
         toXml: function () {
             return $('<start>', {
-                id: this.cid,
+                id: this.eid,
                 x: this.cell.attributes.position.x,
                 y: this.cell.attributes.position.y
             })
@@ -57,23 +60,16 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
      * Block
      */
 
-    // http://stackoverflow.com/a/15710692
-    function hashCode(s) {
-        return s.split("")
-            .reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
-    }
-
     function addItem($cell, $item, value, name, result) {
-        var uname = hashCode(value);
         if (result) {
-            var rname = 'r_' + uname;
+            var rname = 'r_' + value.eid;
             $('<result>', {
-                xpath: '/values/' + name + '/text()',
+                xpath: '/values/' + value.eid + '/text()',
                 name: rname
             }).appendTo($cell);
         }
-        var dname = 'd_' + uname;
-        $('<define>', { name: dname }).append(value).appendTo($cell);
+        var dname = 'd_' + value.eid;
+        $('<define>', { name: dname }).append(value[name]).appendTo($cell);
         $('<attribute>', {
             'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
             value: dname,
@@ -125,7 +121,10 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
                     var attribute = $(this).attr('name');
                     var value = $(this).attr('value');
 
-                    if (defines[value]) value = defines[value];
+                    if (defines[value]) {
+                        element.eid = value.replace(/^d_/, '');
+                        value = defines[value];
+                    }
 
                     element[attribute] = value;
                 });
@@ -139,7 +138,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
 
         toXml: function (predecessors) {
             var params = {
-                id: this.cid,
+                id: this.eid,
                 x: this.cell.attributes.position.x,
                 y: this.cell.attributes.position.y,
             };
@@ -149,7 +148,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
 
             if (this.attrs.label) params['label'] = this.attrs.label;
             if (predecessors.length == 1) {
-                params['predecessor'] = predecessors[0].cid;
+                params['predecessor'] = predecessors[0].eid;
             }
 
             var $cell = $('<activity>', params);
@@ -204,10 +203,10 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
                     type: val.type
                 }).appendTo($task)
                 if (val.label) {
-                    addItem($cell, $item, val.label, 'label');   
+                    addItem($cell, $item, val, 'label');   
                 }
                 if (val.value) {
-                    addItem($cell, $item, val.value, 'value', true);   
+                    addItem($cell, $item, val, 'value', true);   
                 }
             }); 
 
@@ -235,20 +234,21 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
 
         toXml: function (predecessors) {
             var params = {
-                id: this.cid,
+                id: this.eid,
                 x: this.cell.attributes.position.x,
                 y: this.cell.attributes.position.y
             };
+            if (!this.attrs) this.attrs = {};
             if (this.attrs.min >= 0) params.min = this.attrs.min;
             if (this.attrs.max >= 0) params.max = this.attrs.max;
             if (predecessors.length == 1) {
-                params['predecessor'] = predecessors[0].cid;
+                params['predecessor'] = predecessors[0].eid;
             }
             var $cell = $('<' + this.type + '>', params);
 
             if (predecessors.length > 1) {
                 $.each(predecessors, function (i, val) {
-                    $('<predecessor>' + val.cid + '</predecessor>')
+                    $('<predecessor>' + val.eid + '</predecessor>')
                         .appendTo($cell);
                 });
             }
@@ -275,12 +275,12 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
         linkLimit: { input: 1, output: 0 },
         toXml: function (predecessors) {
             var params = {
-                id: this.cid,
+                id: this.eid,
                 x: this.cell.attributes.position.x,
                 y: this.cell.attributes.position.y
             };
             if (predecessors.length) {
-                params['predecessor'] = predecessors[0].cid;
+                params['predecessor'] = predecessors[0].eid;
             }
             return $('<end>', params);
         }

@@ -15,12 +15,6 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         return $li;
     }
 
-    // http://stackoverflow.com/a/15710692
-    function hashCode(s) {
-        return s.split("")
-            .reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
-    }
-
     function addStorage(view, storage, elements, name, self) {
         var $div = $('<div class="dropdown pull-right">');
 
@@ -43,7 +37,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             if (val.type == 'text') {
                 added = true;
                 $ul.append(
-                    makeLi('#' + self.cell.cid + '.r_' + hashCode(val.value),
+                    makeLi('#' + self.eid + '.r_' + val.eid,
                            val.name, 'this.'));
             }
         });
@@ -131,7 +125,8 @@ define(['jquery', 'util/simple-template', 'Sortable'],
 
             render($content);
             $body.find('#add').on('click', function () {
-                attrs.elements.push({ type: 'empty' });
+                var random = Math.floor(Math.random() * 64 * 1024);
+                attrs.elements.push({ type: 'empty', eid: random });
                 render($content).done(function () {
                     $content.find('.collapse').last().collapse('show');
                 });
@@ -175,7 +170,10 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                         render($content);
                     });
                     $this.find('#element_save').click(function () {
-                        var element = { type: $type.val() };
+                        var element = {
+                            type: $type.val(),
+                            eid: attrs.elements[index].eid
+                        };
                         if (element.type == 'empty') return;
                         $this.find('.element-content').find('input[name]')
                             .each(function () {

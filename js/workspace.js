@@ -32,10 +32,16 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
         $(window).on('resize', function () {
             $board.height($(window).height() - top);
 
-            paper.setDimensions($board.width() - 8, $board.height() - 8);
+            var width = $board.width() - 8;
+            var height = $board.height() - 8;
+            if (width > 0 && height > 0) {
+                paper.setDimensions(width, height);
+            }
             origin = [$board.width() / 2, $board.height() / 2];
             paper.setOrigin(origin[0], origin[1]);
-        }).trigger('resize');
+        });
+
+        setTimeout(function () { $(window).resize(); }, 100);
 
         var scale = 2.0;
         paper.scale(scale);
