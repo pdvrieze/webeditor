@@ -1,5 +1,6 @@
-define(['jquery', 'joint', 'model/model', 'model/node', 'lodash'],
-       function ($, joint, Model, Nodes, _) {
+define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
+        'store/model'],
+       function ($, joint, Model, Nodes, _, store) {
     "use strict";
 
     var $content = $('#content');
@@ -30,7 +31,8 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash'],
             paper.setOrigin(origin[0], origin[1]);
         }).trigger('resize');
 
-        var scale = 1.0;
+        var scale = 2.0;
+        paper.scale(scale);
         $('#content').bind('mousewheel DOMMouseScroll', function(event){
             if (event.originalEvent.wheelDelta > 0 ||
                     event.originalEvent.detail < 0) {
@@ -66,7 +68,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash'],
         });
 
         paper.on('cell:pointerup', function (cellView, event) {
-            if (moved || cellmoved) return;
+            if (cellmoved) return;
             if ($('#dialogue:visible').size()) return;
             $('.workspace-tooltip').hide();
             model.click(cellView, function (x, y) {
@@ -175,5 +177,11 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash'],
             model[action](cellView);
             return false;
         });
+
+        var handle = $content.attr('handle');
+        if (handle) {
+            var $xml = $(store.getModel(handle).xml);
+            model.fromXml($xml);
+        }
     }
 });

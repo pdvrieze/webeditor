@@ -4,12 +4,12 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
     var SIZE = 30;
 
     var NodeClass = joint.dia.Element.extend({
-        markup: '<g class="rotatable"><g class="scalable">' +
+        markup: '<g class="rotatable">' +
                     '<image width="' + SIZE + '" height="' + SIZE + '" ' +
                            'xlink:href="svg/end.svg"/>' +
-                    '<text x="30" y="34" font-family="sans-serif" ' +
-                          'font-size="14" text-anchor="middle"></text>' +
-                '</g></g>',
+                    '<text x="15" y="17" font-family="sans-serif" ' +
+                          'font-size="7" text-anchor="middle"></text>' +
+                '</g>',
 
         defaults: joint.util.deepSupplement({
             type: 'Node'
@@ -25,7 +25,6 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
             this.label = null;
             this.cell = new NodeClass({
                 position: offset,
-                //size: { width: SIZE, height: SIZE },
                 attrs: { image: { 'xlink:href': 'svg/' + this.type + '.svg' } }
             });
         },

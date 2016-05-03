@@ -73,10 +73,9 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         $list.on('click', '.model-edit', function () {
             var id = $(this).attr('handle');
-            console.log('click')
-            links.render('editor-workspace', $('#content')).then(function () {
-                console.log('yay');
-            });
+            var $content = $('#content');
+            $content.attr('handle', id);
+            links.render('editor-workspace', $content);
         });
     };
 
