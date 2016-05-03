@@ -45,6 +45,10 @@ define(['jquery', 'share/auth'], function ($, auth) {
             var $def = $.Deferred();
             saveModel(handle, data, $def);
             return $def;
+        },
+
+        getModel: function (id) {
+            return models[id];
         }
     };
 });

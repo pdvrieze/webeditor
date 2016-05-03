@@ -105,6 +105,7 @@ define(['jquery', 'joint', 'model/dialogue'], function ($, joint, Dialogue) {
         Block: Block,
         Join: Join,
         Split: Split,
-        End: End
+        End: End,
+        SIZE: SIZE
     };
 });

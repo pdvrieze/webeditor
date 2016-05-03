@@ -110,3 +110,7 @@ nav.navbar {
 .container {
     margin-top: 1em;
 }
+
+.model-preview {
+    pointer-events: none;
+}

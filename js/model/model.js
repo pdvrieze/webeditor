@@ -120,6 +120,10 @@ define(['jquery', 'joint'], function ($, joint) {
             }
             if (sLinks.length == source.linkLimit.output) return false;
             return true;
+        },
+
+        fromXml: function ($xml) {
+            console.log($xml);
         }
     };
 

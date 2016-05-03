@@ -1,6 +1,8 @@
-define(['jquery', 'store/model', 'util/simple-template'],
-       function ($, store, template) {
+define(['jquery', 'store/model', 'util/simple-template', 'joint', 'model/model', 'model/node'],
+       function ($, store, template, joint, Model, Nodes) {
     "use strict";
+
+    var HEIGHT = 120;
 
     var $content = $('#content');
     $content.on('loaded', function (event, name) {
@@ -13,6 +15,58 @@ define(['jquery', 'store/model', 'util/simple-template'],
         return false;
     });
 
+    function getBounds($xml) {
+        var bounds = {
+            min: { x: Infinity, y: Infinity },
+            max: { x: -Infinity, y: -Infinity }
+        };
+        $xml.find('pe\\:processModel').children().each(function () {
+            var x = $(this).attr('x') - 0;
+            var y = $(this).attr('y') - 0;
+            if (x < bounds.min.x) bounds.min.x = x;
+            if (x > bounds.max.x) bounds.max.x = x;
+            if (y < bounds.min.y) bounds.min.y = y;
+            if (y > bounds.max.y) bounds.max.y = y;
+        });
+        return bounds;
+    }
+
+    function setupPaper($xml, paper) {
+        var bounds = getBounds($xml);
+
+        var x = bounds.max.x - bounds.min.x;
+        var y = bounds.max.y - bounds.min.y;
+
+        var scale = Math.max(x + Nodes.SIZE, y + Nodes.SIZE);
+        var origin = {x: x / 2, y: y / 2};
+
+        paper.scale(scale / (HEIGHT * 100));
+        paper.setOrigin(origin.x, origin.y);
+    }
+
+    function initPreview($list) {
+        $list.on('show.bs.collapse', '.collapse', function () {
+            var $ptr = $(this).find('.model-preview');
+
+            var id = $(this).attr('id').replace(/^model_/, '');
+
+            var graph = new joint.dia.Graph();
+            var paper = new joint.dia.Paper({
+                el: $ptr,
+                width: '100%',
+                height: HEIGHT,
+                gridSize: 1,
+                model: graph
+            });
+
+            var $xml = $(store.getModel(id).xml);
+            setupPaper($xml, paper);
+
+            var model = new Model(graph, paper);
+            model.fromXml($xml);
+        });
+    }
+
     function init() {
         var $list = $('#list_models');
         var list = store.getList();
@@ -21,6 +75,8 @@ define(['jquery', 'store/model', 'util/simple-template'],
             if (!Object.keys(list)) $('#models_new').removeClass('hidden');
             else $('#models_notnew').removeClass('hidden');
         });
+
+        initPreview($list);
 
         template.render($list, 'editor-model', list);
     }
