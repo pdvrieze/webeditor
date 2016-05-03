@@ -62,6 +62,11 @@ define(['jquery', 'util/simple-template'], function ($, template) {
             $.get('/accounts/login').success(function (res) {
                 onLogin(res.replace(/^login:/, ''));
             });
+        },
+        tryLogin: function () {
+            var $def = $.Deferred();
+            $def.reject();
+            return $def;
         }
     };
 });

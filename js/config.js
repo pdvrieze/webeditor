@@ -1,3 +1,8 @@
+/*
+ * Configuration file
+ *
+ * Sets up library paths for jointjs
+ */
 define(function () {
     "use strict";
 

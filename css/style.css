@@ -1,13 +1,19 @@
+/*
+ * Loading animation
+ */
+
 .loader,
 .loader:before,
 .loader:after {
     border-radius: 50%;
 }
+
 .loader:before,
 .loader:after {
     position: absolute;
     content: '';
 }
+
 .loader:before {
     width: 5.2em;
     height: 10.2em;
@@ -20,6 +26,7 @@
     -webkit-animation: load2 2s infinite ease 1.5s;
     animation: load2 2s infinite ease 1.5s;
 }
+
 .loader {
     color: #337ab7;
     font-size: 11px;
@@ -33,6 +40,7 @@
     -ms-transform: translateZ(0);
     transform: translateZ(0);
 }
+
 .loader:after {
     width: 5.2em;
     height: 10.2em;
@@ -45,6 +53,7 @@
     -webkit-animation: load2 2s infinite ease;
     animation: load2 2s infinite ease;
 }
+
 @-webkit-keyframes load2 {
     0% {
         -webkit-transform: rotate(0deg);
@@ -55,6 +64,7 @@
         transform: rotate(360deg);
     }
 }
+
 @keyframes load2 {
     0% {
         -webkit-transform: rotate(0deg);
@@ -66,20 +76,36 @@
     }
 }
 
+/*
+ * Hide and show content depending on authentication status
+ */
+
 .user-lo .when-loggedin,
 .user-li .when-loggedout {
     display: none;
 }
+
+/*
+ * Clickable spans should look clickable
+ */
 
 .clickable:hover {
     color: #cc1020;
     cursor: pointer;
 }
 
+/*
+ * We don't want the rename input to be 100%
+ */
+
 #list_models input.form-control {
     width: 50%;
     display: inline;
 }
+
+/*
+ * Creation tooltip images
+ */
 
 .workspace-tooltip {
     position: absolute;
@@ -103,6 +129,10 @@
     height: 60px;
 }
 
+/*
+ * Fixing top spacing for the editor (we want spacing only if not workspace)
+ */
+
 nav.navbar {
     margin-bottom: 0;
 }
@@ -111,10 +141,18 @@ nav.navbar {
     margin-top: 1em;
 }
 
+/*
+ * Turn off jointjs interactions and set default height
+ */
+
 .model-preview {
     pointer-events: none;
     height: 120px;
 }
+
+/*
+ * Make arrows in the editor static, only allow deletion
+ */
 
 .link .marker-arrowheads,
 .link .marker-arrowheads,

@@ -1,45 +1,48 @@
-require.config({
-    urlArgs: "bust=" + (new Date()).getTime()
-});
-
-requirejs(['config'], function () {
+/*
+ * Main file for editor application
+ *
+ * Starts up the editor and initialises all its modules to be ready for user
+ * interations
+ */
+(function () {
     "use strict";
 
-    function init($) {
-        var $page = $('#page');
-        $page.on('auth', function () {
-            var page = 'index';
-            if (!$page.hasClass('user-lo')) {
-                page = 'editor-models';
-                if (location.hash == '#about') page = 'about';
-                else if (/^#model_/.test(location.hash)) {
-                    page = 'editor-workspace';
-                    var handle = location.hash.replace('#model_', '');
-                    $('#content').attr('handle', handle);
-                }
-            }
-            $('#content').attr('page', page).trigger('page-change');
-        });
+    /*
+     * Make sure requirejs doesn't cache any files
+     *
+     * This cannot be put into config, otherwise the config itself might get
+     * cached and this line will make no effect
+     */
+    require.config({ urlArgs: "bust=" + (new Date()).getTime() });
 
-        $page.on('show.bs.collapse', '#list_models .collapse', function () {
-            var href = $(this).attr('id');
-            $('#list_models a[href="#' + href + '"]').addClass('active');
-        });
-        $page.on('hide.bs.collapse', '#list_models .collapse', function () {
-            var href = $(this).attr('id');
-            $('#list_models a[href="#' + href + '"]').removeClass('active');
-        });
-    }
+    // require config and continue initialisation
+    requirejs(['config'], function () {
+        // load template loader first, so we can show nice loading animation
+        requirejs(['util/simple-template'], function (template) {
+            // render the main page (will start loading animation)
+            template.render('#page', 'editor').then(function () {
+                // load bootstrap which will initialise on just rendered page
+                // and delegate the rest of the initialisation to main()
+                requirejs(['bootstrap'], main);
+            });
+        })
+    });
 
-    requirejs(['util/simple-template'], function (template) {
-        template.render('#page', 'editor').then(function () {
-            requirejs(['bootstrap'], function () {
-                require(['jquery', 'share/auth', 'share/links', 'editor-models',
-                        'workspace'], function ($, auth) {
-                            init($);
-                            auth.init();
-                        });
+    /*
+     * Loads all the required modules and initialises the page
+     */
+    function main() {
+        // load auth and navigation controllers
+        var controllers = [ 'share/auth', 'share/nav' ];
+        require(controllers, function (auth, nav) {
+            // try to login
+            auth.tryLogin().then(function () {
+                // automatically route to the landing page or the hashed page
+                nav.autoHash();
+            }).fail(function () {
+                // go to index page which asks to login
+                nav.index();
             });
         });
-    })
-});
+    }
+})();
