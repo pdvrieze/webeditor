@@ -1,18 +1,18 @@
 <ul class="nav navbar-nav navbar-right">
-    <li class="when-needed when-loggedin" id="autoalign">
+    <li id="autoalign" class="hidden hidden-auth">
         <a href="#">
             <span class="glyphicon glyphicon-sort-by-attributes"></span>
             Auto-Align
         </a>
     </li>
-    <li class="when-loggedout">
+    <li class="hidden hidden-guest">
         <button class="btn btn-default navbar-btn" data-toggle="modal"
                 data-target="#dialogue_auth">Login</button>
     </li>
-    <li class="when-loggedin">
+    <li class="hidden hidden-auth">
         <a href="" class="dropdown-toggle" data-toggle="dropdown"
            role="button" aria-haspopup="true" aria-expanded="false">
-            <span int="username">Username</span> <span class="caret"></span>
+            <span id="username">Username</span> <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
             <li><a href="#about" class="a_content">About</a></li>

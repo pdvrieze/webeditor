@@ -35,13 +35,16 @@
         // load auth and navigation controllers
         var controllers = [ 'share/auth', 'share/nav' ];
         require(controllers, function (auth, nav) {
+            nav.init(); // initialise navigation bar
+
             // try to login
             auth.tryLogin().then(function () {
+                nav.login();
                 // automatically route to the landing page or the hashed page
                 nav.autoHash();
             }).fail(function () {
                 // go to index page which asks to login
-                nav.index();
+                nav.logout();
             });
         });
     }

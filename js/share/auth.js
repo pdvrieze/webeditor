@@ -1,72 +1,45 @@
-define(['jquery', 'util/simple-template'], function ($, template) {
+define(['jquery'], function ($) {
     "use strict";
     
-    var username = null;
-    var $page = $('#page').addClass('user-lo');
+    var username = null; // username (if null user is not logged in)
 
-    function onLogin(user) {
-        username = user;
-        $page.removeClass('user-lo').addClass('user-li').trigger('auth');
-        template.setGlobal('username', user);
+    var urlLogin = '/accounts/login'; // login url
+
+    /*
+     * Log user in
+     */
+    function login(user, pass) {
+        return $.get(urlLogin, {
+            username: user, password: pass
+        }).then(function () { username = user; });
     }
 
-    function error() {
-        var $login = $('#alert_login');
-        var x = $login.clone().attr('id', null)
-            .removeClass('hidden')
-            .insertAfter($login);
-    }
-
-    function login() {
-        if ($page.hasClass('user-li')) return;
-
-        var user = $('#user').val();
-        var pass = $('#pass').val();
-
-        var $this = $(this);
-        $this.button('loading');
-
-        $.get('/accounts/login', {
-            username: user,
-            password: pass
-        }).success(function () {
-            $('#dialogue_auth').modal('hide');
-            onLogin(user);
-        }).fail(function () {
-            error();
-        }).always(function () {
-            $this.button('reset');
-        })
-
-        return false;
-    }
-
+    /*
+     * Log user out
+     */
     function logout() {
-        if ($page.hasClass('user-lo')) return;
-        $.get('/accounts/logout').success(function () {
+        return $.get('/accounts/logout').then(function () {
             username = null;
-            $page.removeClass('user-li').addClass('user-lo').trigger('auth');
         });
-        return false;
     }
 
-    $('#btn_login').click(login);
-    $('#btn_logout').click(logout);
+    /*
+     * Accesses the accounts login page, and tries to automatically
+     * get authenticated
+     */
+    function tryLogin() {
+        return $.get(urlLogin).then(function (res) {
+            // on success page return 'login:[username]'
+            username = res.replace(/^login:/, '');
+        });
+    }
 
+    // export
     return {
-        isLoggedIn: function () {
-            return username != null;
-        },
-
-        init: function () {
-            $.get('/accounts/login').success(function (res) {
-                onLogin(res.replace(/^login:/, ''));
-            });
-        },
-        tryLogin: function () {
-            var $def = $.Deferred();
-            $def.reject();
-            return $def;
-        }
+        login: login,
+        logout: logout,
+        tryLogin: tryLogin,
+        getUser: function () { return username; },
+        isLoggedIn: function () { return username != null; }
     };
 });

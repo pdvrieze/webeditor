@@ -77,15 +77,6 @@
 }
 
 /*
- * Hide and show content depending on authentication status
- */
-
-.user-lo .when-loggedin,
-.user-li .when-loggedout {
-    display: none;
-}
-
-/*
  * Clickable spans should look clickable
  */
 
