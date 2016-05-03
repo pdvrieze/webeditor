@@ -43,6 +43,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
             this.graph.addCell(node.cell);
             this.nodes.push(node);
             this.count[node.type]++;
+            if (node.init) node.init();
         },
 
         find: function (cellView) {

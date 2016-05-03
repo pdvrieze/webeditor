@@ -40,13 +40,16 @@ define(['jquery', 'util/simple-template'], function ($, template) {
                 if ($body.find('#label').val()) {
                     attrs.label = $body.find('#label').val();
                 }
+                var text = $body.find('.active').val();
                 if ($body.find('[value=other].active').size()) {
                     attrs.min = $in.val(); 
                     attrs.max = $out.val(); 
+                    text = '';
                 }
                 self.attrs = attrs;
                 $('#content').trigger('save-model');
                 $ptr.modal('hide');
+                self.setText(text);
             });
 
             $ptr.modal('show');

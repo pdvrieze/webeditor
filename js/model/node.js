@@ -33,6 +33,11 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
             });
         },
 
+        setText: function (text) {
+            var id = this.cell.findView(this.paper).id;
+            $('#' + id).find('text').get(0).textContent = text;
+        },
+
         tooltip: function (callback) {
             callback(this.cell.position().x, this.cell.position().y);
         },
@@ -86,11 +91,6 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
             new Dialogue.Block(this, storage, function (label) {
                 self.setText(label);
             });
-        },
-
-        setText: function (text) {
-            var id = this.cell.findView(this.paper).id;
-            $('#' + id).find('text').get(0).textContent = text;
         },
 
         init: function () {
@@ -223,6 +223,19 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
 
         edit: function () {
             new Dialogue.Gate(this);
+        },
+
+        init: function () {
+            if (!this.attrs) this.attrs = { min: 0, max: -1 };
+            if (this.attrs.min == 0 && this.attrs.max == -1) {
+                this.setText('and');
+            }
+            if (this.attrs.min == 1 && this.attrs.max == -1) {
+                this.setText('or');
+            }
+            if (this.attrs.min == 1 && this.attrs.max == 1) {
+                this.setText('xor');
+            }
         },
 
         fromXml: function ($xml) {

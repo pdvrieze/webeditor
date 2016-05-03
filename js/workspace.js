@@ -214,7 +214,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
 
         function save() {
             store.updateModel(model.handle, model.toXml()).done(function () {
-                console.log('saved');
+                //console.log('saved');
             }).fail(function () {
                 alert('Connection Error');
             });
