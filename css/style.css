@@ -114,3 +114,9 @@ nav.navbar {
 .model-preview {
     pointer-events: none;
 }
+
+.link .marker-arrowheads,
+.link .marker-arrowheads,
+.link .marker-vertices {
+    display: none;
+}

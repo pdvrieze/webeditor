@@ -19,7 +19,13 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             width: $board.width(),
             height: $board.height(),
             gridSize: 1,
-            model: graph
+            model: graph,
+            interactive: function(cellView) {
+                if (cellView.model instanceof joint.dia.Link) {
+                    return { vertexAdd: false };
+                }
+                return true;
+            }
         });
 
         var origin;

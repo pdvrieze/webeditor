@@ -41,6 +41,12 @@ define(['jquery', 'share/auth'], function ($, auth) {
             return $def;
         },
 
+        renameModel: function (handle, name) {
+            var $def = $.Deferred();
+            renameModel(handle, name, $def);
+            return $def;
+        },
+
         saveModel: function (handle, data) {
             var $def = $.Deferred();
             saveModel(handle, data, $def);

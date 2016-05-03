@@ -53,8 +53,11 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
             var cell = new joint.shapes.fsa.Arrow({
                 source: { id: source.cell.id },
                 target: { id: target.cell.id },
-                router: { name: 'metro' },
-                connector: { name: 'rounded' }
+                router: { name: 'manhattan', args: {
+                    startDirections: [ 'right' ],
+                    endDirections: [ 'left' ],
+                } },
+                connector: { name: 'rounded', args: { radius: 4 } }
             });
 
             this.graph.addCell(cell);
