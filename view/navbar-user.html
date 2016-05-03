@@ -1,13 +1,13 @@
 <ul class="nav navbar-nav navbar-right">
-    <li class="when-loggedout">
-        <button class="btn btn-default navbar-btn" data-toggle="modal"
-                data-target="#dialogue_auth">Login</button>
-    </li>
-    <li class="when-needed" id="autoalign">
+    <li class="when-needed when-loggedin" id="autoalign">
         <a href="#">
             <span class="glyphicon glyphicon-sort-by-attributes"></span>
             Auto-Align
         </a>
+    </li>
+    <li class="when-loggedout">
+        <button class="btn btn-default navbar-btn" data-toggle="modal"
+                data-target="#dialogue_auth">Login</button>
     </li>
     <li class="when-loggedin">
         <a href="" class="dropdown-toggle" data-toggle="dropdown"
@@ -15,7 +15,7 @@
             <span int="username">Username</span> <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
-            <li><a href="about" class="a_content">About</a></li>
+            <li><a href="#about" class="a_content">About</a></li>
             <li><a href="viewer" target="_blank">Open Viewer</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="" id="btn_logout">Logout</a></li>

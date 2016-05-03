@@ -139,7 +139,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
         },
 
         autoalign: function () {
-            console.log('sure');
+            console.error("Not Implemented")
         },
 
         fromXml: function ($xml) {

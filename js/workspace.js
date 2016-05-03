@@ -199,10 +199,13 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
 
         var handle = $content.attr('handle');
         if (handle) {
-            var $xml = $(store.getModel(handle).xml);
-            model.handle = handle;
-            model.fromXml($xml);
             $content.removeAttr('handle');
+
+            store.getList().done(function () {
+                var $xml = $(store.getModel(handle).xml);
+                model.handle = handle;
+                model.fromXml($xml);
+            });
         }
         else {
             var name = prompt('Model Name') || 'Unnamed Model';

@@ -8,7 +8,16 @@ requirejs(['config'], function () {
     function init($) {
         var $page = $('#page');
         $page.on('auth', function () {
-            var page = $page.hasClass('user-lo') ? 'index' : 'editor-models';
+            var page = 'index';
+            if (!$page.hasClass('user-lo')) {
+                page = 'editor-models';
+                if (location.hash == '#about') page = 'about';
+                else if (/^#model_/.test(location.hash)) {
+                    page = 'editor-workspace';
+                    var handle = location.hash.replace('#model_', '');
+                    $('#content').attr('handle', handle);
+                }
+            }
             $('#content').attr('page', page).trigger('page-change');
         });
 
