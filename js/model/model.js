@@ -155,7 +155,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             if (node.attrs && node.attrs.elements) {
                 for (var i = 0; i < node.attrs.elements.length; ++i) {
                     var element = node.attrs.elements[i];
-                    var activity = node.attrs.label || '#' + node.cell.cid 
+                    var activity = node.attrs.label || '#' + node.eid 
                     if (element.type != 'label') {
                         vars.push({
                             title: activity + '.' + element.name,

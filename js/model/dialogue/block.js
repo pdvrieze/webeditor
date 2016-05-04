@@ -120,7 +120,8 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             });
 
             // listener for resuable variables
-            this.$body.on('click', 'a.variable-reuse', function () {
+            this.$body.on('click', 'a.variable-reuse', function (e) {
+                e.preventDefault();
                 var $this = $(this);
                 var $text = $this.parents('.form-group').find('input');
                 var text = $text.val().trim() + ' ' + $this.attr('value');
@@ -250,7 +251,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         var $li = $('<li>');
         var $a = $('<a>', {
             'class': 'variable-reuse',
-            'value': value,
+            'value': '%' + value,
             'href': '#'
         }).append(name).appendTo($li);
         return $li;

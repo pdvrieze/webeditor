@@ -92,22 +92,56 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     });
 
     /*
+     * Format define to reference other activity or labels in current one
+     */
+    function formatDefine($define, text) {
+        // uglyass url
+        var url = 'http://adaptivity.nl/ProcessEngine/activity';
+
+        // replace local labels
+        var replace = '<jbi:value xmlns:jbi="' + url + '" value="d_$1"/>';
+        text = text.replace(/%@(\w+)/g, replace);
+
+        // find global values
+        var match = text.match(/%#(\w+)\.(\w+)/);
+        if (match) {
+            var activity = match[1];
+            var ref = match[2];
+
+            // make define reference another activity
+            $define.attr('xpath', '.');
+            $define.attr('refnode', activity);
+            $define.attr('refname', 'r_' + ref);
+
+            // replace all occurances
+            var replace = '<jbi:value xmlns:jbi="' + url + '"/>';
+            text = text.replace(new RegExp(match[0], 'g'), replace);
+        }
+
+        // apply
+        $define.append(text);
+    }
+
+    /*
+     * Add result tag
+     */
+    function addResult($cell, value) {
+        // add result
+        var rname = 'r_' + value.eid;
+        $('<result>', {
+            xpath: '/values/' + value.eid + '/text()',
+            name: rname
+        }).appendTo($cell);
+    }
+
+    /*
      * Added define and result items to the xml
      */
     function addItem($cell, $item, value, name, result) {
-        if (result) {
-            // add result
-            var rname = 'r_' + value.eid;
-            $('<result>', {
-                xpath: '/values/' + value.eid + '/text()',
-                name: rname
-            }).appendTo($cell);
-        }
-
         // add define
         var dname = 'd_' + value.eid;
-        $('<define>', { name: dname }).append(value[name].trim())
-            .appendTo($cell);
+        var $define = $('<define>', { name: dname }).appendTo($cell);
+        formatDefine($define, value[name].trim());
 
         // append everything else as attributes
         $('<attribute>', {
@@ -115,6 +149,25 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             value: dname,
             name: name
         }).appendTo($item);
+    }
+
+    /*
+     * Parse define from xml into text
+     */
+    function parseDefine(define) {
+        var $define = $(define);
+        var text = $(define).html();
+        text = text.replace(/\<jbi:value.*?value="d_(.+?)".*?\/\>/gi, '%@$1');
+
+        var refnode = $define.attr('refnode');
+        var refname = $define.attr('refname');
+        if (refnode && refname) {
+            refname = refname.substr(2);
+            var replace = '%#' + refnode + '.' + refname;
+            text = text.replace(/\<jbi:value.*?\>/g, replace);
+        }
+
+        return text;
     }
 
     /*
@@ -144,7 +197,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             // defines will be stored here
             var defines = {};
             $model.find(util.xmlSel('pe:define')).each(function () {
-                defines[$(this).attr('name')] = this.textContent.trim();
+                defines[$(this).attr('name')] = parseDefine(this);
             });
 
             // elements will be stored here
@@ -250,9 +303,14 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
                     type: val.type
                 }).appendTo($task)
 
+                for (var key in val) {
+                    if (!val.hasOwnProperty(key)) continue;
+                    if (['name', 'type', 'eid'].indexOf(key) !== -1) continue;
+                    addItem($cell, $item, val, key);   
+                }
+
                 // add defines and results
-                if (val.label) addItem($cell, $item, val, 'label');   
-                if (val.value) addItem($cell, $item, val, 'value', true);   
+                if (val.type != 'label') addResult($cell, val);
             }); 
 
             return $cell;
