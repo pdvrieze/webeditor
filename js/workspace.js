@@ -42,7 +42,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             // load model from xml
             store.getList().then(function () {
                 joint.model.fromXml($(store.getModel(joint.model.handle).xml));
-                joint.model.nosave = false;
+                initInterface(joint);
             });
         }
         else {
@@ -53,11 +53,29 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             // create model on server
             store.createModel(joint.model.toXml()).done(function (handle) {
                 joint.model.handle = handle;
-                joint.model.nosave = false;
+                initInterface(joint);
             }).fail(function () {
                 alert('Connection Error');
             });
         }
+    }
+
+    /*
+     * Initialise interface, especially navigation buttons
+     */
+    function initInterface(joint) {
+        joint.model.nosave = false;
+
+        // export xml
+        var handle = joint.model.handle;
+        $('#export_xml').attr('href', '/ProcessEngine/processModels/' + handle)
+            .prop('download', joint.model.name + '.xml');
+
+        // import xml
+        $('#import_xml').off().click(function () {
+            joint.model.editXml();
+            return false;
+        });
     }
 
     /*

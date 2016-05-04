@@ -113,5 +113,6 @@ define(['jquery', 'util/simple-template'], function ($, template) {
         }
     }
 
+    // export
     return Gate;
 });

@@ -106,7 +106,8 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
 
         // add define
         var dname = 'd_' + value.eid;
-        $('<define>', { name: dname }).append(value[name]).appendTo($cell);
+        $('<define>', { name: dname }).append(value[name].trim())
+            .appendTo($cell);
 
         // append everything else as attributes
         $('<attribute>', {
@@ -143,7 +144,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             // defines will be stored here
             var defines = {};
             $model.find(util.xmlSel('pe:define')).each(function () {
-                defines[$(this).attr('name')] = this.textContent;
+                defines[$(this).attr('name')] = this.textContent.trim();
             });
 
             // elements will be stored here
@@ -155,8 +156,8 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
                 element.type = $(this).attr('type');
 
                 $(this).find(util.xmlSel('jbi:attribute')).each(function () {
-                    var attribute = $(this).attr('name');
-                    var value = $(this).attr('value');
+                    var attribute = $(this).attr('name').trim();
+                    var value = $(this).attr('value').trim();
 
                     // substitute with defines
                     if (defines[value]) {
@@ -277,15 +278,15 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
 
         // when initialised set the label
         init: function () {
-            if (!this.attrs) this.attrs = { min: 0, max: -1 };
+            if (!this.attrs) this.attrs = { min: 2, max: 2 };
 
             // and ?
-            if (this.attrs.min == 0 && this.attrs.max == -1) {
+            if (this.attrs.min == 2 && this.attrs.max == 2) {
                 this.setText('and');
             }
 
             // or ?
-            else if (this.attrs.min == 1 && this.attrs.max == -1) {
+            else if (this.attrs.min == 1 && this.attrs.max == 2) {
                 this.setText('or');
             }
 

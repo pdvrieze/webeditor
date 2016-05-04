@@ -132,7 +132,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             var handle = $(this).attr('handle'); //get handle
             var name = prompt('New Name'); // get new name from the user
             if (name && name.trim()) { // make sure it is not empty
-                store.cloneModel(handle, name).done(function () {
+                store.cloneModel(handle, name).then(function () {
                     renderList($list);
                 });
             }

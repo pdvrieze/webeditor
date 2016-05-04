@@ -5,8 +5,8 @@
  * Basically a collection of convinient utilities to simplify jointjs
  * interactions
  */
-define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util'],
-       function ($, joint, _, Nodes, store, util) {
+define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
+        './dialogue'], function ($, joint, _, Nodes, store, util, Dialogue) {
     "use strict";
 
     /*
@@ -306,8 +306,9 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util'],
                 'pe:message', 'jbi:attribute', 'umh:task', 'umh:taskParam',
                 'umh:repliesParam', 'env:Body', 'env:Envelope', 'umh:postTask',
                 'jbi:element', 'umh:item'
-            ]).replace('servicens', 'serviceNS')
-                .replace('servicename', 'serviceName');
+            ]).replace(/servicens/g, 'serviceNS')
+                .replace(/servicename/g, 'serviceName')
+                .replace(/taskparam/g, 'taskParam');
         },
 
         /*
@@ -315,14 +316,32 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util'],
          */
         save: function () {
             if (this.nosave) return; // do not save unless needed
-            return;
+            //return;
 
             var xml = this.toXml();
-            return store.updateModel(this.handle, xml).then(function () {
+            var handle = this.handle;
+            return store.updateModel(handle, xml).then(function () {
                 console.log('saved');
             }).fail(function () {
                 alert('Connection Error');
             });
+        },
+
+        /*
+         * Opens dialogue to edit xml
+         */
+        editXml: function () {
+            new Dialogue.Xml(this);
+        },
+
+        /*
+         * Reload model
+         */
+        reload: function () {
+            this.nosave = true;
+            $.each(this.nodes, function (i, node) { node.cell.remove(); });
+            this.fromXml($(store.getModel(this.handle).xml));
+            this.nosave = false;
         }
     };
 
