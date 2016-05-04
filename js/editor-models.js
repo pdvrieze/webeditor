@@ -71,9 +71,8 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         // when refresh button is clicked we reset the store and rerender
         $html.find('#refresh').click(function () {
-            store.update().then(function () {
-                renderList($list);
-            });
+            store.update();
+            renderList($html, $list);
         });
     }
 
