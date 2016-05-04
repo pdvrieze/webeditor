@@ -105,8 +105,14 @@ define(['jquery'], function ($) {
         $where.empty().append(render(what, view));
     }
 
+    /*
+     * Return true if template with given name exists
+     */
+    function has(name) { return templates.hasOwnProperty(name); }
+
     // export
     return {
+        has: has,
         init: init,
         load: load,
         render: render,

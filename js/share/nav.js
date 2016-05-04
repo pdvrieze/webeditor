@@ -23,7 +23,8 @@ define(['jquery', './auth', 'util/simple-template'],
         initLogoutBtn();
 
         // links with .a_content will automatically change page
-        $('nav').on('click', 'a.a_content', function () {
+        $('nav').on('click', 'a.a_content', function (e) {
+            e.preventDefault(); // no url change
             changePage($(this).attr('href').replace(/^#/, ''));
         });
     }
@@ -144,16 +145,24 @@ define(['jquery', './auth', 'util/simple-template'],
      * Automatically chooses the landing page depending on the hash
      */
     function autoHash() {
+        var args = null;
         var page = 'editor-models'; // default landing page
 
-        // route to about page if needed
-        if (location.hash == '#about') page = 'about';
+        if (location.hash) {
+            // remove hash and separate arguments, but make sure no
+            // consequtive slashes are used
+            var url = location.hash.substr(1).replace(/\/+/, '/').split('/');
+            var name = url[0]; // name is the first element
 
-        // if model is needed go there and select the correct model
-        var match = location.hash.match(/^#model_(\d+)/);
-        if (match) return changePage('workspace', parseInt(match[1]));
+            if (template.has(name)) {
+                page = name; // definitely not 404
+                if (url.length == 2) args = url[1] // only one argument
+                else args = url.slice(1); // get all arguments
+            }
+        }
 
-        return changePage(page);
+        // change to this page
+        return changePage(page, args);
     }
 
     // export
