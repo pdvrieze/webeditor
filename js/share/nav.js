@@ -138,6 +138,7 @@ define(['jquery', './auth', 'util/simple-template'],
     return {
         init: init,
         login: login,
-        logout: logout
+        logout: logout,
+        changePage: changePage
     }
 });
