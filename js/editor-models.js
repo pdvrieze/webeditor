@@ -9,6 +9,55 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
        function ($, store, template, joint, Model, Nodes, links) {
     "use strict";
 
+    /*
+     * Initialisation of the editor models page
+     */
+    function init($html) {
+        var $list = $html.find('#list_models'); // list that will contain models
+
+        var $def = $.Deferred();
+
+        // when models are loaded, show one big new button if needed or default
+        // to normal sized button
+        var list = store.getList().then(function (list) {
+            if (!Object.keys(list)) $('#models_new').removeClass('hidden');
+            else $('#models_notnew').removeClass('hidden');
+        });
+
+        //initPreview($list);
+        
+        $def.resolve($html);
+
+        return $def;
+        template.render($list, 'editor-model', list).then(function () {
+            $list.find('a.list-group-item').click(function () {
+                var handle = $(this).attr('handle');
+                var $content = $('#content');
+                $content.attr('handle', handle);
+                links.render('editor-workspace', $content);
+            });
+
+            $list.find('.clickable.edit').click(function (e) {
+                e.preventDefault();
+                var handle = $(this).parent().attr('handle');
+                $list.find('#model_' + handle).collapse('toggle');
+                return false;
+            });
+
+            $list.find('.clickable.rename').click(function (e) {
+                e.preventDefault();
+                toggle($(this).parent());
+                return false;
+            });
+        });
+
+        $('#refresh').off().click(function () {
+            store.reset();
+            init();
+        });
+    }
+
+
     var $content = $('#content');
     $content.on('loaded', function (event, name) {
         if (name == 'editor-models') init();
@@ -98,48 +147,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         });
     };
 
-    /*
-     * Initialisation of the editor models page
-     */
-    function init() {
-        var $list = $('#list_models');
-        var list = store.getList();
-
-        list.done(function (list) {
-            if (!Object.keys(list)) $('#models_new').removeClass('hidden');
-            else $('#models_notnew').removeClass('hidden');
-        });
-
-        initPreview($list);
-
-        template.render($list, 'editor-model', list).then(function () {
-            $list.find('a.list-group-item').click(function () {
-                var handle = $(this).attr('handle');
-                var $content = $('#content');
-                $content.attr('handle', handle);
-                links.render('editor-workspace', $content);
-            });
-
-            $list.find('.clickable.edit').click(function (e) {
-                e.preventDefault();
-                var handle = $(this).parent().attr('handle');
-                $list.find('#model_' + handle).collapse('toggle');
-                return false;
-            });
-
-            $list.find('.clickable.rename').click(function (e) {
-                e.preventDefault();
-                toggle($(this).parent());
-                return false;
-            });
-        });
-
-        $('#refresh').off().click(function () {
-            store.reset();
-            init();
-        });
-    }
-
+    
     function toggle($item) {
         if ($item.data('edit-mode')) {
             $item.removeData('edit-mode');
@@ -189,6 +197,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         });
     }
 
+    // export
     return {
         init: init
     };

@@ -91,32 +91,31 @@ define(['jquery', './auth', 'util/simple-template'],
      * Changes current page, can pass argument to the page controller
      */
     function changePage(page, args) {
-        // content section that will be changing
-        var $content = $('#content');
-
-        var $def = $.Deferred(); // we don't know if we need to load controller
+        var $load = template.load('#content');
 
         // render new page in content section
-        template.render($content, page).then(function () {
-            // reselect the buttons in the navigation if needed
-            $('li.active').removeClass('active');
-            $('li a[href="#' + page + '"]').parent().addClass('active');
+        var $html = template.render(page);
 
-            // remove elements that have specific pages to be shown on
-            $('[show-page][show-page!="' + page + '"]').hide();
-            $('[show-page="' + page + '"]').show();
+        // reselect the buttons in the navigation if needed
+        $('li.active').removeClass('active');
+        $('li a[href="#' + page + '"]').parent().addClass('active');
 
-            // load controller if page has one in the hardcoded list
-            if (controllers.indexOf(page) !== -1) {
-                require([page], function (controller) {
-                    // run its initialisation method
-                    controller.init(args);
-                })
-            }
-            else $def.resolve();
-        }).fail(function (e) { $def.reject(e); });
+        // remove elements that have specific pages to be shown on
+        $('[show-page][show-page!="' + page + '"]').hide();
+        $('[show-page="' + page + '"]').show();
 
-        return $def;
+        // load controller if page has one in the hardcoded list
+        if (controllers.indexOf(page) !== -1) {
+            require([page], function (controller) {
+                // run its initialisation method
+                controller.init($html, args).then(function ($html) {
+                    $load.resolve($html);
+                });
+            })
+        }
+        else $load.resolve($html);
+
+        return $load;
     }
 
     /*

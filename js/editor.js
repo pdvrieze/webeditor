@@ -19,21 +19,26 @@
     requirejs(['config'], function () {
         // load template loader first, so we can show nice loading animation
         requirejs(['util/simple-template'], function (template) {
-            // render the main page (will start loading animation)
-            template.render('#page', 'editor').then(function () {
-                // load bootstrap which will initialise on just rendered page
-                // and delegate the rest of the initialisation to main()
-                requirejs(['bootstrap'], main);
-            });
+            // start loading animation
+            var $load = template.load('#page');
+
+            // load bootstrap which will initialise on just rendered page
+            // and delegate the rest of the initialisation to main()
+            requirejs(['bootstrap'], function () { main(template, $load); });
         })
     });
 
     /*
      * Loads all the required modules and initialises the page
      */
-    function main() {
+    function main(template, $load) {
         // load auth and navigation controllers
         var controllers = [ 'share/auth', 'share/nav' ];
+
+        // render page html
+        var $html = template.render('editor');
+        $load.resolve($html);
+
         require(controllers, function (auth, nav) {
             nav.init(); // initialise navigation bar
 

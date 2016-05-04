@@ -1,89 +1,99 @@
+/*
+ * Simple and small template engine
+ *
+ * Requires view/all url to export JSON templates
+ * Only limited features:
+ *  - Outer layout
+ *  - Inserts
+ *  - View variable substitution
+ *  - Loading with promise support
+ */
 define(['jquery'], function ($) {
     "use strict";
 
-    var $page = $('#page');
-
+    // templates are stored in this variable
+    // nohing will render before they are loaded
     var templates = {};
-    var $templates = $.getJSON('view/all').done(function (json) {
+    var $templates = $.getJSON('view/all').then(function (json) {
         templates = json;
     });
 
-    function render(name, view, prefix) {
-        if (!templates[name]) {
+    /*
+     * Renders template substituting templated parts like inserts and view,
+     * and provides outer layout if needed
+     */
+    function render(name, view) {
+        if (!templates[name]) { // if template is not there, fail
             throw new Error('Layout "' + name + '" not found');
         }
 
-        var regex = /{{(\s*\w+?\s*)}}/g;
-        var html = templates[name].replace(regex, function (match, key) {
-            if (view && view.hasOwnProperty(key)) return view[key];
-            return '';
-        })
-        var $layout = $(html);
-        if ($layout.is('layout')) {
-            var layout = $layout.attr('name');
-            var layoutPrefix = $layout.attr('prefix');
-            var $doc = render(layout, view, layoutPrefix);
-            $doc.find('insert[section]').each(function () {
-                var $this = $(this);
-                var selector = 'section[name=' + $this.attr('section') + ']';
-                $this.replaceWith($layout.find(selector).children());
-            })
-            $layout = $doc;
+        // get template
+        var $html = $(getHtml(name, view));
+
+        // apply outer layout
+        if ($html.is('layout')) {
+            var layout = $html.attr('name');
+            $html = applyLayout(layout, view, $html);
         }
 
-        $layout = $('<div>').append($layout);
+        // wrap in div to access full html
+        $html = $('<div>').append($html);
 
-        $layout.find('insert[name]').each(function () {
-            var $this = $(this);
-            var insert = $this.attr('name');
-            if (prefix && !$this.attr('noprefix')) {
-                insert = prefix + '-' + insert;
-            }
-            var $render = render(insert, view);
-            $this.replaceWith($render);
+        // substitute inner inserts
+        $html.find('insert[name]').each(function () {
+            var insert = $(this).attr('name');
+            $(this).replaceWith(render(insert, view));
         });
 
-        return $layout.children();
+        return $html.children();
     }
 
-    function values(object) {
-        var values = [];
-        for (var key in object) {
-            if (object.hasOwnProperty(key)) values.push(object[key]);
+    /*
+     * Extract HTML text from template, and perform regex to substitute view
+     * variables
+     */
+    function getHtml(name, view) {
+        var html = templates[name];
+        if (view) {
+            // view variable substitution
+            var html = html.replace(/{{(\s*\w+?\s*)}}/g, function (match, key) {
+                return view.hasOwnProperty(key) ? view[key] : '';
+            })
         }
-        return values;
+        return html
     }
 
+    /*
+     * Apply outer layout with sections
+     */
+    function applyLayout(name, view, $sections) {
+        var $html = render(name, view);
+        $html.find('insert[section]').each(function () {
+            var selector = 'section[name=' + $(this).attr('section') + ']';
+            $(this).replaceWith($sections.find(selector).children());
+        })
+        return $html;
+    }
+
+    /*
+     * Promise based loader
+     */
+    function load(target) {
+        var $target = $(target); // find target node (or wrap with jquery)
+        $target.empty().addClass('loader'); // start loading animation
+
+        var $def = $.Deferred();
+
+        $def.then(function ($html) {
+            $target.removeClass('loader').append($html);
+        });
+
+        return $def;
+    }
+
+    // export
     return {
-        render: function (selector, name, view) {
-            var $ptr = $(selector);
-            $ptr.empty().addClass('loader');
-
-            var $def = $.Deferred();
-
-
-            $.when( $templates, view ).done(function (_, view) {
-                if (view && !Array.isArray(view)) view = values(view);
-
-                try {
-                    if (view) {
-                        var $layout = [];
-                        $.each(view, function (i, view) {
-                            $layout.push(render(name, view))
-                        });
-                    }
-                    else var $layout = render(name);
-                }
-                catch (e) {
-                    console.error(e);
-                    $def.reject();
-                }
-
-                $ptr.removeClass('loader').append($layout);
-                $def.resolve();
-            });
-
-            return $def;
-        }
-    };
+        load: load,
+        render: render
+    }
 });
