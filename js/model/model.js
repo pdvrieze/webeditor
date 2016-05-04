@@ -5,8 +5,8 @@
  * Basically a collection of convinient utilities to simplify jointjs
  * interactions
  */
-define(['jquery', 'joint', 'lodash', './node', 'store/model'],
-       function ($, joint, _, Nodes, store) {
+define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util'],
+       function ($, joint, _, Nodes, store, util) {
     "use strict";
 
     /*

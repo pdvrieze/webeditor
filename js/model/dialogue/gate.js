@@ -4,6 +4,8 @@
  * Shows the gate dialogue and allows the interactions with it
  */
 define(['jquery', 'util/simple-template'], function ($, template) {
+    "use strict";
+
     function Gate(node) {
         this.node = node; // save the node
 

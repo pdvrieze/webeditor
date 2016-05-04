@@ -56,7 +56,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         return view;
     }
 
-    function Block(self, storage, callback) {
+    function Block(self, storage) {
         this.self = self;
         var attrs = $.extend(true, {}, self.attrs);
         var $ptr = $('#dialogue');
@@ -93,9 +93,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         function render($content) {
             var views = [];
             $.each(attrs.elements, function (i, val) {
-                views.push(toview(val, i));
+                views.push(template.render('activity-row', toview(val, i)));
             });
-            template.renderTo($content, 'activity-row', views);
+            $content.empty().append(views);
         }
 
         var $body = $ptr.find('.modal-body');
@@ -197,7 +197,8 @@ define(['jquery', 'util/simple-template', 'Sortable'],
 
         $ptr.find('#save').off().on('click', function () {
             attrs.label = $body.find('#label').val();
-            callback(attrs.label);
+            self.setText(attrs.label);
+            self.model.save();
 
             self.attrs = attrs;
             if (self.attrs.type != 'human' && self.attrs.elements) {
