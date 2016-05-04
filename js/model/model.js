@@ -286,6 +286,9 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
                 'xmlns:pe': 'http://adaptivity.nl/ProcessEngine/'
             });
 
+            var model = store.getModel(this.handle);
+            if (model) $xml.attr('uuid', model.uuid);
+
             // for every node find its predecessor and append using its own
             // toXml method
             $.each(this.nodes, function (i, val) {
@@ -316,7 +319,6 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
          */
         save: function () {
             if (this.nosave) return; // do not save unless needed
-            //return;
 
             var xml = this.toXml();
             var handle = this.handle;

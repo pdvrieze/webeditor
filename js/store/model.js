@@ -41,6 +41,7 @@ define(['jquery', 'util/util'], function ($, util) {
         var url = URL + '/' + handle;
         return util.upload(url, 'processUpload', str).then(function () {
             models[handle].name = name;
+            models[handle].xml.children[0].attributes.name.value = name;
         })
     }
 
@@ -48,10 +49,12 @@ define(['jquery', 'util/util'], function ($, util) {
      * Update existing model with XML
      * Does not change the name
      */
-    function updateModel(handle, xml) {
+    function updateModel(handle, str) {
         var url = URL + '/' + handle;
-        return util.upload(url, 'processUpload', xml).then(function () {
-            models[handle].xml = $.parseXML(xml);
+        return util.upload(url, 'processUpload', str).then(function () {
+            var xml = $.parseXML(str);
+            models[handle].xml = xml;
+            models[handle].uuid = xml.children[0].attributes.uuid.value;
         })
     }
 
@@ -78,7 +81,12 @@ define(['jquery', 'util/util'], function ($, util) {
         var url = URL + '/' + handle;
         return $.get(url) .then(function (xml) {
             // store
-            models[handle] = { handle: handle, name: name, xml: xml };
+            models[handle] = {
+                handle: handle,
+                name: name,
+                uuid: xml.children[0].attributes.uuid.value,
+                xml: xml
+            };
         });
     }
 

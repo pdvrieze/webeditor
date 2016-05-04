@@ -18,7 +18,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         renderList($html, $list);
         setupListeners($html, $list);
-        initPreview($list);
+        initPreview($html, $list);
         
         // no async neede after all
         $def.resolve($html);
@@ -79,7 +79,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
     /*
      * Initialise preview for the model
      */
-    function initPreview($list) {
+    function initPreview($html, $list) {
         $list.on('shown.bs.collapse', '.collapse', function () {
             var $target = $(this).find('.model-preview'); // target div
             var handle = $(this).attr('handle'); // extract handle
@@ -106,13 +106,13 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             // remove everything inside to save on memory
             $(this).find('.model-preview').empty(); 
         });
-        setupPreviewListeners($list);
+        setupPreviewListeners($html, $list);
     }
 
     /*
      * Set up listeners for the preview window and its controls
      */
-    function setupPreviewListeners($list) {
+    function setupPreviewListeners($html, $list) {
         // Listener for the delete model button
         $list.on('click', '.model-delete', function () {
             var handle = $(this).attr('handle'); // get handle
@@ -133,7 +133,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             var name = prompt('New Name'); // get new name from the user
             if (name && name.trim()) { // make sure it is not empty
                 store.cloneModel(handle, name).then(function () {
-                    renderList($list);
+                    renderList($html, $list);
                 });
             }
         });
