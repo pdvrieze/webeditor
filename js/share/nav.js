@@ -129,7 +129,13 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         if (!state || state.page != page || state.args != args) {
             var url = page;
             if (args) url = _.flatten([url, args]).join('/');
-            history.pushState({ page: page, args: args }, page, '#' + url);
+
+            var newState = { page: page, args: args };
+
+            if (state && state.page == 'index') {
+                history.replaceState(newState, page, '#' + url);
+            }
+            else history.pushState(newState, page, '#' + url);
         }
 
         // load controller if page has one in the hardcoded list
@@ -162,7 +168,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         var args = null;
         var page = 'editor-models'; // default landing page
 
-        if (location.hash) {
+        if (location.hash && location.hash != '#index') {
             // remove hash and separate arguments, but make sure no
             // consequtive slashes are used
             var url = location.hash.substr(1).replace(/\/+/, '/').split('/');
