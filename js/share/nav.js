@@ -4,8 +4,8 @@
  * Provides a set of functions to route and navigate the website
  * Additionally handles the look and behaviour of the navigation bar
  */
-define(['jquery', './auth', 'util/simple-template'],
-       function ($, auth, template) {
+define(['jquery', './auth', 'util/simple-template', 'lodash'],
+       function ($, auth, template, _) {
     "use strict";
 
     // list of hardcoded controllers that will need to be loaded for page change
@@ -27,6 +27,13 @@ define(['jquery', './auth', 'util/simple-template'],
             e.preventDefault(); // no url change
             changePage($(this).attr('href').replace(/^#/, ''));
         });
+
+        // initialise history
+        window.onpopstate = function (e) {
+            if (e.state && e.state.page) {
+                changePage(e.state.page, e.state.args);
+            }
+        };
     }
 
     /*
@@ -118,6 +125,13 @@ define(['jquery', './auth', 'util/simple-template'],
         $('[show-page][show-page!="' + page + '"]').hide();
         $('[show-page="' + page + '"]').show();
 
+        var state = history.state;
+        if (!state || state.page != page || state.args != args) {
+            var url = page;
+            if (args) url = _.flatten([url, args]).join('/');
+            history.pushState({ page: page, args: args }, page, '#' + url);
+        }
+
         // load controller if page has one in the hardcoded list
         if (controllers.indexOf(page) !== -1) {
             require([page], function (controller) {
@@ -157,7 +171,7 @@ define(['jquery', './auth', 'util/simple-template'],
             if (template.has(name)) {
                 page = name; // definitely not 404
                 if (url.length == 2) args = url[1] // only one argument
-                else args = url.slice(1); // get all arguments
+                else if (url.length > 2) args = url.slice(1); // get all
             }
         }
 
