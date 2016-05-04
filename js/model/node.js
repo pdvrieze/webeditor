@@ -129,7 +129,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         // add result
         var rname = 'r_' + value.eid;
         $('<result>', {
-            xpath: '/values/' + value.eid + '/text()',
+            xpath: '/values/' + value.name + '/text()',
             name: rname
         }).appendTo($cell);
     }
@@ -137,7 +137,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     /*
      * Added define and result items to the xml
      */
-    function addItem($cell, $item, value, name, result) {
+    function addItem($cell, $item, value, name) {
         // add define
         var dname = 'd_' + value.eid;
         var $define = $('<define>', { name: dname }).appendTo($cell);
