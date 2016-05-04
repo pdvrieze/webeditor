@@ -1,48 +1,32 @@
 define(['jquery', 'util/simple-template', 'Sortable'],
        function ($, template, Sortable) {
-    var dropdown_index = 1;
-
-    function makeLi(value, name, prefix) {
-        if (!prefix) prefix = '';
-
+    /*
+     * Generates li for the resuable variable list
+     */
+    function makeLi(value, name) {
         var $li = $('<li>');
         var $a = $('<a>', {
-            'href': '#',
             'class': 'variable-reuse',
-            'value': value
-        }).append(prefix + name).appendTo($li);
-
+            'value': value,
+            'href': '#'
+        }).append(name).appendTo($li);
         return $li;
     }
 
-    function addStorage(view, storage, elements, name, self) {
-        var $div = $('<div class="dropdown pull-right">');
-
-        var $button = $('<button>', {
-            'class': 'btn btn-default dropdown-toggle',
-            'type': 'button',
-            'id': 'vars_dropdown_' + dropdown_index,
-            'data-toggle': 'dropdown',
-            'aria-haspopup': 'true',
-            'aria-expanded': 'true'
-        }).append('Variables ').append('<span class="caret">').appendTo($div);
-
-        var $ul = $('<ul>', {
-            'class': 'dropdown-menu',
-            'aria-labelledby': 'var_dropdown_' + dropdown_index
-        }).appendTo($div);
+    function getStorage(storage, elements, self) {
+        var $ul = $('<ul>');
 
         var added = false;
         $.each(elements, function (i, val) {
             if (val.type == 'text') {
                 added = true;
                 $ul.append(
-                    makeLi('#' + self.eid + '.r_' + val.eid,
-                           val.name, 'this.'));
+                    makeLi('#' + self.eid + '.r_' + val.eid, 'this.' + val.name)
+                );
             }
         });
 
-        if (added) {
+        if (added && storage.length) {
             $ul.append('<li role="separator" class="divider">');
         }
 
@@ -50,10 +34,8 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             $ul.append(makeLi(val.value, val.title));
         });
 
-        view[name] = $div.get(0).outerHTML;
-        dropdown_index++;
-
-        return view;
+        console.log($ul.html());
+        return $ul.html();
     }
 
     function Block(self, storage) {
@@ -152,9 +134,13 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                 }
                 var $content = $this.find('.element-content');
                 var newview = $.extend(true, {}, view);
-                addStorage(newview, storage, attrs.elements, 'stor1', self);
-                addStorage(newview, storage, attrs.elements, 'stor2', self);
+                newview.stor = getStorage(storage, attrs.elements, self);
                 template.renderTo($content, name, newview);
+                $content.find('.dropdown-button').each(function (i) {
+                    $(this).attr('id', 'menu_' + i);
+                    $(this).next().attr('aria-labelledby', 'menu_' + i);
+                    console.log(this)
+                });
             });
             if (view && view.type != 'empty') {
                 $this.find('.element-type').val(view.type).change();
