@@ -8,6 +8,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model'],
         this.selected = null;
         this.mode = null;
         this.paper = paper;
+        this.nosave = true;
 
         this.count = {
             start: 0,
@@ -39,6 +40,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model'],
 
         add: function (node, offset, id) {
             if (!node.cell) node.create(offset, id);
+            node.model = this;
             node.paper = this.paper;
             this.graph.addCell(node.cell);
             this.nodes.push(node);
@@ -206,6 +208,8 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model'],
         },
 
         save: function () {
+            if (this.nosave) return; // do not save unless needed
+
             var xml = this.toXml();
             return store.updateModel(this.handle, xml).then(function () {
                 console.log('saved');

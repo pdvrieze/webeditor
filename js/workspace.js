@@ -1,3 +1,9 @@
+/*
+ * Workspace controller
+ *
+ * Handles the editor part of the project, allows to interact with the graph,
+ * zoom, pan the paper, etc
+ */
 define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
        function ($, joint, Model, Nodes, store) {
     "use strict";
@@ -36,6 +42,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             // load model from xml
             store.getList().then(function () {
                 joint.model.fromXml($(store.getModel(joint.model.handle).xml));
+                joint.model.nosave = false;
             });
         }
         else {
@@ -46,6 +53,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             // create model on server
             store.createModel(model.toXml()).done(function (handle) {
                 model.handle = handle;
+                joint.model.nosave = false;
             }).fail(function () {
                 alert('Connection Error');
             });

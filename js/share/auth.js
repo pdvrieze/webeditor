@@ -1,3 +1,8 @@
+/*
+ * Authentication module
+ *
+ * Allows user to get authenticated
+ */
 define(['jquery'], function ($) {
     "use strict";
     

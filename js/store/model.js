@@ -1,3 +1,9 @@
+/*
+ * Model Store
+ *
+ * Handles the interaction between server and client, and stores the
+ * intermediate results
+ */
 define(['jquery', 'util/util'], function ($, util) {
     "use strict";
 
