@@ -52,9 +52,22 @@ define(function () {
         return $def;
     }
 
+    /*
+     * Replaces or removes the attribute in an XML string
+     */
+    function replaceAttr(str, attr, value, replace) {
+        if (value) return str.replace(attr + '="' + value + '"',
+                                      attr + '="' + replace + '"');
+        else {
+            var regex = new RegExp(attr + '=".*?"');
+            return str.replace(regex, '');
+        }
+    }
+
     // export
     return {
         xmlSel: xmlSel,
-        upload: upload
+        upload: upload,
+        replaceAttr: replaceAttr
     }
 });

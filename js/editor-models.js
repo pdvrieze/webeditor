@@ -70,7 +70,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         // when refresh button is clicked we reset the store and rerender
         $html.find('#refresh').click(function () {
-            store.reset();
+            store.update();
             renderList($list);
         });
     }
