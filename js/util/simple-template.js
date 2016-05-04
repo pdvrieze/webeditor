@@ -91,9 +91,17 @@ define(['jquery'], function ($) {
         return $def;
     }
 
+    /*
+     * Render something directly into element
+     */
+    function renderTo($where, what, view) {
+        $where.empty().append(render(what, view));
+    }
+
     // export
     return {
         load: load,
-        render: render
+        render: render,
+        renderTo: renderTo
     }
 });

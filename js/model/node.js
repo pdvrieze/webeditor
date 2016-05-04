@@ -265,7 +265,6 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
                         .appendTo($cell);
                 });
             }
-            console.log($cell);
             return $cell;
         },
     });

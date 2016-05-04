@@ -306,7 +306,8 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             }
         });
 
-        $(window).on('mouseup touchend', function (event) {
+        var events = 'mouseup.pe touchend.pe';
+        $(window).off(events).on(events, function (event) {
             joint.dragging = false;
             joint.pinch = false;
             if (joint.cellmoved) joint.model.save();
