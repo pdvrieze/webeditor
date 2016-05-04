@@ -10,7 +10,7 @@ define(['jquery', 'util/simple-template'], function ($, template) {
         this.node = node; // save the node
 
         // initialise the attributes with default values if needed
-        this.attrs = node.attrs || { min: 0, max: -1 };
+        this.attrs = node.attrs || { min: 2, max: 2 };
         
         // find dialogue output
         this.$target = $('#dialogue');

@@ -54,6 +54,11 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             store.createModel(joint.model.toXml()).done(function (handle) {
                 joint.model.handle = handle;
                 initInterface(joint);
+
+                history.replaceState({
+                    page: 'workspace',
+                    args: joint.model.handle
+                }, 'workspace', '#workspace/' + joint.model.handle);
             }).fail(function () {
                 alert('Connection Error');
             });
