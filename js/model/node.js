@@ -55,8 +55,15 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
          */
         setText: function (text) {
             var id = this.cell.findView(this.paper).id;
-            $('#' + id).find('text').get(0).textContent = text;
+            var $node = $('#' + id).find('text');
+            $node.get(0).textContent = text;
+            this.styleText($node);
         },
+
+        /*
+         * Override to style text
+         */
+        styleText: function () {},
 
         /*
          * Returns cell position for the tooltip hence the name
@@ -260,6 +267,12 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         // open gate dialogue
         edit: function () {
             new Dialogue.Gate(this);
+        },
+
+        // style text
+        styleText: function ($text) {
+            $text.get(0).textContent = $text.get(0).textContent.toUpperCase();
+            $text.attr('style', 'font-weight: bold;');
         },
 
         // when initialised set the label
