@@ -15,8 +15,46 @@ define(function () {
         return sel.replace(':', '\\:') + ',' + split[1];
     }
 
+    /*
+     * Fakes 'multipart/form-data' form but the data is coming from its
+     * second argument, and not users filesystem
+     *
+     * http://stackoverflow.com/a/3012611
+     */
+    function upload(url, name, data) {
+        var $def = $.Deferred(); // we will return promise
+
+        var boundary = "---------------------------7da24f2e50046";
+        var xhr = new XMLHttpRequest();
+        var body = '--' + boundary + '\r\n'
+                 + 'Content-Disposition: form-data; name="' + name + '"; '
+                 + 'filename="temp.xml"\r\n' // any name is OK
+                 + 'Content-type: plain/text\r\n\r\n'
+                 + data + '\r\n'
+                 + '--' + boundary + '--';
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader( // set appropraite headers
+            "Content-type", "multipart/form-data; boundary=" + boundary
+        );
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) { // finished
+                if (xhr.status == 200) { // success
+                    $def.resolve(xhr.responseText);
+                }
+                else $def.reject(xhr);
+            }
+        }
+
+        xhr.send(body); // start request
+
+        return $def;
+    }
+
     // export
     return {
-        xmlSel: xmlSel
+        xmlSel: xmlSel,
+        upload: upload
     }
 });
