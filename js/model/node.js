@@ -254,17 +254,18 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash'],
             if (!this.attrs) this.attrs = {};
             if (this.attrs.min >= 0) params.min = this.attrs.min;
             if (this.attrs.max >= 0) params.max = this.attrs.max;
-            if (predecessors.length == 1) {
+            if (this.type == 'split' && predecessors.length) {
                 params['predecessor'] = predecessors[0].eid;
             }
             var $cell = $('<' + this.type + '>', params);
 
-            if (predecessors.length > 1) {
+            if (this.type == 'join' && predecessors.length) {
                 $.each(predecessors, function (i, val) {
                     $('<predecessor>' + val.eid + '</predecessor>')
                         .appendTo($cell);
                 });
             }
+            console.log($cell);
             return $cell;
         },
     });
