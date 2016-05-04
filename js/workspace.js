@@ -139,7 +139,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
      * Makes it possible to resize the paper by scrolling the mouse wheel
      */
     function initScroll(joint) {
-        joint.paper.$el.on('mousewheel DOMMouseScroll', function(event) {
+        joint.paper.$el.on('mousewheel.pe DOMMouseScroll.pe', function(event) {
             // make sure we are not inside the dialogue
             if ($('#dialogue:visible').size()) return;
 
@@ -355,7 +355,24 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         });
     }
 
+    /*
+     * Takes care of destrying the content and removin the event listeners
+     */
+    function destroy(joint) {
+        // unlink and remove paper
+        joint.paper.off();
+        joint.paper.$el.off().empty();
+        joint.paper = null;
+
+        joint.graph = null;
+        joint.model = null;
+
+        joint = null;
+
+        // remove our events from window
+        $(window).off('.pe');
+    }
 
     // export
-    return { init: init, post: post };
+    return { init: init, post: post, destroy: destroy };
 });

@@ -13,6 +13,8 @@ define(['jquery', './auth', 'util/simple-template'],
 
     var $nav = $('nav'); // navigation bar (should be one per page)
 
+    var destroy = null; // current controller destroy method
+
     /*
      * Initialise navigation bar
      */
@@ -101,6 +103,12 @@ define(['jquery', './auth', 'util/simple-template'],
         // render new page in content section
         var $html = template.render(page);
 
+        // unload current page if needed
+        if (destroy) {
+            destroy(); // destroy
+            destroy = null;
+        }
+
         // reselect the buttons in the navigation if needed
         $('li.active').removeClass('active');
         $('li a[href="#' + page + '"]').parent().addClass('active');
@@ -115,6 +123,11 @@ define(['jquery', './auth', 'util/simple-template'],
                 // run its initialisation method
                 controller.init($html, args).then(function ($html, args) {
                     $load.resolve($html);
+
+                    // setup destroy function
+                    if (controller.destroy) {
+                        destroy = function () { controller.destroy(args); };
+                    }
 
                     // controller may run pos-html-append stuff, that is
                     // when all elements are rendered on the page
