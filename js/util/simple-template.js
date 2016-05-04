@@ -37,7 +37,7 @@ define(['jquery'], function ($) {
         }
 
         // wrap in div to access full html
-        $html = $('<div>').append($html);
+        if ($html.length > 1) $html = $('<div>').append($html);
 
         // substitute inner inserts
         $html.find('insert[name]').each(function () {
@@ -45,7 +45,7 @@ define(['jquery'], function ($) {
             $(this).replaceWith(render(insert, view));
         });
 
-        return $html.children();
+        return $html;
     }
 
     /*

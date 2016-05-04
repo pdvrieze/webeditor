@@ -1,28 +1,75 @@
-define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
-        'store/model'],
-       function ($, joint, Model, Nodes, _, store) {
+define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
+       function ($, joint, Model, Nodes, store) {
     "use strict";
 
-    var $content = $('#content');
-    $content.on('loaded', function (event, name) {
-        if (name == 'editor-workspace') init();
-    });
+    var ZOOM = 32; // zoom multiplier for phone - works good on most devices
 
-    function init() {
-        $('#autoalign').show();
+    /*
+     * Initialisation of the workspace page
+     */
+    function init($html, handle) {
+        var $def = $.Deferred();
 
+        var joint = initJoint($html);
+
+        initResize(joint);
+        initScroll(joint);
+        initTooltipCreate($html, joint);
+        initTooltipEdit($html, joint);
+        initInteraction(joint);
+        initModel(joint, handle);
+
+        // no async neede after all
+        $def.resolve($html, joint);
+        return $def;
+
+    }
+
+    /*
+     * HTML is already rendered, so we can run resizing methods for scaling the
+     * graphs
+     */
+    function post($html, joint) {
+        $(window).trigger('resize');
+
+        if (joint.model.handle) {
+            // load model from xml
+            store.getList().then(function () {
+                joint.model.fromXml($(store.getModel(joint.model.handle).xml));
+            });
+        }
+        else {
+            // create new model with new name
+            var name = prompt('Model Name') || 'Unnamed Model';
+            model.name = name;
+
+            // create model on server
+            store.createModel(model.toXml()).done(function (handle) {
+                model.handle = handle;
+            }).fail(function () {
+                alert('Connection Error');
+            });
+        }
+    }
+
+    /*
+     * Initialise jointjs diagram
+     */
+    function initJoint($html) { 
+        // create graph
         var graph = new joint.dia.Graph();
 
-        var $board = $('#board');
-        var top = $board[0].getBoundingClientRect().top;
+        // get main board
+        var $board = $html.find('#board');
 
+        // initialise paper
         var paper = new joint.dia.Paper({
             el: $board,
-            width: $board.width(),
-            height: $board.height(),
-            gridSize: 1,
+            width: $board.width(), // this is actually probably 0
+            height: $board.height(), // this too
             model: graph,
             interactive: function(cellView) {
+                // turn off interactions with arrow-links
                 if (cellView.model instanceof joint.dia.Link) {
                     return { vertexAdd: false };
                 }
@@ -30,207 +77,276 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'lodash',
             }
         });
 
-        var origin;
-        $(window).on('resize', function () {
-            $board.height($(window).height() - top);
-
-            var width = $board.width() - 8;
-            var height = $board.height() - 8;
-            if (width > 0 && height > 0) {
-                paper.setDimensions(width, height);
-            }
-            origin = [width / 2 - 150, height / 2 - 300];
-            paper.setOrigin(origin[0], origin[1]);
-        });
-
-        setTimeout(function () { $(window).resize(); }, 100);
-
         var scale = 2.0;
         paper.scale(scale);
-        $('#content').bind('mousewheel DOMMouseScroll', function(event){
+
+        return {
+            paper: paper,
+            graph: graph,
+
+            // these are dynamic values - and its a perfect place to store them
+            origin: null,
+            scale: scale,
+            moved: false,
+            cellmoved: false,
+            dragging: false,
+            princh: false
+        };
+    }
+
+    /*
+     * Takes care of window resizing
+     */
+    function initResize(joint) {
+        $(window).off('resize.pe').on('resize.pe', function () {
+            // get top of the paper
+            var top = joint.paper.el.getBoundingClientRect().top;
+
+            // calculate distance to the bottom of the screen
+            joint.paper.$el.height($(window).height() - top);
+
+            var offset = 8; // ideal offset for most screens
+
+            var width = joint.paper.$el.width() - offset;
+            var height = joint.paper.$el.height() - offset;
+            if (width > 0 && height > 0) { // make sure we are in real world
+                // scale to fit the screen
+                joint.paper.setDimensions(width, height);
+            }
+
+            /*
+             * I use -150 and -300 because lower right corner on the android
+             * phone seems to be 200:300, and since it is preferable to see the
+             * graph centred, we have to adjust the origin. Sad but needed
+             *
+             * tl;dr: this centres most models
+             */
+            var phoneX = 200, phoneY = 300;
+            joint.origin = [width / 2 - phoneX, height / 2 - phoneY];
+            joint.paper.setOrigin(joint.origin[0], joint.origin[1]);
+        });
+    }
+
+    /*
+     * Makes it possible to resize the paper by scrolling the mouse wheel
+     */
+    function initScroll(joint) {
+        joint.paper.$el.on('mousewheel DOMMouseScroll', function(event) {
+            // make sure we are not inside the dialogue
             if ($('#dialogue:visible').size()) return;
-            if (event.originalEvent.wheelDelta > 0 ||
-                    event.originalEvent.detail < 0) {
-                paper.scale(scale *= 1.1);
+
+            // cross-browser way of doing this
+            var oe = event.originalEvent;
+            if (oe.wheelDelta > 0 || oe.detail < 0) {
+                joint.paper.scale(joint.scale *= 1.1); // enlarge
+            }
+            else joint.paper.scale(joint.scale *= 0.9); // shrink
+
+            return false; // no bubbling, to aviod scrolling page
+        });
+    };
+
+    /*
+     * Allows to show the tooltip when the blank space is clicked
+     */
+    function initTooltipCreate($html, joint) {
+        var $tooltip = $html.find('#tooltip_create');
+
+        joint.paper.on('blank:pointerup', function (event, x, y) {
+            // make sure that we are not in the dialogue
+            // and make sure we've not just moved (paned)
+            if (joint.moved || $('#dialogue:visible').size()) return;
+
+            // we don't care about two finger events for tooltips
+            var oe = event.originalEvent;
+            if (oe.touches && oe.touches.length == 2) return;
+
+            // if we use touchescreen, we have different events
+            if (oe.changedTouches && oe.changedTouches.length) {
+                oe = oe.changedTouches[0];
+            }
+
+            // make sure we are on the board/paper, ignore outside,
+            // in this case navigation menu
+            if (oe.pageY < $('nav').height()) return;
+
+            if ($('.workspace-tooltip:visible').size()) {
+                // clicked on a blank space and tooltip is visible - we need
+                // to hide it then
+                $('.workspace-tooltip').hide();
             }
             else {
-                paper.scale(scale *= 0.9);
+                $('#btn_start').css(
+                    'display',
+                    joint.model.count.start ? 'none' : 'inline'
+                );
+                $('#btn_end').css(
+                    'display',
+                    joint.model.count.end ? 'none' : 'inline'
+                );
+                $tooltip.data('offset', { x: x, y: y })
+                showTooltip($tooltip, oe.pageX, oe.pageY);
             }
+        });
+
+        $tooltip.on('click touchend', 'a', function () {
+            $tooltip.hide();
+            var offset = $tooltip.data('offset');
+            var object = $(this).attr('rel');
+            joint.model.add(new Nodes[object](), offset);
+            return false;
+        });
+    }
+
+    /*
+     * Allows to show the edit tooltip when clicked on the cell
+     */
+    function initTooltipEdit($html, joint) {
+        var $tooltip = $html.find('#tooltip_edit');
+
+        joint.paper.on('cell:pointerup', function (cellView, event) {
+            // make sure we not just moved the cell
+            // and we are not in the dialogue
+            if (joint.cellmoved || $('#dialogue:visible').size()) return;
+
+            // event if not needed lets make sure the create tooltip is hidden
+            $('.workspace-tooltip').hide();
+
+            joint.model.click(cellView, function (x, y) {
+                // we don't care about two finger events for tooltips
+                var oe = event.originalEvent;
+                if (oe.touches && oe.touches.length == 2) return;
+
+                // if we use touchescreen, we have different events
+                if (oe.changedTouches && oe.changedTouches.length) {
+                    oe = oe.changedTouches[0];
+                }
+
+                // make sure we are on the board/paper, ignore outside,
+                // in this case navigation menu
+                if (oe.pageY < $('nav').height()) return;
+
+                $tooltip.data('cellView', cellView);
+                var node = joint.model.find(cellView);
+                $('#btn_edit').css(
+                    'display',
+                    node.canEdit ? 'inline' : 'none'
+                );
+                $('#btn_connect').css(
+                    'display',
+                    joint.model.linkPossible(node) ? 'inline' : 'none'
+                );
+                showTooltip($tooltip, oe.pageX, oe.pageY);
+            });
+        });
+
+        $tooltip.on('click touchend', 'a', function (event) {
+            $tooltip.hide();
+            var cellView = $tooltip.data('cellView');
+            var action = $(this).attr('rel');
+            joint.model[action](cellView);
             return false;
         });
 
-        var model = new Model(graph, paper);
 
-        var $tpCreate = $('#tooltip_create');
-        var $tpEdit = $('#tooltip_edit');
+    }
 
-        paper.on('blank:pointerup', function (event, x, y) {
-            if (moved) return;
-            if ($('#dialogue:visible').size()) return;
-            var oe = event.originalEvent;
-            if (oe.touches && oe.touches.length == 2) return;
-            if (oe.changedTouches && oe.changedTouches.length) {
-                oe = oe.changedTouches[0];
-            }
-            if (oe.pageY < $('nav').height()) return;
-            if ($('.workspace-tooltip:visible').size()) $('.workspace-tooltip').hide();
-            else showTpCreate(x, y, oe.pageX, oe.pageY);
+    /*
+     * Initialise panning and zooming on both desktop and touchscreen
+     */
+    function initInteraction(joint) {
+        // nullify cellmoved when cell is grabbed
+        joint.paper.on('cell:pointerdown', function (cellView, event) {
+            joint.cellmoved = false;
         });
-
-        var cellmoved = false;
-        paper.on('cell:pointerdown', function (cellView, event) {
-            cellmoved = false;
-        });
-
-        paper.on('cell:pointerup', function (cellView, event) {
-            save();
-            if (cellmoved) return;
-            if ($('#dialogue:visible').size()) return;
-            $('.workspace-tooltip').hide();
-            model.click(cellView, function (x, y) {
-                var oe = event.originalEvent;
-                if (oe.touches && oe.touches.length == 2) return;
-                if (oe.changedTouches && oe.changedTouches.length) {
-                    oe = oe.changedTouches[0];
-                }
-                if (oe.pageY < top) return;
-                showTpEdit(cellView, oe.pageX, oe.pageY);
-            });
-            save();
-        });
-
-        var dragging = false;
-        var moved = false;
-        var pinch = false;
-        paper.on('blank:pointerdown', function (event) {
+        
+        // identify pinch or dragging
+        joint.paper.on('blank:pointerdown', function (event) {
             var oe = event.originalEvent;
             if (oe.changedTouches && oe.changedTouches.length) {
+                // if two fingers - we are looking at pinch
                 if (oe.touches.length == 2) {
-                    pinch = pinchMove(oe);
+                    // pinch it is, so lets quit - it's not dragging
+                    joint.pinch = pinchMove(joint, oe);
                     return;
                 }
+
+                // ok its not pinch but still touch event
                 oe = oe.changedTouches[0];
             }
-            dragging = [oe.pageX, oe.pageY];
-            moved = false;
+            joint.dragging = [oe.pageX, oe.pageY];
+            joint.moved = false; // just started
         });
 
-        $(window).on('mousemove touchmove', function (event) {
-            if (cellmoved === false) cellmoved = true;
-            if (dragging) {
+        // drag or pinch when mouse (or fingers) moves
+        var events = 'mousemove.pe touchmove.pe';
+        $(window).off(events).on(events, function (event) {
+            // start moving cell
+            if (joint.cellmoved === false) joint.cellmoved = true;
+
+            if (joint.dragging) { // we are in draggin mode
                 var oe = event.originalEvent;
                 if (oe.changedTouches && oe.changedTouches.length) {
-                    if (pinch) {
-                        pinchMove(oe);
+                    if (pinch) { // pinch mode
+                        pinchMove(joint, oe); // pinch zoom
                         return;
                     }
+                    // touch event fix
                     oe = oe.changedTouches[0];
                 }
-                origin[0] -= dragging[0] - oe.pageX;
-                origin[1] -= dragging[1] - oe.pageY;
-                dragging = [oe.pageX, oe.pageY];
-                paper.setOrigin(origin[0], origin[1]);
-                moved = true;
+
+                // calculate new origin from dragging
+                joint.origin[0] -= joint.dragging[0] - oe.pageX;
+                joint.origin[1] -= joint.dragging[1] - oe.pageY;
+                joint.dragging = [oe.pageX, oe.pageY];
+
+                // set new origin
+                joint.paper.setOrigin(joint.origin[0], joint.origin[1]);
+                joint.moved = true; // yes, we paned
             }
         });
 
         $(window).on('mouseup touchend', function (event) {
-            dragging = false;
-            pinch = false;
-        });
-
-        function pinchMove(e) {
-            var dist = Math.sqrt(
-                (e.touches[0].pageX-e.touches[1].pageX) *
-                (e.touches[0].pageX-e.touches[1].pageX) +
-                    (e.touches[0].pageY-e.touches[1].pageY) *
-                    (e.touches[0].pageY-e.touches[1].pageY));
-            if (pinch) {
-                var percent = 1 - (pinch - dist) / (pinch * 32);
-                paper.scale(scale *= percent);
-            }
-            moved = true;
-            return dist;
-        }
-
-        function showTooltip($tooltip, x, y) {
-            $('.workspace-tooltip').hide();
-            $tooltip
-                .show()
-                .offset({
-                    left: x - $tooltip.width() / 2,
-                    top: y - $tooltip.height() / 2
-                });
-        }
-
-        function showTpCreate(x, y, ox, oy) {
-            $('#btn_start').css('display', model.count.start ? 'none' : 'inline');
-            $('#btn_end').css('display', model.count.end ? 'none' : 'inline');
-            $tpCreate.data('offset', {x: x, y: y})
-            showTooltip($tpCreate, ox, oy);
-        }
-
-        function showTpEdit(cellView, x, y) {
-            $tpEdit.data('cellView', cellView);
-            var node = model.find(cellView);
-            $('#btn_edit').css('display', node.canEdit ? 'inline' : 'none');
-            $('#btn_connect').css('display',
-                                  model.linkPossible(node) ? 'inline' : 'none');
-            showTooltip($tpEdit, x, y);
-        }
-
-        $tpCreate.on('click touchend', 'a', function (event) {
-            $tpCreate.hide();
-            var offset = $tpCreate.data('offset');
-            var object = $(this).attr('rel');
-            model.add(new Nodes[object](), offset);
-            save();
-            return false;
-        });
-
-        $tpEdit.on('click touchend', 'a', function (event) {
-            $tpEdit.hide();
-            var cellView = $tpEdit.data('cellView');
-            var action = $(this).attr('rel');
-            model[action](cellView);
-            save();
-            return false;
-        });
-
-        var handle = $content.attr('handle');
-        if (handle) {
-            $content.removeAttr('handle');
-
-            store.getList().done(function () {
-                var $xml = $(store.getModel(handle).xml);
-                model.handle = handle;
-                model.fromXml($xml);
-            });
-        }
-        else {
-            var name = prompt('Model Name') || 'Unnamed Model';
-            model.name = name;
-            store.createModel(model.toXml()).done(function (handle) {
-                model.handle = handle;
-            }).fail(function () {
-                alert('Connection Error');
-            });
-        }
-
-        function save() {
-            store.updateModel(model.handle, model.toXml()).done(function () {
-                //console.log('saved');
-            }).fail(function () {
-                alert('Connection Error');
-            });
-        }
-
-        $('#content').off('save-model').on('save-model', function () {
-            save();
-        });
-
-        $('#autoalign').off().click(function () {
-            model.autoalign();
+            joint.dragging = false;
+            joint.pinch = false;
+            if (joint.cellmoved) joint.model.save();
         });
     }
+
+    function pinchMove(joint, e) {
+        var dist = Math.sqrt(
+            (e.touches[0].pageX - e.touches[1].pageX) *
+            (e.touches[0].pageX - e.touches[1].pageX) +
+                (e.touches[0].pageY - e.touches[1].pageY) *
+                (e.touches[0].pageY - e.touches[1].pageY));
+        if (joint.pinch) {
+            var percent = 1 - (pinch - dist) / (pinch * ZOOM);
+            joint.paper.scale(joint.scale *= percent);
+        }
+        joint.moved = true;
+        return dist;
+    }
+
+    /*
+     * Initialise the model itself
+     */
+    function initModel(joint, handle) {
+        joint.model = new Model(joint.graph, joint.paper);
+        joint.model.handle = handle;
+    }
+
+    /*
+     * Show tooltip - centre it
+     */
+    function showTooltip($tooltip, x, y) {
+        $('.workspace-tooltip').hide();
+        $tooltip.show() .offset({
+            left: x - $tooltip.width() / 2,
+            top: y - $tooltip.height() / 2
+        });
+    }
+
+
+    // export
+    return { init: init, post: post };
 });

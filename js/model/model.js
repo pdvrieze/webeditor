@@ -1,13 +1,13 @@
-define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
+define(['jquery', 'joint', 'lodash', './node', 'store/model'],
+       function ($, joint, _, Nodes, store) {
     "use strict";
 
-    function Model(graph, paper, name) {
+    function Model(graph, paper) {
         this.graph = graph;
         this.nodes = [];
         this.selected = null;
         this.mode = null;
         this.paper = paper;
-        this.name = name || '';
 
         this.count = {
             start: 0,
@@ -44,6 +44,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
             this.nodes.push(node);
             this.count[node.type]++;
             if (node.init) node.init();
+            this.save();
         },
 
         find: function (cellView) {
@@ -71,6 +72,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
             });
 
             this.graph.addCell(cell);
+            this.save();
         },
 
         select: function (cellView, edit) {
@@ -84,6 +86,7 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
             node.cell.remove();
             this.count[node.type]--;
             this.nodes.splice(index, 1);
+            this.save();
         },
 
         extract: function (node) {
@@ -200,6 +203,15 @@ define(['jquery', 'joint', 'lodash', './node'], function ($, joint, _, Nodes) {
                 'jbi:element', 'umh:item'
             ]).replace('servicens', 'serviceNS')
                 .replace('servicename', 'serviceName');
+        },
+
+        save: function () {
+            var xml = this.toXml();
+            return store.updateModel(this.handle, xml).then(function () {
+                console.log('saved');
+            }).fail(function () {
+                alert('Connection Error');
+            });
         }
     };
 

@@ -113,8 +113,12 @@ define(['jquery', './auth', 'util/simple-template'],
         if (controllers.indexOf(page) !== -1) {
             require([page], function (controller) {
                 // run its initialisation method
-                controller.init($html, args).then(function ($html) {
+                controller.init($html, args).then(function ($html, args) {
                     $load.resolve($html);
+
+                    // controller may run pos-html-append stuff, that is
+                    // when all elements are rendered on the page
+                    if (controller.post) controller.post($html, args);
                 });
             })
         }

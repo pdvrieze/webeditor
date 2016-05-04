@@ -20,6 +20,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         setupListeners($html, $list);
         initPreview($list);
         
+        // no async neede after all
         $def.resolve($html);
         return $def;
     }
@@ -199,7 +200,5 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
     }
     
     // export
-    return {
-        init: init
-    };
+    return { init: init };
 });
