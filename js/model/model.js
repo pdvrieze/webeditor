@@ -315,6 +315,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util'],
          */
         save: function () {
             if (this.nosave) return; // do not save unless needed
+            return;
 
             var xml = this.toXml();
             return store.updateModel(this.handle, xml).then(function () {

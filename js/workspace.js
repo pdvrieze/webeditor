@@ -47,12 +47,12 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         }
         else {
             // create new model with new name
-            var name = prompt('Model Name') || 'Unnamed Model';
-            model.name = name;
+            var name = prompt('Model Name', 'Unnamed Model') || 'Unnamed Model';
+            joint.model.name = name;
 
             // create model on server
-            store.createModel(model.toXml()).done(function (handle) {
-                model.handle = handle;
+            store.createModel(joint.model.toXml()).done(function (handle) {
+                joint.model.handle = handle;
                 joint.model.nosave = false;
             }).fail(function () {
                 alert('Connection Error');

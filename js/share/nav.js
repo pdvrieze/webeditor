@@ -23,7 +23,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         initLogoutBtn();
 
         // links with .a_content will automatically change page
-        $('nav').on('click', 'a.a_content', function (e) {
+        $('#page').on('click', 'a.a_content', function (e) {
             e.preventDefault(); // no url change
             changePage($(this).attr('href').replace(/^#/, ''));
         });

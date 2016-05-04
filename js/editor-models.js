@@ -160,6 +160,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
      */
     function setupPaper($xml, paper) {
         var bounds = getBounds($xml); // calculate mins and maxs
+        if (bounds.min.x == Infinity) return; // no elements yet
 
         var x = bounds.max.x - bounds.min.x + Nodes.SIZE; // model width
         var y = bounds.max.y - bounds.min.y + Nodes.SIZE; // model heigth
