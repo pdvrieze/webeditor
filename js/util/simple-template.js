@@ -19,6 +19,13 @@ define(['jquery'], function ($) {
     });
 
     /*
+     * Initialise and wait on templates to be loaded
+     */
+    function init() {
+        return $templates;
+    }
+
+    /*
      * Renders template substituting templated parts like inserts and view,
      * and provides outer layout if needed
      */
@@ -100,6 +107,7 @@ define(['jquery'], function ($) {
 
     // export
     return {
+        init: init,
         load: load,
         render: render,
         renderTo: renderTo

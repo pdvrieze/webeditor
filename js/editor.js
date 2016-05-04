@@ -24,7 +24,12 @@
 
             // load bootstrap which will initialise on just rendered page
             // and delegate the rest of the initialisation to main()
-            requirejs(['bootstrap'], function () { main(template, $load); });
+            requirejs(['bootstrap'], function () { 
+                // make sure templates are loaded by this point
+                template.init().then(function () { 
+                    main(template, $load);
+                });
+            });
         })
     });
 
