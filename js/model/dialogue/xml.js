@@ -22,7 +22,7 @@ define(['jquery', 'util/simple-template', 'store/model', 'util/util'],
         var self = this;
 
         // save xml
-        this.$target.find('#save').click(function () {
+        this.$target.find('#save').off().click(function () {
             store.updateModel(
                 self.model.handle,
                 self.$body.find('textarea').val()

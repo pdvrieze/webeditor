@@ -121,7 +121,8 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             moved: false,
             cellmoved: false,
             dragging: false,
-            princh: false
+            princh: false,
+            changed: false
         };
     }
 
@@ -309,6 +310,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             joint.moved = false; // just started
         });
 
+        joint.graph.on('change remove', function () {
+            joint.changed = true;
+        });
+
         // drag or pinch when mouse (or fingers) moves
         var events = 'mousemove.pe touchmove.pe';
         $(window).off(events).on(events, function (event) {
@@ -341,7 +346,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         $(window).off(events).on(events, function (event) {
             joint.dragging = false;
             joint.pinch = false;
-            if (joint.cellmoved) joint.model.save();
+            if (joint.changed) {
+                joint.model.save();
+                joint.changed = false;
+            }
         });
     }
 
