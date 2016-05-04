@@ -16,7 +16,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         var $def = $.Deferred();
         var $list = $html.find('#list_models'); // list that will contain models
 
-        renderList($list);
+        renderList($html, $list);
         setupListeners($html, $list);
         initPreview($list);
         
@@ -27,13 +27,13 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
     /*
      * Render list of models
      */
-    function renderList($list) {
+    function renderList($html, $list) {
         // when models are loaded, show one big new button if needed or default
         // to normal sized button, and models of course
         var $load = template.load($list);
         var list = store.getList().then(function (list) {
             if (Object.keys(list)) { // we have models yay
-                $('#models_notnew').removeClass('hidden');
+                $html.find('#models_notnew').removeClass('hidden');
 
                 var $list = [];
                 $.each(list, function (key, view) {
@@ -42,7 +42,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
                 });
                 $load.resolve($list);
             }
-            else $('#models_new').removeClass('hidden');
+            else $html.find('#models_new').removeClass('hidden');
         });
     }
 
