@@ -266,10 +266,10 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         // first lets add current block elements
         var added = false;
         $.each(elements, function (i, val) {
-            if (val.type == 'text') {
+            if (val.value) {
                 added = true;
                 $ul.append(
-                    makeLi('#' + self.eid + '.r_' + val.eid, 'this.' + val.name)
+                    makeLi('@' + val.eid, 'this.' + val.name)
                 );
             }
         });

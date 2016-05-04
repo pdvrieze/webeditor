@@ -156,10 +156,10 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
                 for (var i = 0; i < node.attrs.elements.length; ++i) {
                     var element = node.attrs.elements[i];
                     var activity = node.attrs.label || '#' + node.cell.cid 
-                    if (element.type == 'text') {
+                    if (element.type != 'label') {
                         vars.push({
                             title: activity + '.' + element.name,
-                            value: '#' + node.eid + '.r_' + element.eid
+                            value: '#' + node.eid + '.' + element.eid
                         });
                     }
                 }
