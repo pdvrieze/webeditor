@@ -176,10 +176,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
 
             // cross-browser way of doing this
             var oe = event.originalEvent;
-            if (oe.wheelDelta > 0 || oe.detail < 0) {
-                joint.paper.scale(joint.scale *= 1.1); // enlarge
-            }
-            else joint.paper.scale(joint.scale *= 0.9); // shrink
+            if (oe.wheelDelta > 0 || oe.detail < 0) joint.scale *= 1.1;
+            else joint.scale *= 0.9;
+
+            joint.paper.scale(joint.scale);
 
             return false; // no bubbling, to aviod scrolling page
         });

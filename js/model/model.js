@@ -222,15 +222,19 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
          * Auto align model
          */
         autoalign: function () {
+            // create graph for alignment
             var g = new dagre.graphlib.Graph();
 
+            // set defaults
             g.setGraph({});
             g.setDefaultEdgeLabel(function() { return {}; });
 
+            // add every node with sizes 60x60
             $.each(this.nodes, function (i, node) {
                 g.setNode(node.cell.id, { width: 60, height: 60 });
             });
 
+            // add edges
             var G = this.graph;
             $.each(this.nodes, function (i, node) {
                 var links = G.getConnectedLinks(node.cell, { inbound: true });
@@ -240,19 +244,22 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
                 })
             });
             
+            // relayout
             dagre.layout(g);
 
+            // save new positions
             var positions = {};
-            g.nodes().forEach(function(id) {
-                positions[id] = g.node(id);
-            });
+            g.nodes().forEach(function(id) { positions[id] = g.node(id); });
 
+            // apply new positions switching x and y
             this.nosave = true;
             $.each(this.nodes, function (i, node) {
                 var pos = positions[node.cell.id];
                 node.cell.position(pos.y, pos.x);
             });
             this.nosave = false;
+
+            // save graph
             this.save();
         },
 
