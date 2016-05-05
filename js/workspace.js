@@ -8,6 +8,9 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
        function ($, joint, Model, Nodes, store) {
     "use strict";
 
+    // export vectorizer globally into this file
+    var V = joint.Vectorizer;
+
     var ZOOM = 32; // zoom multiplier for phone - works good on most devices
 
     /*
@@ -179,7 +182,28 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             if (oe.wheelDelta > 0 || oe.detail < 0) joint.scale *= 1.1;
             else joint.scale *= 0.9;
 
-            joint.paper.scale(joint.scale);
+            // calculate position we want to move
+            var pointWas = joint.paper.clientToLocalPoint({
+                x: oe.pageX, y: oe.pageY
+            });
+
+            //joint.paper.setOrigin(0, 0);
+            joint.paper.scale(joint.scale, joint.scale);
+
+            // calculate position we want to move to
+            var pointNow = joint.paper.clientToLocalPoint({
+                x: oe.pageX, y: oe.pageY
+            });
+
+            // calculate difference in positions
+            var diffX = pointWas.x - pointNow.x;
+            var diffY = pointWas.y - pointNow.y;
+
+            joint.origin[0] -= diffX * joint.scale;
+            joint.origin[1] -= diffY * joint.scale;
+
+            // move
+            joint.paper.setOrigin(joint.origin[0], joint.origin[1]);
 
             return false; // no bubbling, to aviod scrolling page
         });
