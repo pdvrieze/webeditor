@@ -1,12 +1,18 @@
-/*
- * Xml Dialogue
- *
+/**
  * Shows the xml dialogue and allows the interactions with it
+ *
+ * @module Dialogue
  */
 define(['jquery', 'util/simple-template', 'store/model', 'util/util'],
        function ($, template, store, util) {
     "use strict";
 
+    /** 
+     * @class Xml Xml Dialogue class
+     * @constructor
+     * 
+     * @param model {Object} calling model
+     */
     function Xml(model) {
         this.model = model // save model
 

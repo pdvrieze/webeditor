@@ -1,11 +1,17 @@
-/*
- * Gate Dialogue
- *
+/**
  * Shows the gate dialogue and allows the interactions with it
+ *
+ * @module Dialogue
  */
 define(['jquery', 'util/simple-template'], function ($, template) {
     "use strict";
 
+    /** 
+     * @class Gate Gate Dialogue class
+     * @constructor
+     * 
+     * @param node {Object} calling node
+     */
     function Gate(node) {
         this.node = node; // save the node
 
@@ -32,8 +38,9 @@ define(['jquery', 'util/simple-template'], function ($, template) {
     }
 
     Gate.prototype = {
-        /*
+        /** 
          * Initialise elements
+         * @method init
          */
         init: function () {
             // find all controls
@@ -51,8 +58,9 @@ define(['jquery', 'util/simple-template'], function ($, template) {
             this.$out.val(this.attrs.max);
         },
 
-        /*
+        /** 
          * Initialise change listener for buttons
+         * @method initChange
          */
         initChange: function () {
             var self = this;
@@ -81,8 +89,9 @@ define(['jquery', 'util/simple-template'], function ($, template) {
             }).filter(selector).click(); // click on current selection
         },
 
-        /*
+        /** 
          * Setup listeners for saving this modal
+         * @method initSave
          */
         initSave: function () {
             var self = this;

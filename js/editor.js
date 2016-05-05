@@ -1,13 +1,15 @@
-/*
+/**
  * Main file for editor application
  *
  * Starts up the editor and initialises all its modules to be ready for user
  * interations
+ *
+ * @module Editor
  */
 (function () {
     "use strict";
 
-    /*
+    /**
      * Make sure requirejs doesn't cache any files
      *
      * This cannot be put into config, otherwise the config itself might get
@@ -33,8 +35,11 @@
         })
     });
 
-    /*
+    /**
      * Loads all the required modules and initialises the page
+     *
+     * @param template {Object} template module
+     * @param $load {Promise} loading promise
      */
     function main(template, $load) {
         // load auth and navigation controllers

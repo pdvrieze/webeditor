@@ -1,16 +1,22 @@
-/*
+/**
  * Editor model page controller
  *
  * Handles the interactions on model page: shows the list, and allows to
  * run, rename, remove and add models
+ *
+ * @module ControllerEditor
  */
 define(['jquery', 'store/model', 'util/simple-template', 'joint',
        'model/model', 'model/node', 'share/nav', 'util/util'],
        function ($, store, template, joint, Model, Nodes, nav, util) {
     "use strict";
 
-    /*
+    /**
      * Initialisation of the editor models page
+     *
+     * @param $html {Object} jQuery html to render
+     *
+     * @return {Promise}
      */
     function init($html) {
         var $def = $.Deferred();
@@ -25,8 +31,11 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         return $def;
     }
 
-    /*
+    /**
      * Render list of models
+     *
+     * @param $html {Object} jQuery html to render
+     * @param $list {Object} jQuery list element
      */
     function renderList($html, $list) {
         // when models are loaded, show one big new button if needed or default
@@ -47,8 +56,11 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         });
     }
 
-    /*
+    /**
      * Setup listeners for the editor models page
+     *
+     * @param $html {Object} jQuery html to render
+     * @param $list {Object} jQuery list element
      */
     function setupListeners($html, $list) {
         // setup listener for list item click - switch page to workspace
@@ -76,8 +88,11 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         });
     }
 
-    /*
+    /**
      * Initialise preview for the model
+     *
+     * @param $html {Object} jQuery html to render
+     * @param $list {Object} jQuery list element
      */
     function initPreview($html, $list) {
         $list.on('shown.bs.collapse', '.collapse', function () {
@@ -109,8 +124,11 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         setupPreviewListeners($html, $list);
     }
 
-    /*
+    /**
      * Set up listeners for the preview window and its controls
+     *
+     * @param $html {Object} jQuery html to render
+     * @param $list {Object} jQuery list element
      */
     function setupPreviewListeners($html, $list) {
         // Listener for the delete model button
@@ -139,8 +157,10 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         });
     };
 
-    /*
+    /**
      * Rename model
+     *
+     * @param $a {Object} jQuery <a> called
      */
     function rename($a) {
         var handle = $a.attr('handle'); // get handle
@@ -155,8 +175,11 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         }
     }
 
-    /*
+    /**
      * Setup paper to scale and centre the model
+     *
+     * @param $xml {Object} xml node
+     * @param paper {Object} jointjs paper
      */
     function setupPaper($xml, paper) {
         var bounds = getBounds($xml); // calculate mins and maxs
@@ -178,8 +201,11 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         paper.setOrigin(offsetX, offsetY);
     }
 
-    /*
+    /**
      * Caclulates minimum and maximum coordinates
+     *
+     * @param $xml {Object} xml node
+     * @return {Object} bounds
      */
     function getBounds($xml) {
         // We start from infinity to simplify calculation

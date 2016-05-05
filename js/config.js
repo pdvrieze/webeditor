@@ -1,4 +1,4 @@
-/*
+/**
  * Configuration file
  *
  * Sets up library paths for jointjs

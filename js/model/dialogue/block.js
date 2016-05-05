@@ -1,14 +1,18 @@
-/*
- * Block dialogue
- *
+/** 
  * Activity set up, currently only small choice but nicely fits together
+ *
+ * @module Dialogue
  */
 define(['jquery', 'util/simple-template', 'Sortable'],
        function ($, template, Sortable) {
     "use strict";
 
-    /*
-     * Block Dialogue class
+    /** 
+     * @class Block Block Dialogue class
+     * @constructor
+     * 
+     * @param node {Object} calling node
+     * @param storage {Array} dynamic variable storage
      */
     function Block(node, storage) {
         this.node = node;
@@ -36,8 +40,11 @@ define(['jquery', 'util/simple-template', 'Sortable'],
     }
 
     Block.prototype = {
-        /*
+        /** 
          * Render element list
+         * @method render
+         * 
+         * @param $content
          */
         render: function ($content) {
             var self = this;
@@ -49,6 +56,10 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             $content.empty().append(views);
         },
 
+        /** 
+         * Initialise Dialogue
+         * @method init
+         */
         init: function () {
             var self = this;
 
@@ -79,8 +90,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             this.render(this.$content);
         },
 
-        /*
+        /** 
          * Handle activity type change and add element
+         * @method initChange
          */
         initChange: function () {
             var self = this;
@@ -104,8 +116,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             });
         },
 
-        /*
+        /** 
          * Init variaous listeners
+         * @method initListeners
          */
         initListeners: function () {
             var self = this;
@@ -132,8 +145,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             this.$target.on('hide.bs.modal', function () { self.$body.off(); });
         },
 
-        /*
+        /** 
          * Init save button behaviour
+         * @method initSave
          */
         initSave: function () {
             var self = this;
@@ -154,8 +168,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             });
         },
 
-        /*
-         * Badly formatted code that handles the element interaction
+        /** 
+         * Initialise collapse element interaction
+         * @method initCollapse
          */
         initCollapse: function () {
             var self = this;
@@ -190,7 +205,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
                     var $content = $this.find('.element-content');
                     var newview = $.extend(true, {}, view);
                     newview.stor = getStorage(
-                        self.storage, self.attrs.elements, self.node
+                        self.storage, self.attrs.elements
                     );
 
                     // render
@@ -244,8 +259,13 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         }
     }
 
-    /*
-     * Generates li for the resuable variable list
+    /** 
+     * Generates <li> element for the list of reusable variables
+     * 
+     * @param value {String} underlying value
+     * @param name {String} value to print
+     * 
+     * @return {Object} jQuery <li> element for the list
      */
     function makeLi(value, name) {
         var $li = $('<li>');
@@ -257,10 +277,15 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         return $li;
     }
 
-    /*
+    /** 
      * Generate storage into a list of <li> elements for the template
+     *
+     * @param storage {Array} array of previous dynamic values
+     * @param elements {Array} arry of current labels in this
+     * 
+     * @return {String} HTML of set of <li> elements for the list
      */
-    function getStorage(storage, elements, self) {
+    function getStorage(storage, elements) {
         // this is just a wrapper to get html
         var $ul = $('<ul>');
 
@@ -289,8 +314,13 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         return $ul.html();
     }
 
-    /*
+    /** 
      * Convert element to template view
+     * 
+     * @param element {Object} element to be converted
+     * @param index {Integer} elements position
+     * 
+     * @return {Object} generated view
      */
     function toView(element, index) {
         var title = element.type;
