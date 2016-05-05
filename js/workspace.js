@@ -354,7 +354,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             if (joint.dragging) { // we are in draggin mode
                 var oe = event.originalEvent;
                 if (oe.changedTouches && oe.changedTouches.length) {
-                    if (pinch) { // pinch mode
+                    if (joint.pinch) { // pinch mode
                         pinchMove(joint, oe); // pinch zoom
                         return;
                     }
@@ -391,7 +391,8 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
                 (e.touches[0].pageY - e.touches[1].pageY) *
                 (e.touches[0].pageY - e.touches[1].pageY));
         if (joint.pinch) {
-            var percent = 1 - (pinch - dist) / (pinch * ZOOM);
+            var percent = 1 - (joint.pinch - dist) / (joint.pinch * ZOOM);
+            console.log(joint.scale, percent)
             joint.paper.scale(joint.scale *= percent);
         }
         joint.moved = true;
