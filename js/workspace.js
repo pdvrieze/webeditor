@@ -213,7 +213,6 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
                 x: oe.pageX, y: oe.pageY
             });
 
-            //joint.paper.setOrigin(0, 0);
             joint.paper.scale(joint.scale, joint.scale);
 
             // calculate position we want to move to
@@ -422,21 +421,46 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
      * @param joint {Object} storage for jointjs related elements
      * @param e {Event} touch event
      *
-     * @return {Integer} calculated distance
+     * @return {Object} calculated distance and central point
      */
     function pinchMove(joint, e) {
+        // calculate distance
         var dist = Math.sqrt(
             (e.touches[0].pageX - e.touches[1].pageX) *
             (e.touches[0].pageX - e.touches[1].pageX) +
                 (e.touches[0].pageY - e.touches[1].pageY) *
                 (e.touches[0].pageY - e.touches[1].pageY));
+
+        // calculate central point
+        var point = joint.paper.clientToLocalPoint({
+            x: (e.touches[0].pageX + e.touches[1].pageX) / 2,
+            y: (e.touches[0].pageY + e.touches[1].pageY) / 2
+        });
+
+        // if we are in the process of zooming, zoom
         if (joint.pinch) {
-            var percent = 1 - (joint.pinch - dist) / (joint.pinch * ZOOM);
-            console.log(joint.scale, percent)
-            joint.paper.scale(joint.scale *= percent);
+            var olddist = joint.pinch.dist; // retrieve first distance
+
+            // calculate scale
+            var percent = 1 - (olddist - dist) / (olddist * ZOOM);
+            joint.scale *= percent;
+
+            joint.paper.scale(joint.scale);
+
+            // calculate offset to centre
+            var diffX = joint.pinch.point.x - point.x;
+            var diffY = joint.pinch.point.y - point.y;
+
+            joint.origin[0] -= diffX * joint.scale;
+            joint.origin[1] -= diffY * joint.scale;
+
+            // centre
+            joint.paper.setOrigin(joint.origin[0], joint.origin[1]);
         }
+
         joint.moved = true;
-        return dist;
+
+        return { dist: dist, point: point };
     }
 
     /**
