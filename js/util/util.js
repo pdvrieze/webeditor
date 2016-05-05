@@ -3,7 +3,7 @@
  *
  * @module Util
  */
-define(function () {
+define(['lodash', 'jquery'], function (_, $) {
     "use strict";
 
     /**
@@ -95,7 +95,7 @@ define(function () {
         var reg = /(>)(<)(\/*)/g;
         xml = xml.replace(reg, '$1\r\n$2$3');
         var pad = 0;
-        jQuery.each(xml.split('\r\n'), function(index, node) {
+        _.forEach(xml.split('\r\n'), function(node) {
             var indent = 0;
             if (node.match( /.+<\/\w[^>]*>$/ )) {
                 indent = 0;

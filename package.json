@@ -1,0 +1,28 @@
+{
+  "name": "fyp",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sQu1rr/fyp.git"
+  },
+  "author": "Aleksandr Belkin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sQu1rr/fyp/issues"
+  },
+  "homepage": "https://github.com/sQu1rr/fyp#readme",
+  "dependencies": {
+    "jsdom": "^8.5.0",
+    "mocha-jsdom": "^1.1.0",
+    "requirejs": "^2.2.0",
+    "should": "^8.3.1",
+    "sinon": "^1.17.4"
+  }
+}
