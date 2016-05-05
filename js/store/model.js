@@ -1,8 +1,10 @@
-/*
+/**
  * Model Store
  *
  * Handles the interaction between server and client, and stores the
  * intermediate results
+ *
+ * @module Store
  */
 define(['jquery', 'util/util'], function ($, util) {
     "use strict";
@@ -12,8 +14,13 @@ define(['jquery', 'util/util'], function ($, util) {
 
     var URL = '/ProcessEngine/processModels'; // base URL
 
-    /*
+    /**
      * Clone model as a new one with a given name
+     *
+     * @param hanle {Integer} model handle
+     * @param name {String} new model name
+     *
+     * @return {Promise}
      */
     function cloneModel(handle, name) {
         var model = models[handle]; // get model
@@ -28,8 +35,13 @@ define(['jquery', 'util/util'], function ($, util) {
         return createModel(str); // delegate to creation function
     }
 
-    /*
+    /**
      * Rename existing model
+     *
+     * @param handle {Integer} model handle
+     * @param name {String} new model name
+     *
+     * @return {Promise}
      */
     function renameModel(handle, name) {
         var model = models[handle]; // get model
@@ -45,9 +57,14 @@ define(['jquery', 'util/util'], function ($, util) {
         })
     }
 
-    /*
+    /**
      * Update existing model with XML
      * Does not change the name
+     *
+     * @param handle {Integer} model handle
+     * @param str {String} model xml
+     *
+     * @return {Promise}
      */
     function updateModel(handle, str) {
         var url = URL + '/' + handle;
@@ -58,8 +75,12 @@ define(['jquery', 'util/util'], function ($, util) {
         })
     }
 
-    /*
+    /**
      * Create new model with given XML
+     *
+     * @param xml {String} model xml
+     *
+     * @return {Promise}
      */
     function createModel(xml) {
         var $def = $.Deferred(); // sucess on model re-fetch
@@ -74,8 +95,13 @@ define(['jquery', 'util/util'], function ($, util) {
 
     }
 
-    /*
+    /**
      * Download model
+     *
+     * @param handle {Integer} model handle
+     * @param name {String} model name
+     *
+     * @return {Promise}
      */
     function fetchModel(handle, name) {
         var url = URL + '/' + handle;
@@ -90,8 +116,12 @@ define(['jquery', 'util/util'], function ($, util) {
         });
     }
 
-    /*
+    /**
      * Remove existing model
+     *
+     * @param handle {Integer} model handle
+     *
+     * @return {Promise}
      */
     function deleteModel(handle) {
         return $.ajax({ // special REST method delete, so only $.ajax
@@ -100,8 +130,10 @@ define(['jquery', 'util/util'], function ($, util) {
         }).then(function () { delete models[handle]; });
     }
 
-    /*
+    /**
      * Update the whole list
+     *
+     * @return {Promise}
      */
     function update() {
         // we need list of deferreds
@@ -124,6 +156,7 @@ define(['jquery', 'util/util'], function ($, util) {
         return $def;
     }
 
+    // export
     return {
         getList: function () { return $def ? $def : this.update(); },
         update: update,

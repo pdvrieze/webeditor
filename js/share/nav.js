@@ -1,8 +1,10 @@
-/*
+/**
  * Navigation controller
  *
  * Provides a set of functions to route and navigate the website
  * Additionally handles the look and behaviour of the navigation bar
+ *
+ * @module Nav
  */
 define(['jquery', './auth', 'util/simple-template', 'lodash'],
        function ($, auth, template, _) {
@@ -15,7 +17,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
 
     var destroy = null; // current controller destroy method
 
-    /*
+    /**
      * Initialise navigation bar
      */
     function init() {
@@ -36,7 +38,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         };
     }
 
-    /*
+    /**
      * Initialise login button in the navigation bar
      */
     function initLoginBtn() {
@@ -64,7 +66,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         });
     }
 
-    /*
+    /**
      * Initialise logout button in the navigation bar
      */
     function initLogoutBtn() {
@@ -80,7 +82,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         });
     }
 
-    /*
+    /**
      * Sets up navigation bar for logged in user
      */
     function login() {
@@ -91,7 +93,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         });
     }
 
-    /*
+    /**
      * Sets up navigation bar for logged out user
      */
     function logout() {
@@ -99,11 +101,14 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         $nav.find('.hidden-guest').removeClass('hidden');
         changePage('index');
     }
-
-
     
-    /*
+    /**
      * Changes current page, can pass argument to the page controller
+     *
+     * @param page {String} name of the page to change to
+     * @param args {Mixed} params to be passed to controller
+     *
+     * @return {Promise}
      */
     function changePage(page, args) {
         var $load = template.load('#content');
@@ -161,8 +166,10 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         return $load;
     }
 
-    /*
+    /**
      * Automatically chooses the landing page depending on the hash
+     *
+     * @return {Promise}
      */
     function autoHash() {
         var args = null;

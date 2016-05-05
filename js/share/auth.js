@@ -1,7 +1,9 @@
-/*
+/**
  * Authentication module
  *
  * Allows user to get authenticated
+ *
+ * @module Auth
  */
 define(['jquery'], function ($) {
     "use strict";
@@ -10,8 +12,13 @@ define(['jquery'], function ($) {
 
     var urlLogin = '/accounts/login'; // login url
 
-    /*
+    /**
      * Log user in
+     *
+     * @param user {String} username
+     * @param pass {String} password
+     *
+     * @return {Promise}
      */
     function login(user, pass) {
         return $.get(urlLogin, {
@@ -19,8 +26,10 @@ define(['jquery'], function ($) {
         }).then(function () { username = user; });
     }
 
-    /*
+    /**
      * Log user out
+     *
+     * @return {Promise}
      */
     function logout() {
         return $.get('/accounts/logout').then(function () {
@@ -28,9 +37,11 @@ define(['jquery'], function ($) {
         });
     }
 
-    /*
+    /**
      * Accesses the accounts login page, and tries to automatically
      * get authenticated
+     *
+     * @return {Promise}
      */
     function tryLogin() {
         return $.get(urlLogin).then(function (res) {

@@ -1,15 +1,23 @@
-/*
+/**
  * Collection of Nodes to build the diagram with
+ *
+ * @module Model
  */
 define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
        function ($, joint, Dialogue, _, util) {
     "use strict";
 
-    // Node Size
+    /**
+     * Single element size on the graph
+     *
+     * @final
+     * @type Integer
+     */
     var SIZE = 30;
 
-    /*
-     * Base Node class to be used as a cell descroption
+    /**
+     * @class NodeClass Base Node class to be used as a cell descroption
+     * @extends joint.dia.Element
      */
     var NodeClass = joint.dia.Element.extend({
         // node marktip
@@ -29,17 +37,52 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     // a very random number to be used in node naming
     var random = 1;
 
-    /*
-     * Base Node class that contains base functions
+    /**
+     * @class Base Base Node class that contains base functions
+     * @extends Backbone.Model
      */
     var Base = Backbone.Model.extend({
-        type: null, // to be specified
+        /**
+         * Node Type name
+         *
+         * @property type
+         * @type String
+         * @default null
+         */
+        type: null,
+
+        /**
+         * Node unique ID
+         *
+         * @property eid
+         * @type String
+         * @default null
+         */
         eid: null, // to be specified
+
+        /**
+         * Link limit setup
+         *
+         * @property linkLimit
+         * @type Object { input: Integer, output: Integer }
+         * @default { input: 1, output: 1 }
+         */
         linkLimit: { input: 1, output: 1 }, // 1 in 1 out default
+
+        /**
+         * Set to true if node has edit dialogue
+         *
+         * @property canEdit
+         * @type Boolean
+         * @default false
+         */
         canEdit: false, // by default node is not to be edited
 
-        /*
+        /**
          * Creates node and assigns default values
+         *
+         * @method create
+         * @param offset {Object} offset coordinates
          */
         create: function (offset, id) {
             this.eid = id || this.type + random++; // random ID if needed
@@ -50,8 +93,11 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             });
         },
 
-        /*
+        /**
          * Sets text in the centre of a node
+         *
+         * @method setText
+         * @param text {String} text to set
          */
         setText: function (text) {
             var id = this.cell.findView(this.paper).id;
@@ -60,28 +106,43 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             this.styleText($node);
         },
 
-        /*
+        /**
          * Override to style text
+         *
+         * @method styleText
          */
         styleText: function () {},
 
-        /*
+        /**
          * Returns cell position for the tooltip hence the name
+         *
+         * @method tooltip
+         * @param callback {Function} callback to pass arguments to
          */
         tooltip: function (callback) {
             callback(this.cell.position().x, this.cell.position().y);
         },
 
-        // empty for start and end nodes
+        /**
+         * Override in to output advanced XML
+         *
+         * @method fromXml
+         */
         fromXml: function () {}
     });
 
-    /*
-     * Start Node
+    /**
+     * @class Start Start Node
+     * @extends Base
      */
     var Start = Base.extend({
+        /** @override */
         type: 'start',
+
+        /** @override */
         linkLimit: { input: 0, output: 1 },
+
+        /** @override */
         toXml: function () {
             return $('<start>', {
                 id: this.eid,
@@ -91,8 +152,11 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         }
     });
 
-    /*
+    /**
      * Format define to reference other activity or labels in current one
+     *
+     * @param $define {Object} jQuery define element
+     * @param text {String} string to include in define
      */
     function formatDefine($define, text) {
         // uglyass url
@@ -122,8 +186,11 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         $define.append(text);
     }
 
-    /*
+    /**
      * Add result tag
+     *
+     * @param $cell {Object} jQuery cell to add tag to
+     * @param value {Object} element that needs to be added
      */
     function addResult($cell, value) {
         // add result
@@ -134,8 +201,13 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         }).appendTo($cell);
     }
 
-    /*
+    /**
      * Added define and result items to the xml
+     *
+     * @param $cell {Object} jQuery activity cell
+     * @param $item {Object} jQuery attribute item
+     * @param value {Object} element that needs to be added
+     * @param name {String} attibute name
      */
     function addItem($cell, $item, value, name) {
         // add define
@@ -151,8 +223,12 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         }).appendTo($item);
     }
 
-    /*
+    /**
      * Parse define from xml into text
+     * 
+     * @param define {String} text of define element to parse
+     *
+     * @return {String}
      */
     function parseDefine(define) {
         var $define = $(define);
@@ -170,24 +246,34 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         return text;
     }
 
-    /*
-     * Block
+    /**
+     * @class Block Activity Class
+     * @extends Base
      */
     var Block = Base.extend({
+        /** @override */
         type: 'block',
+
+        /** @override */
         canEdit: true, // block is editable
 
-        // create block dialogue on edit
+        /**
+         * Open edit dialogue
+         *
+         * @param storage {Array} previous dynamic elements
+         */
         edit: function (storage) {
             new Dialogue.Block(this, storage);
         },
 
-        // when initialised, set title
+        /**
+         * Initialisation in graph
+         */
         init: function () {
             if (this.attrs && this.attrs.label) this.setText(this.attrs.label);
         },
 
-        // load from xml
+        /** @override */
         fromXml: function ($xml, $model) {
             var attrs = { elements: [] }; // default attributes
 
@@ -230,7 +316,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             this.attrs = attrs;
         },
 
-        // convert to xml
+        /** @override */
         toXml: function (predecessors) {
             var params = {
                 id: this.eid,
@@ -317,24 +403,30 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         }
     });
 
-    /*
-     * Gate Node
+    /**
+     * @class Gate Gate Node
+     * @extends Base
      */
     var Gate = Base.extend({
+        /** @override */
         canEdit: true, // editable
 
-        // open gate dialogue
+        /**
+         * Open edit dialogue
+         */
         edit: function () {
             new Dialogue.Gate(this);
         },
 
-        // style text
+        /** @override */
         styleText: function ($text) {
             $text.get(0).textContent = $text.get(0).textContent.toUpperCase();
             $text.attr('style', 'font-weight: bold;');
         },
 
-        // when initialised set the label
+        /**
+         * Initialisation in graph
+         */
         init: function () {
             if (!this.attrs) this.attrs = { min: 2, max: 2 };
 
@@ -354,7 +446,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             }
         },
 
-        // init from xml
+        /** @override */
         fromXml: function ($xml) {
             this.attrs = { min: -1, max: -1 };
             if ($xml.attr('label')) this.attrs.label = $xml.attr('label');
@@ -362,7 +454,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             if ($xml.attr('max')) this.attrs.max = $xml.attr('max') - 0;
         },
 
-        // convert to xml
+        /** @override */
         toXml: function (predecessors) {
             var params = {
                 id: this.eid,
@@ -395,26 +487,42 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
         },
     });
 
-    // split gate specialisation
+    /**
+     * @class Split Split class
+     * @extends Gate
+     */
     var Split = Gate.extend({
+        /** @override */
         type: 'split',
+
+        /** @override */
         linkLimit: { input: 1, output: -1 },
     });
 
-    // join gate specialisation
+    /**
+     * @class Join Join class
+     * @extends Gate
+     */
     var Join = Gate.extend({
+        /** @override */
         type: 'join',
+
+        /** @override */
         linkLimit: { input: -1, output: 1 },
     });
 
-    /*
-     * End Node
+    /**
+     * @class End End Node
+     * @extends Base
      */
     var End = Base.extend({
+        /** @override */
         type: 'end',
+
+        /** @override */
         linkLimit: { input: 1, output: 0 },
 
-        // convert to xml
+        /** @override */
         toXml: function (predecessors) {
             var params = {
                 id: this.eid,

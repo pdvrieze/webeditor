@@ -1,25 +1,36 @@
-/*
+/**
  * Utilities and shared functions
+ *
+ * @module Util
  */
 define(function () {
     "use strict";
 
-    /*
+    /**
      * Crossbrower xml tag selection
      *
      * Apparently chrome can't do namespaces, and firefox can't ignore them
      * Additionally escapes the colon
+     *
+     * @param sel {String} full xml tag with namespace
+     * @return {String} fixed selector
      */
     function xmlSel(sel) {
         var split = sel.split(':');
         return sel.replace(':', '\\:') + ',' + split[1];
     }
 
-    /*
+    /**
      * Fakes 'multipart/form-data' form but the data is coming from its
      * second argument, and not users filesystem
      *
      * http://stackoverflow.com/a/3012611
+     *
+     * @param url {String} url
+     * @param name {String} attribute name
+     * @param data {String} data to upload
+     *
+     * @return {Promise}
      */
     function upload(url, name, data) {
         var $def = $.Deferred(); // we will return promise
@@ -52,8 +63,15 @@ define(function () {
         return $def;
     }
 
-    /*
+    /**
      * Replaces or removes the attribute in an XML string
+     *
+     * @param str {String} string
+     * @param attr {String} attribute name
+     * @param value {String} old value
+     * @param replace {String} replacement
+     *
+     * @return {String} replaced string
      */
     function replaceAttr(str, attr, value, replace) {
         if (value) return str.replace(attr + '="' + value + '"',
@@ -64,9 +82,13 @@ define(function () {
         }
     }
 
-    /*
+    /**
      * Pretty format given xml
      * https://gist.github.com/sente/1083506
+     *
+     * @param xml {String} xml to format
+     *
+     * @return {String}
      */
     function formatXml(xml) {
         var formatted = '';

@@ -1,8 +1,10 @@
-/*
+/**
  * Workspace controller
  *
  * Handles the editor part of the project, allows to interact with the graph,
  * zoom, pan the paper, etc
+ *
+ * @module ControllerWorkspace
  */
 define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
        function ($, joint, Model, Nodes, store) {
@@ -11,10 +13,21 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
     // export vectorizer globally into this file
     var V = joint.Vectorizer;
 
-    var ZOOM = 32; // zoom multiplier for phone - works good on most devices
+    /**
+     * Zooming multiplier for the phone
+     *
+     * @final
+     * @type Integer
+     */
+    var ZOOM = 32;
 
-    /*
+    /**
      * Initialisation of the workspace page
+     *
+     * @param $html {Object} jQuery html to render
+     * @param handle {Integer} open model handle
+     *
+     * @return {Promise}
      */
     function init($html, handle) {
         var $def = $.Deferred();
@@ -34,9 +47,12 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
 
     }
 
-    /*
+    /**
      * HTML is already rendered, so we can run resizing methods for scaling the
      * graphs
+     *
+     * @param $html {Object} jQuery html to render
+     * @param joint {Object} storage for jointjs related elements
      */
     function post($html, joint) {
         $(window).trigger('resize');
@@ -68,8 +84,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         }
     }
 
-    /*
+    /**
      * Initialise interface, especially navigation buttons
+     *
+     * @param joint {Object} storage for jointjs related elements
      */
     function initInterface(joint) {
         joint.model.nosave = false;
@@ -93,8 +111,12 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         });
     }
 
-    /*
+    /**
      * Initialise jointjs diagram
+     *
+     * @param $html {Object} jQuery html to render
+     *
+     * @return {Object} storage for jointjs related elements
      */
     function initJoint($html) { 
         // create graph
@@ -136,8 +158,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         };
     }
 
-    /*
+    /**
      * Takes care of window resizing
+     *
+     * @param joint {Object} storage for jointjs related elements
      */
     function initResize(joint) {
         $(window).off('resize.pe').on('resize.pe', function () {
@@ -169,8 +193,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         });
     }
 
-    /*
+    /**
      * Makes it possible to resize the paper by scrolling the mouse wheel
+     *
+     * @param joint {Object} storage for jointjs related elements
      */
     function initScroll(joint) {
         joint.paper.$el.on('mousewheel.pe DOMMouseScroll.pe', function(event) {
@@ -209,8 +235,11 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         });
     };
 
-    /*
+    /**
      * Allows to show the tooltip when the blank space is clicked
+     *
+     * @param $html {Object} jQuery html to render
+     * @param joint {Object} storage for jointjs related elements
      */
     function initTooltipCreate($html, joint) {
         var $tooltip = $html.find('#tooltip_create');
@@ -261,8 +290,11 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         });
     }
 
-    /*
+    /**
      * Allows to show the edit tooltip when clicked on the cell
+     *
+     * @param $html {Object} jQuery html to render
+     * @param joint {Object} storage for jointjs related elements
      */
     function initTooltipEdit($html, joint) {
         var $tooltip = $html.find('#tooltip_edit');
@@ -310,12 +342,12 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             joint.model[action](cellView);
             return false;
         });
-
-
     }
 
-    /*
+    /**
      * Initialise panning and zooming on both desktop and touchscreen
+     *
+     * @param joint {Object} storage for jointjs related elements
      */
     function initInteraction(joint) {
         // nullify cellmoved when cell is grabbed
@@ -384,6 +416,14 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         });
     }
 
+    /**
+     * Calculates distances between two fingers and sets appropraite vars
+     *
+     * @param joint {Object} storage for jointjs related elements
+     * @param e {Event} touch event
+     *
+     * @return {Integer} calculated distance
+     */
     function pinchMove(joint, e) {
         var dist = Math.sqrt(
             (e.touches[0].pageX - e.touches[1].pageX) *
@@ -399,16 +439,23 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         return dist;
     }
 
-    /*
+    /**
      * Initialise the model itself
+     *
+     * @param joint {Object} storage for jointjs related elements
+     * @param handle {Integer} model handle
      */
     function initModel(joint, handle) {
         joint.model = new Model(joint.graph, joint.paper);
         joint.model.handle = handle;
     }
 
-    /*
+    /**
      * Show tooltip - centre it
+     *
+     * @param $tooltip {Object} jquery tooltip to display
+     * @param x {Integer}
+     * @param y {Integer}
      */
     function showTooltip($tooltip, x, y) {
         $('.workspace-tooltip').hide();
@@ -418,8 +465,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         });
     }
 
-    /*
+    /**
      * Takes care of destrying the content and removin the event listeners
+     *
+     * @param joint {Object} storage for jointjs related elements
      */
     function destroy(joint) {
         // unlink and remove paper

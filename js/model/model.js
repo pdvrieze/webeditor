@@ -1,19 +1,21 @@
-/*
- * Model class
- *
+/**
  * Holds the list of nodes of the graph and allows some interactions in between
  * Basically a collection of convinient utilities to simplify jointjs
  * interactions
+ * 
+ * @module Model
  */
 define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         './dialogue', 'dagre'],
         function ($, joint, _, Nodes, store, util, Dialogue, dagre) {
     "use strict";
 
-    /*
-     * Constructor
-     *
-     * simply sets default values
+    /** 
+     * @class Model
+     * @constructor
+     * 
+     * @param graph {Object} jointjs graph
+     * @param paper {Object} jointjs paper
      */
     function Model(graph, paper) {
         this.graph = graph;
@@ -33,10 +35,15 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         };
     }
 
-    /*
+    /**
      * Since HTML is not case sensitive and jQuery does not support
      * namespaces in HTML, we generate HTML output, and then apply
      * namespaces as a hack + we fix the case
+     *
+     * @param str {String} big xml/html string to edit
+     * @param items {Array} array of items to replace as namespaces
+     *
+     * @return {String} formatted string
      */
     function addNamespaces(str, items) {
         $.each(items, function (i, val) {
@@ -46,12 +53,13 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         return str;
     }
 
-    /*
-     * Model class
-     */
     Model.prototype = {
-        /*
+        /**
          * Cell is clicked by user
+         * @method click
+         *
+         * @param cellView {Object} jointjs cell view
+         * @param edit {Function} edit dialogue callback
          */
         click: function (cellView, edit) {
             var node = this.find(cellView);
@@ -65,8 +73,13 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             else this.select(cellView, edit); // regular selection
         },
 
-        /*
+        /**
          * Add new node on an offset
+         * @method add
+         *
+         * @param node {Object} node to add
+         * @param offset {Object} coordinate point
+         * @param id {String} node ID
          */
         add: function (node, offset, id) {
             if (!node.cell) node.create(offset, id); // create if needed
@@ -86,8 +99,13 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             this.save(); // save model
         },
 
-        /*
+        /**
          * Find cell by its cellView
+         * @method find
+         *
+         * @param cellView {Object} jointjs cell view
+         *
+         * @return {Object} node if found
          */
         find: function (cellView) {
             for (var i = 0; i < this.nodes.length; ++i) {
@@ -97,8 +115,12 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             }
         },
 
-        /*
+        /**
          * Links two nodes together
+         * @method link
+         *
+         * @param source {Object} source node
+         * @param target {Object} target node
          */
         link: function (source, target) {
             if (!this.linkPossible(source, target)) {
@@ -124,16 +146,23 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             this.save(); // save model
         },
 
-        /*
+        /**
          * Select node and delegate work to tooltip
+         * @method select
+         * 
+         * @param cellView {Object} jointjs cell view
+         * @param edit {Function} edit dialogue callback
          */
         select: function (cellView, edit) {
             this.selected = this.find(cellView);
             this.selected.tooltip(edit);
         },
 
-        /*
+        /**
          * Remove node
+         * @method remove
+         *
+         * @param cellView {Object} jointjs cell view
          */
         remove: function (cellView) {
             var node = this.find(cellView);
@@ -148,8 +177,13 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             this.save(); // save model
         },
 
-        /*
+        /**
          * Extract resulable variable from node (block)
+         * @method extract
+         *
+         * @param node {Object} node to extract info from
+         *
+         * @return {Array} array of current node dynamic variables
          */
         extract: function (node) {
             var vars = [];
@@ -168,9 +202,14 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             return vars;
         },
 
-        /*
+        /**
          * Extract resusable variables from all nodes behind the current one
          * Does not work for multiple links, because of ambiguities
+         * @method storage
+         *
+         * @param cellView {Object} jointjs cell view
+         *
+         * @return {Array} array of previous dynamic variables
          */
         storage: function (cellView) {
             var cell = this.find(cellView).cell;
@@ -187,25 +226,37 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             return storage;
         },
 
-        /*
+        /**
          * Open edit dialogue
+         * @method edit
+         *
+         * @param cellView {Object} jointjs cell view
          */
         edit: function (cellView) {
             this.find(cellView).edit(this.storage(cellView));
         },
 
-        /*
+        /**
          * Enter connection mode
+         * @method connect
+         *
+         * @param cellView {Object} jointjs cell view
          */
         connect: function (cellView) {
             this.mode = 'connect';
             this.selected = this.find(cellView);
         },
 
-        /*
+        /**
          * Check if link between two nodes is possible
          * Or if target is not specified, checks if links from this node are
          * possible at all
+         * @method linkPossible
+         *
+         * @param source {Object} source node
+         * @param target {Object} target node
+         *
+         * @return {Boolean}
          */
         linkPossible: function (source, target) {
             var G = this.graph;
@@ -218,8 +269,9 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             return true;
         },
 
-        /*
+        /**
          * Auto align model
+         * @method autoalign
          */
         autoalign: function () {
             // create graph for alignment
@@ -263,8 +315,11 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             this.save();
         },
 
-        /*
+        /**
          * Convert from xml
+         * @method fromXml
+         *
+         * @param $xml {Object} XML node
          */
         fromXml: function ($xml) {
             var self = this;
@@ -312,8 +367,11 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             });
         },
 
-        /*
+        /**
          * Convert model to XML
+         * @method toXml
+         *
+         * @return {String}
          */
         toXml: function () {
             var self = this;
@@ -353,8 +411,11 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
                 .replace(/taskparam/g, 'taskParam');
         },
 
-        /*
+        /**
          * Save model to server
+         * @method fromXml
+         *
+         * @return {Promise}
          */
         save: function () {
             if (this.nosave) return; // do not save unless needed
@@ -368,15 +429,17 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             });
         },
 
-        /*
+        /**
          * Opens dialogue to edit xml
+         * @method editXml
          */
         editXml: function () {
             new Dialogue.Xml(this);
         },
 
-        /*
-         * Reload model
+        /**
+         * Reload model from store xml
+         * @method reload
          */
         reload: function () {
             this.nosave = true;
@@ -386,5 +449,6 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         }
     };
 
+    // export
     return Model;
 });
