@@ -49,3 +49,6 @@ bower_components
 
 ### Docs ###
 out/*
+
+### Node ###
+node_modules/*
