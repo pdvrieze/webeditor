@@ -7,7 +7,9 @@ define(['jquery', 'util/simple-template'], function ($, template) {
     "use strict";
 
     /** 
-     * @class Gate Gate Dialogue class
+     * Gate Dialogue class
+     *
+     * @class Gate
      * @constructor
      * 
      * @param node {Object} calling node

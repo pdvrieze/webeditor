@@ -8,7 +8,9 @@ define(['jquery', 'util/simple-template', 'Sortable'],
     "use strict";
 
     /** 
-     * @class Block Block Dialogue class
+     * Block Dialogue class
+     *
+     * @class Block
      * @constructor
      * 
      * @param node {Object} calling node

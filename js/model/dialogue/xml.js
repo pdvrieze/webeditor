@@ -8,7 +8,9 @@ define(['jquery', 'util/simple-template', 'store/model', 'util/util'],
     "use strict";
 
     /** 
-     * @class Xml Xml Dialogue class
+     * Xml Dialogue class
+     *
+     * @class Xml
      * @constructor
      * 
      * @param model {Object} calling model

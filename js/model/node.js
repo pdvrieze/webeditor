@@ -16,7 +16,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     var SIZE = 30;
 
     /**
-     * @class NodeClass Base Node class to be used as a cell descroption
+     * Base Node class to be used as a cell descroption
+     *
+     * @class NodeClass
      * @extends joint.dia.Element
      */
     var NodeClass = joint.dia.Element.extend({
@@ -38,7 +40,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     var random = 1;
 
     /**
-     * @class Base Base Node class that contains base functions
+     * Base Node class that contains base functions
+     *
+     * @class Base
      * @extends Backbone.Model
      */
     var Base = Backbone.Model.extend({
@@ -132,7 +136,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     });
 
     /**
-     * @class Start Start Node
+     * Start Node
+     *
+     * @class Start
      * @extends Base
      */
     var Start = Base.extend({
@@ -247,7 +253,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     }
 
     /**
-     * @class Block Activity Class
+     * Activity Class
+     *
+     * @class Block
      * @extends Base
      */
     var Block = Base.extend({
@@ -404,7 +412,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     });
 
     /**
-     * @class Gate Gate Node
+     * Gate Node
+     *
+     * @class Gate
      * @extends Base
      */
     var Gate = Base.extend({
@@ -488,7 +498,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     });
 
     /**
-     * @class Split Split class
+     * Split class
+     *
+     * @class Split
      * @extends Gate
      */
     var Split = Gate.extend({
@@ -500,7 +512,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     });
 
     /**
-     * @class Join Join class
+     * Join class
+     *
+     * @class Join
      * @extends Gate
      */
     var Join = Gate.extend({
@@ -512,7 +526,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     });
 
     /**
-     * @class End End Node
+     * End Node
+     *
+     * @class End
      * @extends Base
      */
     var End = Base.extend({
