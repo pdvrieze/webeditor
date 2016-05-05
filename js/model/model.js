@@ -6,7 +6,8 @@
  * interactions
  */
 define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
-        './dialogue'], function ($, joint, _, Nodes, store, util, Dialogue) {
+        './dialogue', 'dagre'],
+        function ($, joint, _, Nodes, store, util, Dialogue, dagre) {
     "use strict";
 
     /*
@@ -110,7 +111,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             var cell = new joint.shapes.fsa.Arrow({
                 source: { id: source.cell.id },
                 target: { id: target.cell.id },
-                router: { name: 'manhattan', args: {
+                router: { name: 'metro', args: {
                     startDirections: [ 'right' ],
                     endDirections: [ 'left' ],
                 } },
@@ -221,7 +222,38 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
          * Auto align model
          */
         autoalign: function () {
-            console.error("Not Implemented")
+            var g = new dagre.graphlib.Graph();
+
+            g.setGraph({});
+            g.setDefaultEdgeLabel(function() { return {}; });
+
+            $.each(this.nodes, function (i, node) {
+                g.setNode(node.cell.id, { width: 60, height: 60 });
+            });
+
+            var G = this.graph;
+            $.each(this.nodes, function (i, node) {
+                var links = G.getConnectedLinks(node.cell, { inbound: true });
+                $.each(links, function (i, link) {
+                    var attrs = link.attributes;
+                    g.setEdge(attrs.source.id, attrs.target.id);
+                })
+            });
+            
+            dagre.layout(g);
+
+            var positions = {};
+            g.nodes().forEach(function(id) {
+                positions[id] = g.node(id);
+            });
+
+            this.nosave = true;
+            $.each(this.nodes, function (i, node) {
+                var pos = positions[node.cell.id];
+                node.cell.position(pos.y, pos.x);
+            });
+            this.nosave = false;
+            this.save();
         },
 
         /*

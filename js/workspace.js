@@ -81,6 +81,13 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             joint.model.editXml();
             return false;
         });
+
+        // auto algin
+        $('#autoalign').off().click(function (e) {
+            e.preventDefault();
+            joint.model.autoalign();
+            return false;
+        });
     }
 
     /*
