@@ -3,7 +3,8 @@
  *
  * @module ControllerViewer
  */
-define(['jquery', 'store/task'], function ($, store) {
+define(['jquery', 'store/task', 'util/simple-template'],
+       function ($, store, template) {
     "use strict";
 
     /**
@@ -16,11 +17,27 @@ define(['jquery', 'store/task'], function ($, store) {
     function init($html) {
         var $def = $.Deferred();
 
-        var manager = new store.PendingTaskManager();
+        var $list = $html.find('#list');
+        var $load = template.load($list);
+        var manager = new store.PendingTaskManager(function (tasks) {
+            var $html = render($list, tasks);
+            if ($load) $load.resolve($html);
+            else $list.html($html);
+        });
 
         // no async neede after all
         $def.resolve($html, manager);
         return $def;
+    }
+
+    function render($list, tasks) {
+        var list = [];
+        $.each(tasks, function (i, task) {
+            var $html = template.render('viewer-task', task);
+            $html.data('task', task);
+            list.push($html);
+        });
+        $list.empty().append(list);
     }
 
     function destroy(manager) {

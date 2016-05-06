@@ -17,7 +17,7 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
     var URL_INSTANCES = '/ProcessEngine/processInstances/';
     var URL_TASKS = '/ProcessEngine/tasks/';
 
-    var URL_PENDING = '/PEUserMessageHandler/UserMessageService/pendingTasks';
+    var URL_PENDING = '/PEUserMessageHandler/UserMessageService/pendingTasks/';
 
     var INTERVAL = 1000; // 1s
 
@@ -69,8 +69,7 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
 
                 if (!_.isEqual(tasks, self.tasks)) {
                     self.tasks = tasks;
-                    if (self.callback) self.callback();
-                    console.log(tasks);
+                    self.callback(tasks);
                 }
             });
         }

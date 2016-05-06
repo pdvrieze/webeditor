@@ -1,0 +1,14 @@
+<a href="#task_{{handle}}" class="list-group-item">
+    <span class="item-title">Task #{{handle}} [{{state}}]</span>
+    <span class="clickable pull-right glyphicon glyphicon-ok accept"></span>
+    <span class="clickable pull-right glyphicon glyphicon-remove remove"></span>
+</a>
+<div class="panel-collapse collapse" id="task_{{handle}}">
+    <div class="panel-body">
+        <div class="task-elements"></div>
+        <button class="btn btn-danger model-success pull-right"
+                handle="{{handle}}">
+            Save
+        </button>
+    </div>
+</div>
