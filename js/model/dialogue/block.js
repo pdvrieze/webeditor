@@ -113,7 +113,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             this.$body.find('#add').on('click', function () {
                 var random = Math.floor(Math.random() * 64 * 1024);
                 self.attrs.elements.push({ type: 'empty', eid: random });
-                self.render(self.$content)
+                self.render(self.$content);
                 self.$content.find('.collapse').last().collapse('show');
             });
         },
@@ -259,7 +259,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             });
 
         }
-    }
+    };
 
     /** 
      * Generates <li> element for the list of reusable variables
@@ -328,12 +328,12 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         var title = element.type;
 
         var description = {};
-        if (element.text) description['Name'] = element.name;
+        if (element.text) description.Name = element.name;
         if (element.hasOwnProperty('text')) {
-            description['Text'] = element.text;
+            description.Text = element.text;
         }
         if (element.hasOwnProperty('value')) {
-            description['Default'] = element.value;
+            description.Default = element.value;
         }
 
         var descarray = [];

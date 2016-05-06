@@ -122,7 +122,7 @@ define(['jquery', 'util/simple-template'], function ($, template) {
                 self.$target.modal('hide');
             });
         }
-    }
+    };
 
     // export
     return Gate;

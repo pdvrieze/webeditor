@@ -190,7 +190,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             if (node.attrs && node.attrs.elements) {
                 for (var i = 0; i < node.attrs.elements.length; ++i) {
                     var element = node.attrs.elements[i];
-                    var activity = node.attrs.label || '#' + node.eid 
+                    var activity = node.attrs.label || '#' + node.eid;
                     if (element.type != 'label') {
                         vars.push({
                             title: activity + '.' + element.name,
@@ -293,7 +293,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
                 $.each(links, function (i, link) {
                     var attrs = link.attributes;
                     g.setEdge(attrs.source.id, attrs.target.id);
-                })
+                });
             });
             
             // relayout
@@ -363,7 +363,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
                 if (predecessor) self.link(nodes[predecessor], nodes[id]);
                 $(this).find(util.xmlSel('pe:predecessor')).each(function () {
                     self.link(nodes[this.textContent], nodes[id]);
-                })
+                });
             });
         },
 

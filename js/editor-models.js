@@ -155,7 +155,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
                 });
             }
         });
-    };
+    }
 
     /**
      * Rename model
@@ -171,7 +171,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             // only update name if its different and/or existent
             store.renameModel(handle, newName).then(function () {
                 $title.html(newName); // replace the item title with new name
-            }).fail(function (e) { console.log('Failed to rename', e) });
+            }).fail(function (e) { console.log('Failed to rename', e); });
         }
     }
 

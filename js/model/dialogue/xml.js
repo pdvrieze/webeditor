@@ -16,7 +16,7 @@ define(['jquery', 'util/simple-template', 'store/model', 'util/util'],
      * @param model {Object} calling model
      */
     function Xml(model) {
-        this.model = model // save model
+        this.model = model; // save model
 
         // find dialogue output
         this.$target = $('#dialogue');
