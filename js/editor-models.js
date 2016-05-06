@@ -71,6 +71,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         // setup view button listener
         $list.on('click', '.clickable.view', function (e) {
+            $list.find('.collapse.in').collapse('hide');
             $(this).parents('a').next().collapse('toggle');
             return false;
         });
