@@ -10,6 +10,9 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         function ($, joint, _, Nodes, store, util, Dialogue, dagre) {
     "use strict";
 
+    // export vectorizer globally into this file
+    var V = joint.Vectorizer;
+
     /** 
      * @class Model
      * @constructor
@@ -274,6 +277,10 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
          * @method autoalign
          */
         autoalign: function () {
+            var SIZE = Nodes.SIZE; // spacing
+
+            if (!this.nodes.length) return; // nothing to do
+
             // create graph for alignment
             var g = new dagre.graphlib.Graph();
 
@@ -283,7 +290,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
 
             // add every node with sizes 60x60
             $.each(this.nodes, function (i, node) {
-                g.setNode(node.cell.id, { width: 60, height: 60 });
+                g.setNode(node.cell.id, { width: SIZE, height: SIZE });
             });
 
             // add edges
@@ -299,15 +306,33 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             // relayout
             dagre.layout(g);
 
-            // save new positions
+            // save new positions and calculate bounds
             var positions = {};
-            g.nodes().forEach(function(id) { positions[id] = g.node(id); });
+            var bounds = {
+                x: { min: Infinity, max: -Infinity },
+                y: { min: Infinity, max: -Infinity }
+            };
+            g.nodes().forEach(function(id) {
+                positions[id] = g.node(id);
+                var x = positions[id].y;
+                var y = positions[id].x;
+                if (x < bounds.x.min) bounds.x.min = x;
+                if (x > bounds.x.max) bounds.x.max = x;
+                if (y < bounds.y.min) bounds.y.min = y;
+                if (y > bounds.y.max) bounds.y.max = y;
+            });
+
+            var width = bounds.x.max - bounds.x.min + Nodes.SIZE;
+            var height = bounds.y.max - bounds.y.min + Nodes.SIZE;
+
+            var offsetX = width / 2 - 100;
+            var offsetY = height / 2 - 150;
 
             // apply new positions switching x and y
             this.nosave = true;
             $.each(this.nodes, function (i, node) {
                 var pos = positions[node.cell.id];
-                node.cell.position(pos.y, pos.x);
+                node.cell.position(pos.y - offsetX, pos.x - offsetY);
             });
             this.nosave = false;
 
