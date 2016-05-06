@@ -42,17 +42,17 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         // to normal sized button, and models of course
         var $load = template.load($list);
         var list = store.getList().then(function (list) {
-            if (Object.keys(list)) { // we have models yay
+            var $list = [];
+            if (Object.keys(list).length) { // we have models yay
                 $html.find('#models_notnew').removeClass('hidden');
 
-                var $list = [];
                 $.each(list, function (key, view) {
                     // append each model to the list
                     $list.push(template.render('editor-model', view));
                 });
-                $load.resolve($list);
             }
             else $html.find('#models_new').removeClass('hidden');
+            $load.resolve($list);
         });
     }
 
