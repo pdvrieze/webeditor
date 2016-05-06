@@ -53,7 +53,7 @@ define(['jquery', 'util/util'], function ($, util) {
         var url = URL + '/' + handle;
         return util.upload(url, 'processUpload', str).then(function () {
             models[handle].name = name;
-            models[handle].xml.children[0].attributes.name.value = name;
+            models[handle].xml.documentElement.setAttribute('name', name);
         });
     }
 
@@ -71,7 +71,7 @@ define(['jquery', 'util/util'], function ($, util) {
         return util.upload(url, 'processUpload', str).then(function () {
             var xml = $.parseXML(str);
             models[handle].xml = xml;
-            models[handle].uuid = xml.children[0].attributes.uuid.value;
+            models[handle].uuid = xml.documentElement.getAttribute('uuid');
         });
     }
 
@@ -106,11 +106,14 @@ define(['jquery', 'util/util'], function ($, util) {
     function fetchModel(handle, name) {
         var url = URL + '/' + handle;
         return $.get(url).then(function (xml) {
+            // test framework workaround
+            if (typeof xml == 'string') xml = $.parseXML(xml);
+
             // store
             models[handle] = {
                 handle: handle,
                 name: name,
-                uuid: xml.children[0].attributes.uuid.value,
+                uuid: xml.documentElement.getAttribute('uuid'),
                 xml: xml
             };
         });

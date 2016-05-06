@@ -1,0 +1,78 @@
+<pe:processModel name="test123" xmlns:pe="http://adaptivity.nl/ProcessEngine/" uuid="db21a994-61cd-4f2d-abbe-a2429bdddd5f">
+    <pe:activity id="ac0" x="-140" y="162.5" predecessor="start1">
+        <pe:message type="application/soap+xml" serviceNS="http://adaptivity.nl/userMessageHandler" serviceName="userMessageHandler" endpoint="internal" operation="postTask">
+            <env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" encodingstyle="http://www.w3.org/2003/05/soap-encoding">
+                <env:Body>
+                    <umh:postTask xmlns:umh="http://adaptivity.nl/userMessageHandler">
+                        <umh:repliesParam>
+                            <jbi:element xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="endpoint">
+                            </jbi:element>
+                        </umh:repliesParam>
+                        <umh:taskParam>
+                            <umh:task>
+                                <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="instancehandle" name="instancehandle">
+                                </jbi:attribute>
+                                <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="handle" name="remotehandle">
+                                </jbi:attribute>
+                                <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="owner" name="owner">
+                                </jbi:attribute>
+                                <umh:item name="label1n" type="label">
+                                    <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="d_label1n" name="value">
+                                    </jbi:attribute>
+                                </umh:item>
+                                <umh:item name="label2n" type="label">
+                                    <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="d_label2n" name="value">
+                                    </jbi:attribute>
+                                </umh:item>
+                                <umh:item name="text1" type="text">
+                                    <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="d_text1" name="label">
+                                    </jbi:attribute>
+                                    <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="d_text1" name="value">
+                                    </jbi:attribute>
+                                </umh:item>
+                                <umh:item name="adf" type="label">
+                                    <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="d_adf" name="value">
+                                    </jbi:attribute>
+                                </umh:item>
+                            </umh:task>
+                        </umh:taskParam>
+                    </umh:postTask>
+                </env:Body>
+            </env:Envelope>
+        </pe:message>
+        <pe:define name="d_label1n">
+            <jbi:value xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="d_text1">
+            </jbi:value>
+        </pe:define>
+        <pe:define name="d_label2n">d</pe:define>
+        <pe:define name="d_text1">text1v</pe:define>
+        <pe:define name="d_text1">text1v</pe:define>
+        <pe:result xpath="/values/text1/text()" name="r_text1">
+        </pe:result>
+        <pe:define name="d_adf">g</pe:define>
+    </pe:activity>
+    <pe:start id="start1" x="-220" y="162.5">
+    </pe:start>
+    <pe:end id="end2" x="420" y="162.5" predecessor="join10">
+    </pe:end>
+    <pe:split id="split3" x="-60" y="162.5" min="2" max="2" predecessor="ac0">
+    </pe:split>
+    <pe:split id="split4" x="100" y="137.5" min="2" max="2" predecessor="block5">
+    </pe:split>
+    <pe:activity id="block5" x="20" y="137.5" predecessor="split3">
+    </pe:activity>
+    <pe:activity id="block6" x="180" y="97.5" predecessor="split4">
+    </pe:activity>
+    <pe:activity id="block7" x="180" y="177.5" predecessor="split4">
+    </pe:activity>
+    <pe:activity id="block8" x="260" y="97.5" predecessor="block6">
+    </pe:activity>
+    <pe:join id="join9" x="260" y="202.5" min="2" max="2">
+        <pe:predecessor>split3</pe:predecessor>
+        <pe:predecessor>block7</pe:predecessor>
+    </pe:join>
+    <pe:join id="join10" x="340" y="162.5" min="2" max="2">
+        <pe:predecessor>block8</pe:predecessor>
+        <pe:predecessor>join9</pe:predecessor>
+    </pe:join>
+</pe:processModel>

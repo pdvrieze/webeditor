@@ -1,0 +1,38 @@
+<pe:processModel name="wtf is that" xmlns:pe="http://adaptivity.nl/ProcessEngine/" uuid="50ae31a2-cdef-42d5-a4c4-e009d0025214">
+    <pe:start id="c9" x="164" y="139">
+    </pe:start>
+    <pe:activity id="block1" x="30" y="140">
+        <pe:message type="application/soap+xml" serviceNS="http://adaptivity.nl/userMessageHandler" serviceName="userMessageHandler" endpoint="internal" operation="postTask">
+            <env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" encodingstyle="http://www.w3.org/2003/05/soap-encoding">
+                <env:Body>
+                    <umh:postTask xmlns:umh="http://adaptivity.nl/userMessageHandler">
+                        <umh:repliesParam>
+                            <jbi:element xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="endpoint">
+                            </jbi:element>
+                        </umh:repliesParam>
+                        <umh:taskParam>
+                            <umh:task>
+                                <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="instancehandle" name="instancehandle">
+                                </jbi:attribute>
+                                <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="handle" name="remotehandle">
+                                </jbi:attribute>
+                                <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="owner" name="owner">
+                                </jbi:attribute>
+                                <umh:item name="a" type="label">
+                                    <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="d_54022" name="value">
+                                    </jbi:attribute>
+                                </umh:item>
+                                <umh:item name="b" type="label">
+                                    <jbi:attribute xmlns:jbi="http://adaptivity.nl/ProcessEngine/activity" value="d_5251" name="value">
+                                    </jbi:attribute>
+                                </umh:item>
+                            </umh:task>
+                        </umh:taskParam>
+                    </umh:postTask>
+                </env:Body>
+            </env:Envelope>
+        </pe:message>
+        <pe:define name="d_54022">b</pe:define>
+        <pe:define name="d_5251">c</pe:define>
+    </pe:activity>
+</pe:processModel>

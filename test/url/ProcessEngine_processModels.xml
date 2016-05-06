@@ -1,0 +1,4 @@
+<processModels xmlns="http://adaptivity.nl/ProcessEngine/">
+    <processModel name="wtf is that" handle="2" uuid="50ae31a2-cdef-42d5-a4c4-e009d0025214"/>
+    <processModel name="test123" handle="52" uuid="db21a994-61cd-4f2d-abbe-a2429bdddd5f"/>
+</processModels>
