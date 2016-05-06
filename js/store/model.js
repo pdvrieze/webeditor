@@ -105,7 +105,7 @@ define(['jquery', 'util/util'], function ($, util) {
      */
     function fetchModel(handle, name) {
         var url = URL + '/' + handle;
-        return $.get(url) .then(function (xml) {
+        return $.get(url).then(function (xml) {
             // store
             models[handle] = {
                 handle: handle,
@@ -150,7 +150,13 @@ define(['jquery', 'util/util'], function ($, util) {
             $.when.apply($, deferreds).then(function () {
                 // notify that everything is resolved
                 $def.resolve(models);
-            }).fail(function (e) { console.error('Cannot update models', e); });
+            }).fail(function (e) {
+                $def.reject(e);
+                console.error('Cannot update models', e);
+            });
+        }).fail(function (e) {
+            $def.reject(e);
+            console.error('Cannot update models', e);
         });
 
         return $def;
@@ -167,6 +173,9 @@ define(['jquery', 'util/util'], function ($, util) {
         createModel: createModel,
         deleteModel: deleteModel,
         cloneModel: cloneModel,
-        getModel: function (id) { return models[id]; }
+        getModel: function (id) { return models[id]; },
+
+        // reset
+        reset: function () { $def = null; models = []; }
     };
 });
