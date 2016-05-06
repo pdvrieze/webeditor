@@ -1,7 +1,7 @@
 /**
- * Main file for editor application
+ * Main file for viewer application
  *
- * Starts up the editor and initialises all its modules to be ready for user
+ * Starts up the viewer and initialises all its modules to be ready for user
  * interations
  *
  * @module Editor
@@ -46,12 +46,12 @@
         var controllers = [ 'share/auth', 'share/nav' ];
 
         // render page html
-        var $html = template.render('editor');
+        var $html = template.render('viewer');
         $load.resolve($html);
 
         require(controllers, function (auth, nav) {
-            nav.init('editor-models'); // initialise navigation bar
-            nav.createOther('viewer');
+            nav.init('viewer-tasks'); // initialise navigation bar
+            nav.createOther('editor');
 
             // try to login
             auth.tryLogin().then(function () {

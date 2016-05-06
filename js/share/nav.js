@@ -11,16 +11,20 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
     "use strict";
 
     // list of hardcoded controllers that will need to be loaded for page change
-    var controllers = [ 'editor-models', 'workspace' ];
+    var controllers = [ 'editor-models', 'workspace', 'viewer-tasks' ];
 
     var $nav = $('nav'); // navigation bar (should be one per page)
 
     var destroy = null; // current controller destroy method
+    
+    var defaultPage = null; // default page
 
     /**
      * Initialise navigation bar
      */
-    function init() {
+    function init(page) {
+        defaultPage = page;
+        
         initLoginBtn();
         initLogoutBtn();
 
@@ -173,7 +177,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
      */
     function autoHash() {
         var args = null;
-        var page = 'editor-models'; // default landing page
+        var page = defaultPage;
 
         if (location.hash && location.hash != '#index') {
             // remove hash and separate arguments, but make sure no
@@ -192,11 +196,22 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         return changePage(page, args);
     }
 
+    /**
+     * Creates link in the menu for another page
+     *
+     * @param name {String} another page's name
+     */
+    function createOther(name) {
+        $('#other_app').attr('href', name + '.html')
+            .html('Open ' + _.capitalize(name));
+    }
+
     // export
     return {
         init: init,
         login: login,
         logout: logout,
-        changePage: changePage
+        changePage: changePage,
+        createOther: createOther
     };
 });
