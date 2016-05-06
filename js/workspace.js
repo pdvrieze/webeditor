@@ -178,18 +178,22 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             if (width > 0 && height > 0) { // make sure we are in real world
                 // scale to fit the screen
                 joint.paper.setDimensions(width, height);
-            }
 
-            /*
-             * I use -150 and -300 because lower right corner on the android
-             * phone seems to be 200:300, and since it is preferable to see the
-             * graph centred, we have to adjust the origin. Sad but needed
-             *
-             * tl;dr: this centres most models
-             */
-            var phoneX = 200, phoneY = 300;
-            joint.origin = [width / 2 - phoneX, height / 2 - phoneY];
-            joint.paper.setOrigin(joint.origin[0], joint.origin[1]);
+                /*
+                 * I use -200 and -300 because lower right corner on the android
+                 * phone seems to be 200:300, and since it is preferable to see
+                 * the graph centred, we have to adjust the origin. Sad but
+                 * needed
+                 *
+                 * tl;dr: this centres most models
+                 */
+                var phoneX = 200, phoneY = 300;
+                joint.origin = [
+                    (width - phoneX * joint.scale) / 2,
+                    (height - phoneY * joint.scale) / 2
+                ];
+                joint.paper.setOrigin(joint.origin[0], joint.origin[1]);
+            }
         });
     }
 
