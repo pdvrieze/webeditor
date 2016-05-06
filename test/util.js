@@ -3,7 +3,7 @@
 var should = require('should');
 var sinon = require('sinon');
 
-require('mocha-jsdom')();
+require('mocha-jsdom')({skipWindowCheck: true});
 
 var requirejs = require('requirejs');
 

@@ -5,7 +5,7 @@ var fs = require('fs');
 var should = require('should');
 var sinon = require('sinon');
 
-require('mocha-jsdom')();
+require('mocha-jsdom')({skipWindowCheck: true});
 
 var requirejs = require('requirejs');
 var xmldom = require('xmldom');
@@ -37,7 +37,6 @@ function serve(req) {
 
     var xml = fs.readFileSync(filename, 'utf-8');
     req.respond(200, {}, xml);
-    //req.respond(200, { 'Content-type': 'text/xml' }, xml);
 }
 
 function load(store, reqs) {
