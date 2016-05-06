@@ -193,8 +193,9 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         var scale = Math.min(scaleX, scaleY); // minimal scale
 
         // calculate offset to centre model
-        var offsetX = (paper.$el.width() / 2 - scale * (x / 2 + bounds.min.x));
-        var offsetY = -bounds.min.y * scale;
+        var xpart = x / 2 + bounds.min.x - Nodes.SIZE / 2;
+        var offsetX = paper.$el.width() / 2 - scale * xpart;
+        var offsetY = -(bounds.min.y - Nodes.SIZE / 2) * scale;
 
         // apply calculated values
         paper.scale(scale);

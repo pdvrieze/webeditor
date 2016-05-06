@@ -15,6 +15,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
      */
     var SIZE = 30;
 
+    // half the size
+    var HSIZE = SIZE / 2;
+
     /**
      * Base Node class to be used as a cell descroption
      *
@@ -23,7 +26,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
      */
     var NodeClass = joint.dia.Element.extend({
         // node marktip
-        markup: '<g class="rotatable">' +
+        markup: '<g transform="translate(-' + HSIZE + ', -' + HSIZE + ')">' +
                     '<image width="' + SIZE + '" height="' + SIZE + '" ' +
                            'xlink:href="svg/end.svg"/>' +
                     '<text x="15" y="17" font-family="sans-serif" ' +
