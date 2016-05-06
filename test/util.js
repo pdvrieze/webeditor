@@ -70,7 +70,7 @@ describe('Utilities Testing', function () {
             this.xhr = sinon.useFakeXMLHttpRequest();
 
             // fix jsdom override
-            var req = sinon.FakeXMLHttpRequest
+            var req = sinon.FakeXMLHttpRequest;
             global.XMLHttpRequest = global.window.XMLHttpRequest = req;
 
             this.request = null;
