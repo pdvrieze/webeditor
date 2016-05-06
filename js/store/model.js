@@ -54,7 +54,7 @@ define(['jquery', 'util/util'], function ($, util) {
         return util.upload(url, 'processUpload', str).then(function () {
             models[handle].name = name;
             models[handle].xml.children[0].attributes.name.value = name;
-        })
+        });
     }
 
     /**
@@ -72,7 +72,7 @@ define(['jquery', 'util/util'], function ($, util) {
             var xml = $.parseXML(str);
             models[handle].xml = xml;
             models[handle].uuid = xml.children[0].attributes.uuid.value;
-        })
+        });
     }
 
     /**

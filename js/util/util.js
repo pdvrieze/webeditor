@@ -37,12 +37,12 @@ define(['lodash', 'jquery'], function (_, $) {
 
         var boundary = "---------------------------7da24f2e50046";
         var xhr = new XMLHttpRequest();
-        var body = '--' + boundary + '\r\n'
-                 + 'Content-Disposition: form-data; name="' + name + '"; '
-                 + 'filename="temp.xml"\r\n' // any name is OK
-                 + 'Content-type: plain/text\r\n\r\n'
-                 + data + '\r\n'
-                 + '--' + boundary + '--';
+        var body = '--' + boundary + '\r\n' +
+                 'Content-Disposition: form-data; name="' + name + '"; ' +
+                 'filename="temp.xml"\r\n' +
+                 'Content-type: plain/text\r\n\r\n' +
+                 data + '\r\n' +
+                 '--' + boundary + '--';
 
         xhr.open("POST", url, true);
         xhr.setRequestHeader( // set appropraite headers
@@ -56,7 +56,7 @@ define(['lodash', 'jquery'], function (_, $) {
                 }
                 else $def.reject(xhr);
             }
-        }
+        };
 
         xhr.send(body); // start request
 
@@ -100,7 +100,7 @@ define(['lodash', 'jquery'], function (_, $) {
             if (node.match( /.+<\/\w[^>]*>$/ )) {
                 indent = 0;
             } else if (node.match( /^<\/\w/ )) {
-                if (pad != 0) {
+                if (pad !== 0) {
                     pad -= 1;
                 }
             } else if (node.match( /^<\w[^>]*[^\/]>.*$/ )) {
@@ -127,5 +127,5 @@ define(['lodash', 'jquery'], function (_, $) {
         upload: upload,
         formatXml: formatXml,
         replaceAttr: replaceAttr
-    }
+    };
 });

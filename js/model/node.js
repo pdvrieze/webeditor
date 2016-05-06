@@ -184,8 +184,8 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             $define.attr('refname', 'r_' + ref);
 
             // replace all occurances
-            var replace = '<jbi:value xmlns:jbi="' + url + '"/>';
-            text = text.replace(new RegExp(match[0], 'g'), replace);
+            var replace2 = '<jbi:value xmlns:jbi="' + url + '"/>';
+            text = text.replace(new RegExp(match[0], 'g'), replace2);
         }
 
         // apply
@@ -239,14 +239,14 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     function parseDefine(define) {
         var $define = $(define);
         var text = $(define).html();
-        text = text.replace(/\<jbi:value.*?value="d_(.+?)".*?\/\>/gi, '%@$1');
+        text = text.replace(/<jbi:value.*?value="d_(.+?)".*?\/>/gi, '%@$1');
 
         var refnode = $define.attr('refnode');
         var refname = $define.attr('refname');
         if (refnode && refname) {
             refname = refname.substr(2);
             var replace = '%#' + refnode + '.' + refname;
-            text = text.replace(/\<jbi:value.*?\>/g, replace);
+            text = text.replace(/<jbi:value.*?>/g, replace);
         }
 
         return text;
@@ -337,9 +337,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             if (!this.attrs.elements) this.attrs.elements = [];
 
             // set label and predecessor
-            if (this.attrs.label) params['label'] = this.attrs.label;
+            if (this.attrs.label) params.label = this.attrs.label;
             if (predecessors.length == 1) {
-                params['predecessor'] = predecessors[0].eid;
+                params.predecessor = predecessors[0].eid;
             }
 
             // big nothing start --------------------
@@ -395,7 +395,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
                 var $item = $('<item>', {
                     name: val.name,
                     type: val.type
-                }).appendTo($task)
+                }).appendTo($task);
 
                 for (var key in val) {
                     if (!val.hasOwnProperty(key)) continue;
@@ -479,7 +479,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
 
             // predecessors
             if (this.type == 'split' && predecessors.length) {
-                params['predecessor'] = predecessors[0].eid;
+                params.predecessor = predecessors[0].eid;
             }
 
             // create cell
@@ -548,7 +548,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
 
             // predecessors
             if (predecessors.length) {
-                params['predecessor'] = predecessors[0].eid;
+                params.predecessor = predecessors[0].eid;
             }
 
             return $('<end>', params);

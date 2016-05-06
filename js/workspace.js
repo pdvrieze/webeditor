@@ -232,7 +232,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
 
             return false; // no bubbling, to aviod scrolling page
         });
-    };
+    }
 
     /**
      * Allows to show the tooltip when the blank space is clicked
@@ -275,7 +275,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
                     'display',
                     joint.model.count.end ? 'none' : 'inline'
                 );
-                $tooltip.data('offset', { x: x, y: y })
+                $tooltip.data('offset', { x: x, y: y });
                 showTooltip($tooltip, oe.pageX, oe.pageY);
             }
         });
@@ -404,8 +404,8 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             }
         });
 
-        var events = 'mouseup.pe touchend.pe';
-        $(window).off(events).on(events, function (event) {
+        var events2 = 'mouseup.pe touchend.pe';
+        $(window).off(events2).on(events2, function (event) {
             joint.dragging = false;
             joint.pinch = false;
             if (joint.changed) {

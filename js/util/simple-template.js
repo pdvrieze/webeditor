@@ -77,11 +77,11 @@ define(['jquery'], function ($) {
         var html = templates[name];
         if (view) {
             // view variable substitution
-            var html = html.replace(/{{(\s*\w+?\s*)}}/g, function (match, key) {
+            html = html.replace(/{{(\s*\w+?\s*)}}/g, function (match, key) {
                 return view.hasOwnProperty(key) ? view[key] : '';
-            })
+            });
         }
-        return html
+        return html;
     }
 
     /**
@@ -96,7 +96,7 @@ define(['jquery'], function ($) {
         $html.find('insert[section]').each(function () {
             var selector = 'section[name=' + $(this).attr('section') + ']';
             $(this).replaceWith($sections.find(selector).children());
-        })
+        });
         return $html;
     }
 
@@ -145,5 +145,5 @@ define(['jquery'], function ($) {
         load: load,
         render: render,
         renderTo: renderTo
-    }
+    };
 });

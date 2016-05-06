@@ -56,6 +56,6 @@ define(['jquery'], function ($) {
         logout: logout,
         tryLogin: tryLogin,
         getUser: function () { return username; },
-        isLoggedIn: function () { return username != null; }
+        isLoggedIn: function () { return username !== null; }
     };
 });

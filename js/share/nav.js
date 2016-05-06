@@ -159,7 +159,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
                     // when all elements are rendered on the page
                     if (controller.post) controller.post($html, args);
                 });
-            })
+            });
         }
         else $load.resolve($html);
 
@@ -183,7 +183,7 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
 
             if (template.has(name)) {
                 page = name; // definitely not 404
-                if (url.length == 2) args = url[1] // only one argument
+                if (url.length == 2) args = url[1]; // only one argument
                 else if (url.length > 2) args = url.slice(1); // get all
             }
         }
@@ -198,5 +198,5 @@ define(['jquery', './auth', 'util/simple-template', 'lodash'],
         login: login,
         logout: logout,
         changePage: changePage
-    }
+    };
 });
