@@ -433,6 +433,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
                 'jbi:element', 'umh:item'
             ]).replace(/servicens/g, 'serviceNS')
                 .replace(/servicename/g, 'serviceName')
+                .replace(/encodingstyle/g, 'encodingStyle')
                 .replace(/taskparam/g, 'taskParam');
         },
 
