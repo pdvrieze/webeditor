@@ -94,6 +94,11 @@
     display: inline;
 }
 
+/* bigger size for glyphicons */
+.list-group-item .glyphicon {
+    font-size: 1.4em;
+}
+
 /*
  * Creation tooltip images
  */
