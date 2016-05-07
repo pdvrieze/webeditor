@@ -63,7 +63,7 @@ define(['jquery', 'store/task', 'util/simple-template'],
             return false;
         });
         
-        $list.on('click', '.list-group-item', function () {
+        $list.on('click', '.list-group-item', function (e) {
             e.preventDefault();
 
             var task = $(this).parent().data('task');

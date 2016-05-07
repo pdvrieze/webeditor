@@ -31,6 +31,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
                            'xlink:href="svg/end.svg"/>' +
                     '<text x="15" y="17" font-family="sans-serif" ' +
                           'font-size="7" text-anchor="middle"></text>' +
+                    '<rect x="0" y="0" width="30" height="30" ' +
+                          'stroke="transparent" fill="transparent" ' +
+                          'stroke-width="2"/>' +
                 '</g>',
 
         // node defaults
@@ -111,6 +114,34 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             var $node = $('#' + id).find('text');
             $node.get(0).textContent = text;
             this.styleText($node);
+        },
+
+        /**
+         * Allows to set state to the node
+         *
+         * @param state {String} state
+         */
+        setState: function (state) {
+            var id = this.cell.findView(this.paper).id;
+            var $node = $('#' + id).find('rect');
+
+            // choose colour depending on state
+            var colour = 'transparent';
+            if (state == 'Complete') colour = 'green';
+            if (state == 'Acknowledged') colour = 'red';
+            if (state == 'Taken') colour = 'orange';
+
+            var G = this.model.graph;
+            var links = G.getConnectedLinks(this.cell, { inbound: true });
+            _.each(links, function (link) {
+                var stroke = colour == 'transparent' ? 'black' : colour;
+                link.attr({
+                    '.connection': { stroke: stroke },
+                    '.marker-target': { fill: colour }
+                });
+            });
+
+            $node.attr('stroke', colour);
         },
 
         /**

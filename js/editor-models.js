@@ -121,8 +121,16 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
             // load model from xml
             var model = new Model(graph, paper);
-            $target.data('model', model);
             model.fromXml($xml);
+
+            // save model
+            $target.data('model', model);
+
+            var $this = $(this);
+            if (local.task) local.task.destroy();
+            local.task = new taskStore.ModelTaskManager(handle, function () {
+                updatePreview($this, local.task);
+            });
         }).on('hide.bs.collapse', '.collapse', function () {
             // remove everything inside to save on memory
             $(this).find('.model-preview').empty(); 
@@ -131,11 +139,6 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             var $this = $(this);
             $this.find('.clickable.stop,.clickable.execute')
                 .addClass('hidden');
-            var handle = $this.attr('handle'); // extract handle
-            if (local.task) local.task.destroy();
-            local.task = new taskStore.ModelTaskManager(handle, function () {
-                updatePreview($this, local.task);
-            });
         });
         setupPreviewListeners($html, $list, local);
     }
@@ -261,13 +264,26 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
      * @param task {Object} current task
      */
     function updatePreview($ptr, task) {
+        var model = $ptr.find('.model-preview').data('model');
+
         if (task.handle) {
             $ptr.find('.model-stop').removeClass('hidden');   
             $ptr.find('.model-execute').addClass('hidden');
+
+            if (Object.keys(task.tasks).length) {
+                _.each(model.nodes, function (node) {
+                    if (task.tasks[node.eid]) {
+                        node.setState(task.tasks[node.eid]);
+                    }
+                    else node.setState(null);
+                });
+            }
         }
         else {
             $ptr.find('.model-execute').removeClass('hidden');
             $ptr.find('.model-stop').addClass('hidden');
+
+            _.each(model.nodes, function (node) { node.setState(null); });
         }
     }
 

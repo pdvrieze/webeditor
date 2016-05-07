@@ -11,10 +11,14 @@
 define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
     "use strict";
 
+    var URL_PE = '/PEUserMessageHandler/UserMessageService/';
+
     var URL_MODELS = '/ProcessEngine/processModels/';
     var URL_INSTANCES = '/ProcessEngine/processInstances/';
     var URL_TASKS = '/ProcessEngine/tasks/';
-    var URL_PENDING = '/PEUserMessageHandler/UserMessageService/pendingTasks/';
+
+    var URL_PENDING = URL_PE + 'pendingTasks/';
+    var URL_ALLPENDING = URL_PE + 'allPendingTasks/';
 
     var INTERVAL = 1000; // 1s
 
@@ -39,6 +43,9 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
         var self = this;
         this.model = model;
         this.handle = null;
+        this.task = null;
+        this.tasks = {};
+        this.state = null;
         this.callback = callback;
 
         var func = function () { self.update(); };
@@ -102,10 +109,55 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
             var self = this;
             $.get(URL_INSTANCES).then(function (xml) {
                 var $inst = $(xml).find('[processModel="' + self.model + '"]');
-                if (!$inst.size() || $inst.attr('handle') != self.handle) {
+                if ($inst.attr('handle') !== self.handle) {
                     self.handle = $inst.attr('handle');
-                    self.callback(self.handle);
+                    self.callback();
                 }
+
+                if (self.handle) {
+                    $.get(URL_ALLPENDING).then(function (xml) {
+                        var selector = '[instancehandle="' + self.handle + '"]';
+                        var $task = $(xml).find(selector);
+                        if ($task.attr('remotehandle') !== self.task) {
+                            self.task = $task.attr('remotehandle');
+                            self.tasks = {};
+                            if (self.task) self.updateTask(self.task, true);
+                        }
+                        else if ($task.attr('state') !== self.state) {
+                            self.state = $task.attr('state');
+                            self.tasks[self.eid] = self.state;
+                            self.callback();
+                        }
+                    }).fail(function (e) {
+                        console.error('Cannot load tasks');
+                    });
+                }
+            }).fail(function (e) { console.error('Cannot load instances'); });
+        },
+
+        updateTask: function (handle, main) {
+            var self = this;
+            $.get(URL_TASKS + handle).then(function (xml) {
+                var $xml = $(xml);
+
+                if (main) {
+                    self.state = $xml.find('[nodeid]').attr('state');
+                    self.eid = $xml.find('[nodeid]').attr('nodeid');
+                }
+
+                var node = {};
+                node.id = $xml.find('[nodeid]').attr('nodeid');
+                node.state = $xml.find('[nodeid]').attr('state');
+                self.tasks[node.id] = node.state;
+
+                var $preds = $xml.find(util.xmlSel('pe:predecessor'));
+                $preds.each(function () {
+                    self.updateTask(this.textContent);
+                });
+                if (!$preds.size()) self.callback();
+
+            }).fail(function (e) {
+                console.error('Cannot load task');
             });
         },
 
