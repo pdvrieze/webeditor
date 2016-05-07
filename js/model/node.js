@@ -137,7 +137,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
                 var stroke = colour == 'transparent' ? 'black' : colour;
                 link.attr({
                     '.connection': { stroke: stroke },
-                    '.marker-target': { fill: colour }
+                    '.marker-target': { fill: stroke }
                 });
             });
 
