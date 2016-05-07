@@ -7,8 +7,9 @@
  * @module ControllerEditor
  */
 define(['jquery', 'store/model', 'util/simple-template', 'joint',
-       'model/model', 'model/node', 'share/nav', 'util/util'],
-       function ($, store, template, joint, Model, Nodes, nav, util) {
+       'model/model', 'model/node', 'share/nav', 'util/util', 'store/task'],
+       function ($, store, template, joint, Model, Nodes, nav, util,
+                 taskStore) {
     "use strict";
 
     /**
@@ -22,12 +23,14 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         var $def = $.Deferred();
         var $list = $html.find('#list_models'); // list that will contain models
 
+        var local = {}; // local store
+
         renderList($html, $list);
         setupListeners($html, $list);
-        initPreview($html, $list);
+        initPreview($html, $list, local);
         
         // no async neede after all
-        $def.resolve($html);
+        $def.resolve($html, local);
         return $def;
     }
 
@@ -94,8 +97,9 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
      *
      * @param $html {Object} jQuery html to render
      * @param $list {Object} jQuery list element
+     * @param local {Object} local store
      */
-    function initPreview($html, $list) {
+    function initPreview($html, $list, local) {
         $list.on('shown.bs.collapse', '.collapse', function () {
             var $target = $(this).find('.model-preview'); // target div
             var handle = $(this).attr('handle'); // extract handle
@@ -117,12 +121,23 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
             // load model from xml
             var model = new Model(graph, paper);
+            $target.data('model', model);
             model.fromXml($xml);
         }).on('hide.bs.collapse', '.collapse', function () {
             // remove everything inside to save on memory
             $(this).find('.model-preview').empty(); 
+        }).on('show.bs.collapse', '.collapse', function () {
+            // unshow control buttons and initialise task store
+            var $this = $(this);
+            $this.find('.clickable.stop,.clickable.execute')
+                .addClass('hidden');
+            var handle = $this.attr('handle'); // extract handle
+            if (local.task) local.task.destroy();
+            local.task = new taskStore.ModelTaskManager(handle, function () {
+                updatePreview($this, local.task);
+            });
         });
-        setupPreviewListeners($html, $list);
+        setupPreviewListeners($html, $list, local);
     }
 
     /**
@@ -130,8 +145,9 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
      *
      * @param $html {Object} jQuery html to render
      * @param $list {Object} jQuery list element
+     * @param local {Object} local store
      */
-    function setupPreviewListeners($html, $list) {
+    function setupPreviewListeners($html, $list, local) {
         // Listener for the delete model button
         $list.on('click', '.model-delete', function () {
             var handle = $(this).attr('handle'); // get handle
@@ -155,6 +171,16 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
                     renderList($html, $list);
                 });
             }
+        });
+
+        // Listener for the execute button
+        $list.on('click', '.model-execute', function () {
+            local.task.execute();
+        });
+
+        // Listener for the stop button
+        $list.on('click', '.model-stop', function () {
+            local.task.stop();
         });
     }
 
@@ -227,7 +253,34 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         });
         return bounds;
     }
+
+    /**
+     * Updates model preview based on current task state
+     *
+     * @param $ptr {Object} html element
+     * @param task {Object} current task
+     */
+    function updatePreview($ptr, task) {
+        if (task.handle) {
+            $ptr.find('.model-stop').removeClass('hidden');   
+            $ptr.find('.model-execute').addClass('hidden');
+        }
+        else {
+            $ptr.find('.model-execute').removeClass('hidden');
+            $ptr.find('.model-stop').addClass('hidden');
+        }
+    }
+
+    /**
+     * Destroy the local store: task store if exists
+     *
+     * @param local {Object} local store
+     */
+    function destroy(local) {
+        if (local.task) local.task.destroy();
+        local.task = null;
+    }
     
     // export
-    return { init: init };
+    return { init: init, destroy: destroy };
 });

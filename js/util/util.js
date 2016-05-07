@@ -32,7 +32,7 @@ define(['lodash', 'jquery'], function (_, $) {
      *
      * @return {Promise}
      */
-    function upload(url, name, data) {
+    function upload(url, name, data, nobody) {
         var $def = $.Deferred(); // we will return promise
 
         var boundary = "---------------------------7da24f2e50046";
@@ -44,10 +44,14 @@ define(['lodash', 'jquery'], function (_, $) {
                  data + '\r\n' +
                  '--' + boundary + '--';
 
+        if (nobody) body = data;
+
         xhr.open("POST", url, true);
-        xhr.setRequestHeader( // set appropraite headers
-            "Content-type", "multipart/form-data; boundary=" + boundary
-        );
+        if (!nobody) {
+            xhr.setRequestHeader( // set appropraite headers
+                "Content-type", "multipart/form-data; boundary=" + boundary
+            );
+        }
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) { // finished
