@@ -64,6 +64,8 @@ define(['jquery', 'store/task', 'util/simple-template'],
         });
         
         $list.on('click', '.list-group-item', function () {
+            e.preventDefault();
+
             var task = $(this).parent().data('task');
             if (task.state != 'Taken') return;
 
@@ -72,6 +74,8 @@ define(['jquery', 'store/task', 'util/simple-template'],
             $div.collapse('show');
 
             renderInside($div, task);
+
+            return false;
         });
 
         $list.on('click', '.task-save', function () {

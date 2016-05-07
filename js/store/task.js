@@ -11,12 +11,9 @@
 define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
     "use strict";
 
-    var instances = {}; // instance storage
-    var tasks = {}; // tasks storage
-
+    var URL_MODELS = '/ProcessEngine/processModels/';
     var URL_INSTANCES = '/ProcessEngine/processInstances/';
     var URL_TASKS = '/ProcessEngine/tasks/';
-
     var URL_PENDING = '/PEUserMessageHandler/UserMessageService/pendingTasks/';
 
     var INTERVAL = 1000; // 1s
@@ -38,8 +35,10 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
         func();
     }
 
-    function ModelTaskManager(callback) {
+    function ModelTaskManager(model, callback) {
         var self = this;
+        this.model = model;
+        this.handle = null;
         this.callback = callback;
 
         var func = function () { self.update(); };
@@ -100,7 +99,27 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
 
     ModelTaskManager.prototype = $.extend({
         update: function () {
-            
+            var self = this;
+            $.get(URL_INSTANCES).then(function (xml) {
+                var $inst = $(xml).find('[processModel="' + self.model + '"]');
+                if (!$inst.size() || $inst.attr('handle') != self.handle) {
+                    self.handle = $inst.attr('handle');
+                    self.callback(self.handle);
+                }
+            });
+        },
+
+        execute: function () {
+            $.post(URL_MODELS + this.model, {
+                op: 'newInstance'
+            }).fail(function (e) { console.error('Cannot execute instance'); });
+        },
+
+        stop: function () {
+            $.ajax({
+                method: 'DELETE',
+                url: URL_INSTANCES + this.handle
+            }).fail(function (e) { console.error('Cannot stop instance'); });
         }
     }, Base);
 
