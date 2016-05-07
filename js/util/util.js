@@ -29,6 +29,7 @@ define(['lodash', 'jquery'], function (_, $) {
      * @param url {String} url
      * @param name {String} attribute name
      * @param data {String} data to upload
+     * @param nobody {Boolean} discard attachment emulation
      *
      * @return {Promise}
      */

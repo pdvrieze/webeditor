@@ -131,9 +131,11 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
             if (state == 'Acknowledged') colour = 'red';
             if (state == 'Taken') colour = 'orange';
 
+            // colour the links on graph
             var G = this.model.graph;
             var links = G.getConnectedLinks(this.cell, { inbound: true });
             _.each(links, function (link) {
+                // don't colour if using default colour
                 var stroke = colour == 'transparent' ? 'black' : colour;
                 link.attr({
                     '.connection': { stroke: stroke },
@@ -141,6 +143,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
                 });
             });
 
+            // apply to node
             $node.attr('stroke', colour);
         },
 
