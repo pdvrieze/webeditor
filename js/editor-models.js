@@ -25,7 +25,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
         var local = {}; // local store
 
-        renderList($html, $list);
+        renderList($html, $list, local);
         setupListeners($html, $list);
         initPreview($html, $list, local);
         
@@ -55,6 +55,10 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
                 });
             }
             else $html.find('#models_new').removeClass('hidden');
+
+            // make sure we are not running any more tasks
+            if (local.task) local.task.destroy();
+
             $load.resolve($list);
         });
     }
