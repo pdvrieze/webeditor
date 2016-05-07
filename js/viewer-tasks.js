@@ -25,23 +25,118 @@ define(['jquery', 'store/task', 'util/simple-template'],
             else $list.html($html);
         });
 
+        initListeners($list, manager);
+
         // no async neede after all
         $def.resolve($html, manager);
         return $def;
     }
 
     function render($list, tasks) {
+        console.log('RENDER');
         var list = [];
         $.each(tasks, function (i, task) {
             var $html = template.render('viewer-task', task);
             $html.data('task', task);
+
+            if (task.state != 'Acknowledged') {
+                $html.find('.clickable.accept').hide();
+            }
+
             list.push($html);
         });
         $list.empty().append(list);
     }
 
+    function initListeners($list, manager) {
+        $list.on('click', '.clickable.accept', function (e) {
+            e.preventDefault();
+            var task = $(this).parent().parent().data('task');
+            manager.accept(task.handle);
+            return false;
+        });
+
+        $list.on('click', '.clickable.remove', function (e) {
+            e.preventDefault();
+            var task = $(this).parent().parent().data('task');
+            manager.cancel(task.handle);
+            return false;
+        });
+        
+        $list.on('click', '.list-group-item', function () {
+            var task = $(this).parent().data('task');
+            if (task.state != 'Taken') return;
+
+            var $div = $(this).next();
+            $list.find('collapse.in').collapse('hide');
+            $div.collapse('show');
+
+            renderInside($div, task);
+        });
+
+        $list.on('click', '.task-save', function () {
+            var task = $(this).parents('.collapse')
+                .parent()
+                .data('task');
+            manager.submit(task.handle, generateXml(task, $(this).prev()));
+        });
+    }
+
+    var renderItem = {
+        text: function (item) {
+            return template.render('task-element-text', item);
+        },
+
+        list: function (item) {
+            var view = $.extend({}, item);
+            if (item.value && item.value.length) {
+                var list = item.value.split(';').join('</option><option>');
+                item.value = '<option>' + list + '</option>';
+            }
+            return template.render('task-element-text', view);
+        },
+
+        label: function (item) {
+            return template.render('task-element-label', item);
+        },
+
+        password: function (item) {
+            return template.render('task-element-password', item);
+        },
+    };
+
+    function renderInside($div, task) {
+        var elements = [];
+
+        _.each(task.items, function (item) {
+            var $item = $('<div>').append(renderItem[item.type](item));
+            elements.push($item);
+        });
+
+        $div.find('.task-elements').empty().append(elements);
+    }
+
+    function generateXml(task, $elements) {
+        var url = 'http://adaptivity.nl/userMessageHandler';
+        var xml = '<umh:task xmlns:umh="' + url + '" ' +
+                  'state="Complete" ' +
+                  'handle="' + task.handle + '" ' + 
+                  'remotehandle="' + task.remotehandle + '" ' + 
+                  'instancehandle="' + task.instancehandle + '" ' +
+                  'owner="' + task.owner + '">';
+
+        $elements.find('input,select').each(function () {
+            var name = $(this).attr('name');
+            var type = $(this).attr('task-type');
+            var value = $(this).val();
+            xml += '<umh:item name="' + name + '" type="' + type + '" ' +
+                   'value="' + value + '"/>';
+        });
+
+        return xml + '</umh:task>';
+    }
+
     function destroy(manager) {
-        console.log(manager);
         manager.destroy();
     }
 

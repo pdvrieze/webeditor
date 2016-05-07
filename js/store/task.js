@@ -32,13 +32,19 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
         var self = this;
         this.tasks = [];
         this.callback = callback;
-        this.interval = setInterval(function () { self.update(); }, INTERVAL);
+
+        var func = function () { self.update(); };
+        this.interval = setInterval(func, INTERVAL);
+        func();
     }
 
     function ModelTaskManager(callback) {
         var self = this;
         this.callback = callback;
-        this.interval = setInterval(function () { self.update(); }, INTERVAL);
+
+        var func = function () { self.update(); };
+        this.interval = setInterval(func, INTERVAL);
+        func();
     }
 
     PendingTaskManager.prototype = $.extend({
@@ -71,7 +77,24 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
                     self.tasks = tasks;
                     self.callback(tasks);
                 }
-            });
+            }).fail(function (e) { console.log('Cannot load tasks', e); });
+        },
+
+        accept: function (task) {
+            $.post(URL_PENDING + task, {
+                state: 'Taken'
+            }).fail(function (e) { console.log('Cannot accept task', e); }); 
+        },
+
+        cancel: function (task) {
+            $.post(URL_PENDING + task, {
+                state: 'Finished'
+            }).fail(function (e) { console.log('Cannot cancel task', e); }); 
+        },
+
+        submit: function (task, xml) {
+            console.log(xml);
+            util.upload(URL_PENDING + task, 'partialNewTask', xml, true);
         }
     }, Base);
 
