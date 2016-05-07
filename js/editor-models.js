@@ -40,7 +40,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
      * @param $html {Object} jQuery html to render
      * @param $list {Object} jQuery list element
      */
-    function renderList($html, $list) {
+    function renderList($html, $list, local) {
         // when models are loaded, show one big new button if needed or default
         // to normal sized button, and models of course
         var $load = template.load($list);
