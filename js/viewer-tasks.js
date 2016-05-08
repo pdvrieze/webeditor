@@ -95,9 +95,9 @@ define(['jquery', 'store/task', 'util/simple-template'],
             var view = $.extend({}, item);
             if (item.value && item.value.length) {
                 var list = item.value.split(';').join('</option><option>');
-                item.value = '<option>' + list + '</option>';
+                view.value = '<option>' + list + '</option>';
             }
-            return template.render('task-element-text', view);
+            return template.render('task-element-list', view);
         },
 
         label: function (item) {

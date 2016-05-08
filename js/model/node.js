@@ -237,7 +237,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
      */
     function addResult($cell, value) {
         // add result
-        var rname = 'r_' + value.eid;
+        var rname = 'r_' + value.eid + '_value';
         $('<result>', {
             xpath: '/values/' + value.name + '/text()',
             name: rname
@@ -254,7 +254,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
      */
     function addItem($cell, $item, value, name) {
         // add define
-        var dname = 'd_' + value.eid;
+        var dname = 'd_' + value.eid + '_' + name;
         var $define = $('<define>', { name: dname }).appendTo($cell);
         formatDefine($define, value[name].trim());
 
@@ -345,7 +345,8 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
 
                     // substitute with defines
                     if (defines[value]) {
-                        element.eid = value.replace(/^d_/, '');
+                        element.eid = value.replace(/^d_/, '')
+                            .replace('_' + attribute, '');
                         value = defines[value];
                     }
 
