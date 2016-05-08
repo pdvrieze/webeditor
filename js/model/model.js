@@ -405,7 +405,8 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             // root element
             var $xml = $('<processModel>', {
                 name: this.name,
-                'xmlns:pe': 'http://adaptivity.nl/ProcessEngine/'
+                'xmlns:pe': 'http://adaptivity.nl/ProcessEngine/',
+                'xmlns:umh': 'http://adaptivity.nl/userMessageHandler'
             });
 
             var model = store.getModel(this.handle);

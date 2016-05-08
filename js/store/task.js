@@ -135,6 +135,7 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
          * @param task {Integer} task handle
          */
         cancel: function (task) {
+            console.log(task);
             $.post(URL_PENDING + task, {
                 state: 'Finished'
             }).fail(function (e) { console.log('Cannot cancel task', e); }); 

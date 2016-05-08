@@ -237,9 +237,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
      */
     function addResult($cell, value) {
         // add result
-        var rname = 'r_' + value.eid + '_value';
+        var rname = 'r_' + value.eid;
         $('<result>', {
-            xpath: '/values/' + value.name + '/text()',
+            xpath: "/umh:result/umh:value[@name='" + value.name + "']/text()",
             name: rname
         }).appendTo($cell);
     }
@@ -436,7 +436,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
                 }).appendTo($task);
 
                 for (var key in val) {
-                    if (!val.hasOwnProperty(key)) continue;
+                    if (!val[key]) continue;
                     if (['name', 'type', 'eid'].indexOf(key) !== -1) continue;
                     addItem($cell, $item, val, key);   
                 }
