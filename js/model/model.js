@@ -470,6 +470,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         reload: function () {
             this.nosave = true;
             $.each(this.nodes, function (i, node) { node.cell.remove(); });
+            this.nodes = [];
             this.fromXml($(store.getModel(this.handle).xml));
             this.nosave = false;
         }
