@@ -10,9 +10,6 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         function ($, joint, _, Nodes, store, util, Dialogue, dagre) {
     "use strict";
 
-    // export vectorizer globally into this file
-    var V = joint.Vectorizer;
-
     /** 
      * @class Model
      * @constructor

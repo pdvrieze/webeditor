@@ -44,7 +44,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         // when models are loaded, show one big new button if needed or default
         // to normal sized button, and models of course
         var $load = template.load($list);
-        var list = store.getList().then(function (list) {
+        store.getList().then(function (list) {
             var $list = [];
             if (Object.keys(list).length) { // we have models yay
                 $html.find('#models_notnew').removeClass('hidden');
@@ -77,14 +77,14 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         });
 
         // setup view button listener
-        $list.on('click', '.clickable.view', function (e) {
+        $list.on('click', '.clickable.view', function () {
             $list.find('.collapse.in').collapse('hide');
             $(this).parents('a').next().collapse('toggle');
             return false;
         });
 
         // setup rename button listener
-        $list.on('click', '.clickable.rename', function (e) {
+        $list.on('click', '.clickable.rename', function () {
             rename($(this).parents('a'));
             return false;
         });

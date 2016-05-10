@@ -1,0 +1,66 @@
+{
+  /* Based on
+     https://github.com/airbnb/javascript/blob/master/linters/.jshintrc */
+
+  /*
+   * ENVIRONMENTS (airbnb)
+   * =================
+   */
+
+  // Define globals exposed by modern browsers.
+  "browser": true,
+
+  // Define globals exposed by jQuery.
+  "jquery": true,
+
+  // Define globals exposed by Node.js.
+  "node": true,
+
+  // Allow ES6.
+  "esversion": 6,
+
+  /*
+   * ENFORCING OPTIONS (airbnb)
+   * =================
+   */
+
+  // Force all variable names to use either camelCase style or UPPER_CASE
+  // with underscores.
+  "camelcase": true,
+
+  // Enforce tab width of 4 spaces.
+  "indent": 4,
+
+  // Enforce line length to 80 characters
+  "maxlen": 80,
+
+  // Require capitalized names for constructor functions.
+  "newcap": true,
+
+  // Enforce placing 'use strict' at the top function scope
+  "strict": true,
+
+  // Prohibit use of explicitly undeclared variables.
+  "undef": true,
+
+  // Warn when variables are defined but never used.
+  "unused": true,
+
+  /*
+   * RELAXING OPTIONS (airbnb)
+   * =================
+   */
+
+  // Suppress warnings about == null comparisons.
+  "eqnull": true,
+
+  /* PROJECT */
+  "devel": true,
+  "globals": {
+    "define": false,
+    "requirejs": false,
+    "require": false,
+    "Backbone": false,
+    "_": false
+  }
+}

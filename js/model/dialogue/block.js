@@ -49,7 +49,6 @@ define(['jquery', 'util/simple-template', 'Sortable'],
          * @param $content
          */
         render: function ($content) {
-            var self = this;
             var views = [];
             $.each(this.attrs.elements, function (i, val) {
                 // generate view for each element
@@ -72,7 +71,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
             this.$content = this.$body.find('.list-group');
 
             // make elements sortable
-            var sortable = Sortable.create(this.$content.get(0), {
+            Sortable.create(this.$content.get(0), {
                 onSort: function () {
                     var list = [];
                     self.$content.find('.collapse').each(function () {
@@ -271,7 +270,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
      */
     function makeLi(value, name) {
         var $li = $('<li>');
-        var $a = $('<a>', {
+        $('<a>', {
             'class': 'variable-reuse',
             'value': '%' + value,
             'href': '#'

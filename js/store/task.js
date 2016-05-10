@@ -217,11 +217,11 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
                             self.tasks[self.eid] = self.state;
                             self.callback();
                         }
-                    }).fail(function (e) {
+                    }).fail(function () {
                         console.error('Cannot load tasks');
                     });
                 }
-            }).fail(function (e) { console.error('Cannot load instances'); });
+            }).fail(function () { console.error('Cannot load instances'); });
         },
 
         /**
@@ -258,7 +258,7 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
                 // execture callback when done
                 if (!$preds.size()) self.callback();
 
-            }).fail(function (e) {
+            }).fail(function () {
                 console.error('Cannot load task');
             });
         },
@@ -271,7 +271,7 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
         execute: function () {
             $.post(URL_MODELS + this.model, {
                 op: 'newInstance'
-            }).fail(function (e) { console.error('Cannot execute instance'); });
+            }).fail(function () { console.error('Cannot execute instance'); });
         },
 
         /**
@@ -283,7 +283,7 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
             $.ajax({
                 method: 'DELETE',
                 url: URL_INSTANCES + this.handle
-            }).fail(function (e) { console.error('Cannot stop instance'); });
+            }).fail(function () { console.error('Cannot stop instance'); });
         }
     }, Base);
 

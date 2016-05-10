@@ -10,9 +10,6 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
        function ($, joint, Model, Nodes, store) {
     "use strict";
 
-    // export vectorizer globally into this file
-    var V = joint.Vectorizer;
-
     /**
      * Zooming multiplier for the phone
      *
@@ -310,7 +307,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             // event if not needed lets make sure the create tooltip is hidden
             $('.workspace-tooltip').hide();
 
-            joint.model.click(cellView, function (x, y) {
+            joint.model.click(cellView, function () {
                 // we don't care about two finger events for tooltips
                 var oe = event.originalEvent;
                 if (oe.touches && oe.touches.length == 2) return;
@@ -338,7 +335,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
             });
         });
 
-        $tooltip.on('click touchend', 'a', function (event) {
+        $tooltip.on('click touchend', 'a', function () {
             $tooltip.hide();
             var cellView = $tooltip.data('cellView');
             var action = $(this).attr('rel');
@@ -354,7 +351,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
      */
     function initInteraction(joint) {
         // nullify cellmoved when cell is grabbed
-        joint.paper.on('cell:pointerdown', function (cellView, event) {
+        joint.paper.on('cell:pointerdown', function () {
             joint.cellmoved = false;
         });
         
@@ -409,7 +406,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
         });
 
         var events2 = 'mouseup.pe touchend.pe';
-        $(window).off(events2).on(events2, function (event) {
+        $(window).off(events2).on(events2, function () {
             joint.dragging = false;
             joint.pinch = false;
             if (joint.changed) {
