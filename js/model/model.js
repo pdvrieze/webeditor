@@ -446,9 +446,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
 
             var xml = this.toXml();
             var handle = this.handle;
-            return store.updateModel(handle, xml).then(function () {
-                console.log('saved');
-            }).fail(function () {
+            return store.updateModel(handle, xml).fail(function () {
                 alert('Connection Error');
             });
         },
