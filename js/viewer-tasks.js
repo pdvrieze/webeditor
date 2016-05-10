@@ -71,13 +71,15 @@ define(['jquery', 'store/task', 'util/simple-template'],
             e.preventDefault();
 
             var task = $(this).parent().data('task');
-            if (task.state != 'Taken') return;
 
             var $div = $(this).next();
             $list.find('collapse.in').collapse('hide');
             $div.collapse('show');
 
             renderInside($div, task);
+            if (task.state != 'Taken') {
+                $div.find('input,select,button').prop('disabled', true);
+            }
 
             return false;
         });
