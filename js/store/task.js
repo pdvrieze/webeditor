@@ -63,9 +63,9 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
         this.tasks = [];
         this.callback = callback;
 
-        var func = function () { self.update(); };
+        var func = function (init) { self.update(init); };
         this.interval = setInterval(func, INTERVAL);
-        func();
+        func(true);
     }
 
     PendingTaskManager.prototype = $.extend({
@@ -73,8 +73,10 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
          * Sync with server
          *
          * @method update
+         *
+         * @param init {Boolean} first run
          */
-        update: function () {
+        update: function (init) {
             var self = this;
 
             // send request
@@ -110,6 +112,7 @@ define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
                     self.tasks = tasks;
                     self.callback(tasks);
                 }
+                else if (init) self.callback([]);
             }).fail(function (e) { console.log('Cannot load tasks', e); });
         },
 
