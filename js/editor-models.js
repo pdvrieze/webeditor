@@ -26,7 +26,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         var local = {}; // local store
 
         renderList($html, $list, local);
-        setupListeners($html, $list);
+        setupListeners($html, $list, local);
         initPreview($html, $list, local);
         
         // no async neede after all
@@ -69,7 +69,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
      * @param $html {Object} jQuery html to render
      * @param $list {Object} jQuery list element
      */
-    function setupListeners($html, $list) {
+    function setupListeners($html, $list, local) {
         // setup listener for list item click - switch page to workspace
         $list.on('click', 'a.list-group-item', function (e) {
             e.preventDefault();
@@ -92,7 +92,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
         // when refresh button is clicked we reset the store and rerender
         $html.find('#refresh').click(function () {
             store.update();
-            renderList($html, $list);
+            renderList($html, $list, local);
         });
     }
 
@@ -179,7 +179,7 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
             var name = prompt('New Name'); // get new name from the user
             if (name && name.trim()) { // make sure it is not empty
                 store.cloneModel(handle, name).then(function () {
-                    renderList($html, $list);
+                    renderList($html, $list, local);
                 });
             }
         });
