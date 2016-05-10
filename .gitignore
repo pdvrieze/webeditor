@@ -3,7 +3,6 @@
 *.php
 
 ### Vim ###
-*.s[a-w][a-z]
 !*.swf
 *.un~
 Session.vim
