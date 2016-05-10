@@ -122,6 +122,10 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
 
             // setup paper origin and scale based on xml element positions
             setupPaper($xml, paper);
+            $(window).off('resize.pe').on('resize.pe', function () {
+                setupPaper($xml, paper);
+            });
+
 
             // load model from xml
             var model = new Model(graph, paper);
@@ -299,6 +303,9 @@ define(['jquery', 'store/model', 'util/simple-template', 'joint',
     function destroy(local) {
         if (local.task) local.task.destroy();
         local.task = null;
+
+        // remove window handlers
+        $(window).off('.pe');
     }
     
     // export
