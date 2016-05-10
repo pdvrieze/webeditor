@@ -33,10 +33,14 @@ define(['jquery', 'store/task', 'util/simple-template'],
     }
 
     function render($list, tasks) {
-        console.log('RENDER');
         var list = [];
         $.each(tasks, function (i, task) {
-            var $html = template.render('viewer-task', task);
+            var view = $.extend({}, task);
+
+            // rename acknowledged state
+            if (view.state === 'Acknowledged') view.state = 'Available';
+
+            var $html = template.render('viewer-task', view);
             $html.data('task', task);
 
             if (task.state != 'Acknowledged') {
