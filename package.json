@@ -18,6 +18,9 @@
     "url": "https://github.com/sQu1rr/fyp/issues"
   },
   "homepage": "https://github.com/sQu1rr/fyp#readme",
+  "devDependencies": {
+    "bower": "^1.7.9"
+  },
   "dependencies": {
     "jsdom": "^8.5.0",
     "mocha-jsdom": "^1.1.0",

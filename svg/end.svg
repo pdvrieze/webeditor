@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<svg height="30" width="30" version="1.1"
-     xmlns:xlink="http://www.w3.org/1999/xlink"
-     xmlns="http://www.w3.org/2000/svg">
-    <circle stroke-width="2" stroke="black" fill="white" r="13"
-            cy="15" cx="15"/>
-    <circle fill="black" r="10" cy="15" cx="15"/>
-</svg>

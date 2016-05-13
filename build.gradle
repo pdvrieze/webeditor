@@ -1,0 +1,62 @@
+
+/*
+ * Buildscript based upon https://objectpartners.com/2015/04/29/using-gradle-and-bower-to-manage-jscss-dependencies/
+ */
+
+buildscript {
+    dependencies {
+        classpath 'com.moowork.gradle:gradle-node-plugin:0.12'
+    }
+    repositories {
+        jcenter()
+    }
+}
+
+apply plugin: 'com.moowork.node'
+apply plugin: 'war'
+
+node {
+//    version = '0.12.2'
+//    npmVersion = '2.7.5'
+//    download = true
+}
+
+task npmCacheConfig(type: NpmTask) {
+    description = "Configure the NPM cache"
+    def npmCacheDir = "${buildDir}/caches/npm"
+    outputs.files file(npmCacheDir)
+    args = [ 'config', 'set', 'cache', npmCacheDir ]
+}
+
+task npmPackages(type: NpmTask, dependsOn: npmCacheConfig) {
+    description = "Install Node.js packages"
+    args = [ 'install' ]
+    inputs.files file('package.json')
+    outputs.files file('node_modules')
+}
+
+task bowerInstall(type: NodeTask) {
+    script = file('node_modules/bower/bin/bower')
+    args = ["--config.storage.cache=${buildDir}/caches/bower/cache",
+            "--config.storage.packages=${buildDir}/caches/bower/packages",
+            "--config.storage.registry=${buildDir}/caches/bower/registry",
+            'install']
+    inputs.files file('bower.json')
+    outputs.files file('bower_components')
+    dependsOn npmPackages
+}
+
+war {
+    from ('bower_components') {
+        exclude '**/*.min.js'
+        exclude 'bower_components/jquery/test'
+        include '**/*.js'
+        include '**/*.css'
+        include 'bootstrap/fonts/*'
+        include 'jquery/dist/jquery.js'
+        includeEmptyDirs = false
+        into 'bower_components'
+    }
+    dependsOn bowerInstall
+}
+
