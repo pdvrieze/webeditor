@@ -48,11 +48,12 @@ task bowerInstall(type: NodeTask) {
 
 war {
     from ('bower_components') {
-        exclude '**/*.min.js'
+//        exclude '**/*.min.js'
         exclude 'bower_components/jquery/test'
         include '**/*.js'
+        include '**/*.min.map'
         include '**/*.css'
-        include 'bootstrap/fonts/*'
+        include 'bootstrap/dist/fonts/*'
         include 'jquery/dist/jquery.js'
         includeEmptyDirs = false
         into 'bower_components'
