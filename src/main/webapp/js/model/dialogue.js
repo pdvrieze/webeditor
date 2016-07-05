@@ -3,10 +3,10 @@
  *
  * @module Model
  */
-define(['./dialogue/gate', './dialogue/block', './dialogue/xml'],
-       function (Gate, Block, Xml) {
+define(['./dialogue/gate', './dialogue/activity', './dialogue/xml'],
+       function (Gate, Activity, Xml) {
     "use strict";
 
     // export
-    return { Gate: Gate, Block: Block, Xml: Xml };
+    return { Gate: Gate, Activity: Activity, Xml: Xml };
 });

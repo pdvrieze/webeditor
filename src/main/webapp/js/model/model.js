@@ -28,7 +28,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         // we count all the items
         this.count = {
             start: 0,
-            block: 0,
+            activity: 0,
             join: 0,
             split: 0,
             end: 0
@@ -178,7 +178,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
         },
 
         /**
-         * Extract resulable variable from node (block)
+         * Extract resulable variable from node (activity)
          * @method extract
          *
          * @param node {Object} node to extract info from
@@ -356,7 +356,7 @@ define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
             // traverse children
             $model.children().each(function () {
                 var name = _.capitalize(this.tagName.replace(/^pe:/, ''));
-                if (name == 'Activity') name = 'Block'; // remap
+                if (name == 'Activity') name = 'Activity'; // remap
 
                 // find offset
                 var offset = {

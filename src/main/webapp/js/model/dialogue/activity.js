@@ -8,15 +8,15 @@ define(['jquery', 'util/simple-template', 'Sortable'],
     "use strict";
 
     /** 
-     * Block Dialogue class
+     * Activity Dialogue class
      *
-     * @class Block
+     * @class Activity
      * @constructor
      * 
      * @param node {Object} calling node
      * @param storage {Array} dynamic variable storage
      */
-    function Block(node, storage) {
+    function Activity(node, storage) {
         this.node = node;
         this.storage = storage;
 
@@ -41,7 +41,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         this.$target.modal('show');
     }
 
-    Block.prototype = {
+    Activity.prototype = {
         /** 
          * Render element list
          * @method render
@@ -290,7 +290,7 @@ define(['jquery', 'util/simple-template', 'Sortable'],
         // this is just a wrapper to get html
         var $ul = $('<ul>');
 
-        // first lets add current block elements
+        // first lets add current activity elements
         var added = false;
         $.each(elements, function (i, val) {
             if (val.value) {
@@ -349,5 +349,5 @@ define(['jquery', 'util/simple-template', 'Sortable'],
     }
 
     // export
-    return Block;
+    return Activity;
 });

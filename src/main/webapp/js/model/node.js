@@ -292,15 +292,15 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     /**
      * Activity Class
      *
-     * @class Block
+     * @class Activity
      * @extends Base
      */
-    var Block = Base.extend({
+    var Activity = Base.extend({
         /** @override */
-        type: 'block',
+        type: 'activity',
 
         /** @override */
-        canEdit: true, // block is editable
+        canEdit: true, // activity is editable
 
         /**
          * Open edit dialogue
@@ -308,7 +308,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
          * @param storage {Array} previous dynamic elements
          */
         edit: function (storage) {
-            new Dialogue.Block(this, storage);
+            new Dialogue.Activity(this, storage);
         },
 
         /**
@@ -596,7 +596,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
     // export
     return {
         Start: Start,
-        Block: Block,
+        Activity: Activity,
         Join: Join,
         Split: Split,
         End: End,
