@@ -21,7 +21,7 @@ define(['jquery'], function ($) {
      * @return {Promise}
      */
     function login(user, pass) {
-        return $.get(urlLogin, {
+        return $.post(urlLogin, {
             username: user, password: pass
         }).then(function () { username = user; });
     }
