@@ -10,7 +10,7 @@ define(['jquery'], function ($) {
     
     var username = null; // username (if null user is not logged in)
 
-    var urlLogin = '/accounts/login'; // login url
+    var urlLogin = '/accountmgr/login'; // login url
 
     /**
      * Log user in
@@ -32,7 +32,7 @@ define(['jquery'], function ($) {
      * @return {Promise}
      */
     function logout() {
-        return $.get('/accounts/logout').then(function () {
+        return $.get('/accountmgr/logout').then(function () {
             username = null;
         });
     }

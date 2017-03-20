@@ -43,21 +43,23 @@
      */
     function main(template, $load) {
         // load auth and navigation controllers
-        var controllers = [ 'share/auth', 'share/nav' ];
+        var controllers = [ './webeditor', 'share/nav' ];
 
         // render page html
         var $html = template.render('editor');
         $load.resolve($html);
 
-        require(controllers, function (auth, nav) {
+        require(controllers, function (webeditor, nav) {
+            var auth = webeditor.share.auth;
+
             nav.init('editor-models'); // initialise navigation bar
             nav.createOther('viewer');
 
             // try to login
-            auth.tryLogin().then(function () {
+            auth.tryLogin(onload=function () {
                 // automatically route to the landing page or the hashed page
                 nav.login();
-            }).fail(function () {
+            }, onerror=function () {
                 // go to index page which asks to login
                 nav.logout();
             });

@@ -24,15 +24,15 @@ import org.w3c.xhr.XMLHttpRequest
 typealias EventHandler = (Event)->dynamic
 typealias ProgressEventHandler = (ProgressEvent)->dynamic
 
-fun postAsync(url:String, data: Map<String, String>, onerror: EventHandler? = null, onload: EventHandler) {
+internal fun postAsync(url:String, data: Map<String, String>, onerror: EventHandler? = null, onload: EventHandler) {
   requestAsync(url, "POST", data, onerror, onload)
 }
 
-fun getAsync(url:String, onerror: EventHandler? = null, onload: EventHandler) {
+internal fun getAsync(url:String, onerror: EventHandler? = null, onload: EventHandler) {
   requestAsync(url, "GET", emptyMap(), onerror, onload)
 }
 
-fun requestAsync(url:String, method: String, data: Map<String, String>, onerror: EventHandler? = null, onload: EventHandler) {
+internal fun requestAsync(url:String, method: String, data: Map<String, String>, onerror: EventHandler? = null, onload: EventHandler) {
   val request = XMLHttpRequest().apply {
     open(method, url)
     setRequestHeader("Accept", "text/plain")

@@ -62,7 +62,7 @@ sourceCompatibility = myJavaVersion
 targetCompatibility = myJavaVersion
 
 compileKotlin2Js {
-    kotlinOptions.outputFile = outDir + "webeditor2.js"
+    kotlinOptions.outputFile = outDir + "webeditor.js"
     kotlinOptions.sourceMap = true
     kotlinOptions.suppressWarnings = false
     kotlinOptions.verbose = true
@@ -71,7 +71,7 @@ compileKotlin2Js {
 }
 
 war {
-    configurations["compile"].each { File file ->
+    configurations.runtime.each { File file ->
         logger.lifecycle("Adding javascript dependency "+file.toString())
         into("js") {
             from zipTree(file.absolutePath)

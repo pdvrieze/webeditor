@@ -25,6 +25,7 @@ private var username: String? = null
 private const val LOGIN_LOCATION = "/accountmgr/login"
 private const val LOGOUT_LOCATION = "/accountmgr/logout"
 
+@JsName("login")
 fun login(user:String, password: String) {
   postAsync(LOGIN_LOCATION, mapOf("username" to user, "password" to password)) {
     username = user
@@ -32,6 +33,7 @@ fun login(user:String, password: String) {
   }
 }
 
+@JsName("logout")
 fun logout() {
   getAsync(LOGOUT_LOCATION) {
     username = null
@@ -39,15 +41,21 @@ fun logout() {
   }
 }
 
-fun tryLogin() {
-  getAsync(LOGIN_LOCATION) { event ->
+@JsName("tryLogin")
+fun tryLogin(onload: dynamic, onfail:dynamic) {
+  getAsync(LOGIN_LOCATION, {onfail(it)}) { event ->
     val responseText = (event.target as XMLHttpRequest).responseText
     if (responseText.startsWith("login:")) {
       username = responseText.substring(6)
+      onload()
+    } else {
+      onfail()
     }
   }
 }
 
+@JsName("getUser")
 fun getUser() = username
 
+@JsName("isLoggedIn")
 fun isLoggedIn() = ! username.isNullOrEmpty()
