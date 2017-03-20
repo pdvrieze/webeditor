@@ -13,6 +13,7 @@ buildscript {
 }
 
 apply plugin: 'com.moowork.node'
+apply plugin: 'kotlin2js'
 apply plugin: 'war'
 
 node {
@@ -46,7 +47,60 @@ task bowerInstall(type: NodeTask) {
     dependsOn npmPackages
 }
 
+def outDir = "${buildDir}/kotlin2js/main/"
+
+jar{
+    baseName='webeditor'
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-html-js:$kotlinx_html_version"
+}
+
+sourceCompatibility = myJavaVersion
+targetCompatibility = myJavaVersion
+
+compileKotlin2Js {
+    kotlinOptions.outputFile = outDir + "webeditor2.js"
+    kotlinOptions.sourceMap = true
+    kotlinOptions.suppressWarnings = false
+    kotlinOptions.verbose = true
+//    kotlinOptions.kjsm = false
+    kotlinOptions.moduleKind = "umd"
+}
+
 war {
+    configurations["compile"].each { File file ->
+        logger.lifecycle("Adding javascript dependency "+file.toString())
+        into("js") {
+            from zipTree(file.absolutePath)
+            include { fileTreeElement ->
+                def path = fileTreeElement.path
+                path.endsWith(".js")&& path.startsWith("META-INF/resources") || !path.startsWith("META-INF/")
+            }
+            eachFile { fileCopyDetails ->
+                def mysrc = fileCopyDetails.sourcePath
+                def i = mysrc.lastIndexOf('/')
+                if (fileCopyDetails.sourcePath.startsWith("META-INF") && i>0) {
+                    def myNewPath = 'js/'+mysrc.substring(i+1)
+                    logger.lifecycle("Renaming ${fileCopyDetails.sourcePath} to $myNewPath")
+                    fileCopyDetails.path = myNewPath
+                }
+
+            }
+            exclude { f ->
+                def r = f.name.endsWith(".class") || (f.name.endsWith(".kjsm") && f.path.startsWith("kotlinx.html.shared"))
+                if (r) logger.info("Skipping inclusion of `${f.relativePath.pathString}` into javascript path")
+                return r
+            }
+        }
+    }
+    classpath = files() // Reset this so that we have a clean War
+    from(compileKotlin2Js.outputs) {
+        into 'js'
+    }
+
     from ('bower_components') {
 //        exclude '**/*.min.js'
         exclude 'bower_components/jquery/test'
@@ -60,7 +114,3 @@ war {
     }
     dependsOn bowerInstall
 }
-
-
-sourceCompatibility = myJavaVersion
-targetCompatibility = myJavaVersion
