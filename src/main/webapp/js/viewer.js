@@ -49,7 +49,7 @@
         var $html = template.render('viewer');
         $load.resolve($html);
 
-        require(controllers, function (auth, nav) {
+        require(controllers, function (webeditor, nav) {
             var auth = webeditor.share.auth;
 
             nav.init('viewer-tasks'); // initialise navigation bar
