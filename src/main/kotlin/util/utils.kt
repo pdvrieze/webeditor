@@ -16,6 +16,7 @@
 
 package util
 
+import kotlinx.html.*
 import org.w3c.dom.events.Event
 import org.w3c.xhr.FormData
 import org.w3c.xhr.ProgressEvent
@@ -56,3 +57,14 @@ internal fun requestAsync(url:String, method: String, data: Map<String, String>,
   }
 
 }
+
+
+@Suppress("unused")
+open class LAYOUT(initialAttributes : Map<String, String>, override val consumer : TagConsumer<*>) : HTMLTag("layout", consumer, initialAttributes, null, false, false), HtmlBlockTag {
+  var name : String?
+    get()  = attributes.get("name")
+    set(newValue) { newValue?.let { attributes["name"] = it } ?: run { attributes.remove("name") } }
+
+}
+
+fun <R> TagConsumer<R>.layout(name:String, block: LAYOUT.()->Unit) = LAYOUT(mapOf("name" to name), this).visit(block)
