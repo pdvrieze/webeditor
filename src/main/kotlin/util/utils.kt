@@ -17,10 +17,10 @@
 package util
 
 import kotlinx.html.*
+import org.w3c.dom.Element
+import org.w3c.dom.Node
 import org.w3c.dom.events.Event
-import org.w3c.xhr.FormData
-import org.w3c.xhr.ProgressEvent
-import org.w3c.xhr.XMLHttpRequest
+import org.w3c.xhr.*
 
 typealias EventHandler = (Event)->dynamic
 typealias ProgressEventHandler = (ProgressEvent)->dynamic
@@ -33,12 +33,27 @@ internal fun getAsync(url:String, onerror: EventHandler? = null, onload: EventHa
   requestAsync(url, "GET", emptyMap(), onerror, onload)
 }
 
-internal fun requestAsync(url:String, method: String, data: Map<String, String>, onerror: EventHandler? = null, onload: EventHandler) {
+internal fun getASync(url:String, onLoad: (String)->Boolean) {
+  requestAsync(url, "GET", emptyMap<String, String>(),
+               responseType = XMLHttpRequestResponseType.TEXT,
+               onerror = null,
+               onload = { onLoad((it.target as XMLHttpRequest).responseText) })
+}
+
+internal fun requestAsync(url:String, method: String, data: Map<String, String>, onerror: EventHandler? = null, onload: EventHandler, responseType: XMLHttpRequestResponseType = XMLHttpRequestResponseType.TEXT) {
   val request = XMLHttpRequest().apply {
+    this.responseType = responseType
     open(method, url)
     setRequestHeader("Accept", "text/plain")
-    this.onload = onload
-    if (onerror !=null) this.onerror = onerror
+    onreadystatechange = { event ->
+      if (readyState==XMLHttpRequest.DONE) {
+        if (status>=200 && status<400) {
+          onload(event)
+        } else {
+          onerror?.invoke(event)
+        }
+      }
+    }
   }
 
   val postData = if (data.isNotEmpty()) {
@@ -68,3 +83,17 @@ open class LAYOUT(initialAttributes : Map<String, String>, override val consumer
 }
 
 fun <R> TagConsumer<R>.layout(name:String, block: LAYOUT.()->Unit) = LAYOUT(mapOf("name" to name), this).visit(block)
+
+fun <E:Element> E.findChildren(name: String, clazz:String?=null, body: (E)->Unit) {
+  var child: Node? = null
+  while(child!=null) {
+    if (child is Element) {
+      (child as E).findChildren(name, clazz, body)
+      if (child.localName==name && (clazz==null || child.classList.contains(clazz))) {
+        body(child!!)
+      }
+    }
+
+    child=child?.nextSibling
+  }
+}
