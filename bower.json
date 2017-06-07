@@ -14,6 +14,6 @@
     "jointjs": "^0.9.7",
     "requirejs": "^2.2.0",
     "Sortable": "RubaXa/Sortable#^1.4.2",
-    "jquery": "^2.0.3"
+    "jquery": "^3.2.1"
   }
 }
