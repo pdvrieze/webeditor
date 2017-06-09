@@ -20,7 +20,9 @@
     // require config and continue initialisation
     requirejs(['config'], function () {
         // load template loader first, so we can show nice loading animation
-        requirejs(['util/simple-template'], function (template) {
+        requirejs(['webeditor'], function (webeditor) {
+            var template=webeditor.simpleTemplate
+
             // start loading animation
             var $load = template.load('#page');
 

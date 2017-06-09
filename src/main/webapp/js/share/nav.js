@@ -6,10 +6,11 @@
  *
  * @module Nav
  */
-define(['jquery', 'webeditor', 'util/simple-template', 'lodash'],
-       function ($, webeditor, template, _) {
+define(['jquery', 'webeditor', 'lodash'],
+       function ($, webeditor, _) {
     "use strict";
 
+    var template=webeditor.simpleTemplate
     var auth = webeditor.share.auth;
 
     // list of hardcoded controllers that will need to be loaded for page change

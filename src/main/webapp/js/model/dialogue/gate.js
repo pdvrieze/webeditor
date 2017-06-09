@@ -3,8 +3,10 @@
  *
  * @module Dialogue
  */
-define(['jquery', 'util/simple-template'], function ($, template) {
+define(['jquery', 'webeditor'], function ($, webeditor) {
     "use strict";
+
+    var template=webeditor.simpleTemplate
 
     /** 
      * Gate Dialogue class

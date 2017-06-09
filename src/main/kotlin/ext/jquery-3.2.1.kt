@@ -786,7 +786,10 @@ external interface JQuery {
     fun queue(queueName: String, callback: Function<*>): JQuery
     fun extend(`object`: `T$4`): JQuery
 }
-external var jQuery: JQueryStatic = definedExternally
+@JsModule("jquery")
+@JsNonModule
+external val jQuery: JQueryStatic = definedExternally
 
 @JsModule("jquery")
+@JsNonModule
 external val `$`: JQueryStatic = definedExternally

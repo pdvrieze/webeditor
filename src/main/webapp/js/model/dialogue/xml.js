@@ -3,9 +3,11 @@
  *
  * @module Dialogue
  */
-define(['jquery', 'util/simple-template', 'store/model', 'util/util'],
-       function ($, template, store, util) {
+define(['jquery', 'webeditor', 'store/model', 'util/util'],
+       function ($, webeditor, store, util) {
     "use strict";
+
+    var template = webeditor.simpleTemplate
 
     /** 
      * Xml Dialogue class

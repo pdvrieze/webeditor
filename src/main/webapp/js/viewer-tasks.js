@@ -3,9 +3,11 @@
  *
  * @module ControllerViewer
  */
-define(['jquery', 'store/task', 'util/simple-template'],
-       function ($, store, template) {
+define(['jquery', 'store/task', 'webeditor'],
+       function ($, store, webeditor) {
     "use strict";
+
+    var template=webeditor.simpleTemplate
 
     /**
      * Initialisation of the viewer

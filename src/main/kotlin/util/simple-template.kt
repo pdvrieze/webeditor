@@ -1,5 +1,6 @@
 import jquery.jq
 import kotlin.browser.document
+import kotlin.js.Json
 
 /*
  * Copyright (c) 2017.
@@ -34,10 +35,10 @@ object simpleTemplate {
 
     // templates are stored in this variable
     // nohing will render before they are loaded
-    var templates: Map<String, String> = js("{}");
+    var templates: Json = js("{}");
 
     private var _templates = jQuery.getJSON("view/all").then<Map<String, String>>({ json, _, _ ->
-                                                                 templates = json as Map<String, String>
+                                                                 templates = json as Json
                                                                  templates
                                                              })
 
@@ -62,7 +63,7 @@ object simpleTemplate {
      */
     @JsName("render")
     fun render(name: String, view: dynamic): JQuery {
-        if (name !in templates) { // if template is not there, fail
+        if (templates[name]==null) { // if template is not there, fail
             throw Error("Layout \"$name\" not found");
         }
 
@@ -97,7 +98,7 @@ object simpleTemplate {
      * @return {String} template html substituted
      */
     private fun getHtml(name: String, view: dynamic): String {
-        var html: String? = templates[name]
+        var html: String? = templates[name] as String?
         if (view) {
             // view variable substitution
             html = html?.replace(Regex("/{{(s*w+?s*)}}/g"), { matchResult ->
@@ -165,5 +166,5 @@ object simpleTemplate {
      * @return {Boolean}
      */
     @JsName("has")
-    fun has(name: String) = name in templates
+    fun has(name: String) = templates[name]!=null
 }

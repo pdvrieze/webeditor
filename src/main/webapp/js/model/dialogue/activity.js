@@ -3,11 +3,13 @@
  *
  * @module Dialogue
  */
-define(['jquery', 'util/simple-template', 'Sortable'],
-       function ($, template, Sortable) {
+define(['jquery', 'webeditor', 'Sortable'],
+       function ($, webeditor, Sortable) {
     "use strict";
 
-    /** 
+    var template=webeditor.simpleTemplate
+
+    /**
      * Activity Dialogue class
      *
      * @class Activity
