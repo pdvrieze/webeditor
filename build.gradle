@@ -67,7 +67,7 @@ compileKotlin2Js {
     kotlinOptions.suppressWarnings = false
     kotlinOptions.verbose = true
 //    kotlinOptions.kjsm = false
-    kotlinOptions.moduleKind = "umd"
+    kotlinOptions.moduleKind = "amd"
 }
 
 war {
