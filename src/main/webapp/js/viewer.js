@@ -58,10 +58,10 @@
             nav.createOther('editor');
 
             // try to login
-            auth.tryLogin(onload=function () {
+            auth.tryLogin(function () {
                 // automatically route to the landing page or the hashed page
                 nav.login();
-            }, onerror=function () {
+            }, function () {
                 // go to index page which asks to login
                 nav.logout();
             });

@@ -18,6 +18,8 @@ package share.auth
 
 import JQueryPromise
 import jQuery
+import org.w3c.xhr.XMLHttpRequest
+import util.getAsync
 import kotlin.js.json
 
 private var username: String? = null
@@ -41,14 +43,16 @@ fun logout():JQueryPromise<Unit> {
 }
 
 @JsName("tryLogin")
-fun tryLogin(onload: dynamic, onfail:dynamic):JQueryPromise<Unit> {
-    return jQuery.get(LOGIN_LOCATION).then(doneFilter = { res, _ ->
-        if ((res as String).startsWith("login:")) {
-            username = res.substring(6)
+fun tryLogin(onload: dynamic, onfail:dynamic) {
+    getAsync(LOGIN_LOCATION, {onfail(it)}) { event ->
+        val responseText = (event.target as XMLHttpRequest).responseText
+        if (responseText.startsWith("login:")) {
+            username = responseText.substring(6)
+            onload()
         } else {
-            username=null
+            onfail()
         }
-    })
+    }
 }
 
 @JsName("getUser")

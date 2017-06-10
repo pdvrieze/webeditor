@@ -8,8 +8,10 @@
  *
  * @module Store
  */
-define(['jquery', 'lodash', 'util/util'], function ($, _, util) {
+define(['jquery', 'lodash', 'webeditor'], function ($, _, webeditor) {
     "use strict";
+
+    var util = webeditor.util.util
 
     // user message service URL
     var URL_PE = '/PEUserMessageHandler/UserMessageService/';

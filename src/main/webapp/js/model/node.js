@@ -3,9 +3,11 @@
  *
  * @module Model
  */
-define(['jquery', 'joint', 'model/dialogue', 'lodash', 'util/util'],
-       function ($, joint, Dialogue, _, util) {
+define(['jquery', 'joint', 'model/dialogue', 'lodash', 'webeditor'],
+       function ($, joint, Dialogue, _, webeditor) {
     "use strict";
+
+    var util = webeditor.util.util
 
     /**
      * Single element size on the graph

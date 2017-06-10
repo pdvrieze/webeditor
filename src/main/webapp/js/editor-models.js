@@ -7,12 +7,13 @@
  * @module ControllerEditor
  */
 define(['jquery', 'store/model', 'webeditor', 'joint',
-       'model/model', 'model/node', 'share/nav', 'util/util', 'store/task'],
-       function ($, store, webeditor, joint, Model, Nodes, nav, util,
+       'model/model', 'model/node', 'share/nav', 'store/task'],
+       function ($, store, webeditor, joint, Model, Nodes, nav,
                  taskStore) {
     "use strict";
 
     var template=webeditor.simpleTemplate
+    var util = webeditor.util.util
 
     /**
      * Initialisation of the editor models page

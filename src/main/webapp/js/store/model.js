@@ -6,8 +6,9 @@
  *
  * @module Store
  */
-define(['jquery', 'util/util'], function ($, util) {
+define(['jquery', 'webeditor'], function ($, webeditor) {
     "use strict";
+    var util = webeditor.util.util
 
     var models = {}; // model storage
     var $def = null; // global deferred object

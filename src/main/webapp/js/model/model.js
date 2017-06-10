@@ -5,10 +5,12 @@
  * 
  * @module Model
  */
-define(['jquery', 'joint', 'lodash', './node', 'store/model', 'util/util',
+define(['jquery', 'joint', 'lodash', './node', 'store/model', 'webeditor',
         './dialogue', 'dagre'],
-        function ($, joint, _, Nodes, store, util, Dialogue, dagre) {
+        function ($, joint, _, Nodes, store, webeditor, Dialogue, dagre) {
     "use strict";
+
+    var util = webeditor.util.util
 
     /** 
      * @class Model
