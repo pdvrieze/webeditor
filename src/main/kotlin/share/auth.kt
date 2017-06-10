@@ -16,42 +16,39 @@
 
 package share.auth
 
-import org.w3c.xhr.FormData
-import org.w3c.xhr.XMLHttpRequest
-import util.getAsync
-import util.postAsync
+import JQueryPromise
+import jQuery
+import kotlin.js.json
 
 private var username: String? = null
 private const val LOGIN_LOCATION = "/accountmgr/login"
 private const val LOGOUT_LOCATION = "/accountmgr/logout"
 
 @JsName("login")
-fun login(user:String, password: String) {
-  postAsync(LOGIN_LOCATION, mapOf("username" to user, "password" to password)) {
-    username = user
-    true
-  }
+fun login(user:String, password: String): JQueryPromise<Unit> {
+    return jQuery.post(LOGIN_LOCATION, json("username" to user, "password" to password)).then (doneCallback = { _, _, _ ->
+        username = user;
+        Unit
+    })
 }
 
 @JsName("logout")
-fun logout() {
-  getAsync(LOGOUT_LOCATION) {
-    username = null
-    true
-  }
+fun logout():JQueryPromise<Unit> {
+    return jQuery.get(LOGOUT_LOCATION).then( { _,_,_ ->
+        username = null;
+        Unit
+    });
 }
 
 @JsName("tryLogin")
-fun tryLogin(onload: dynamic, onfail:dynamic) {
-  getAsync(LOGIN_LOCATION, {onfail(it)}) { event ->
-    val responseText = (event.target as XMLHttpRequest).responseText
-    if (responseText.startsWith("login:")) {
-      username = responseText.substring(6)
-      onload()
-    } else {
-      onfail()
-    }
-  }
+fun tryLogin(onload: dynamic, onfail:dynamic):JQueryPromise<Unit> {
+    return jQuery.get(LOGIN_LOCATION).then(doneFilter = { res, _ ->
+        if ((res as String).startsWith("login:")) {
+            username = res.substring(6)
+        } else {
+            username=null
+        }
+    })
 }
 
 @JsName("getUser")
