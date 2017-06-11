@@ -32,7 +32,7 @@ define(['jquery', 'lodash', 'webeditor'], function ($, _, webeditor) {
      * @type Integer
      * @default 1 second
      */
-    var INTERVAL = 1000; // 1s
+    var INTERVAL = 300000; // 1s
 
     /**
      * Base functions for manager classes

@@ -15,7 +15,7 @@
      * This cannot be put into config, otherwise the config itself might get
      * cached and this line will make no effect
      */
-    require.config({ urlArgs: "bust=" + (new Date()).getTime() });
+    // require.config({ urlArgs: "bust=" + (new Date()).getTime() });
 
     // require config and continue initialisation
     requirejs(['config'], function () {
