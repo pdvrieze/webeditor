@@ -101,8 +101,8 @@ object simpleTemplate {
         var html: String? = templates[name] as String?
         if (view) {
             // view variable substitution
-            html = html?.replace(Regex("/{{(s*w+?s*)}}/g"), { matchResult ->
-                val key = matchResult.groups[0]
+            html = html?.replace(Regex("\\{\\{(\\s*\\w+?\\s*)\\}\\}"), { matchResult ->
+                val key = matchResult.groups[1]?.value
                 if (view.hasOwnProperty(key)) view[key] else "";
             });
         }
