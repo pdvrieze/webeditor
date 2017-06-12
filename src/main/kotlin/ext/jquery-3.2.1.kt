@@ -285,7 +285,7 @@ external interface JQueryStatic {
     @nativeInvoke
     operator fun invoke(selector: String, context: Element? = definedExternally /* null */): JQuery
     @nativeInvoke
-    operator fun invoke(selector: String, context: JQuery? = definedExternally /* null */): JQuery
+    operator fun invoke(selector: String, context: JQuery?): JQuery
     @nativeInvoke
     operator fun invoke(element: Element): JQuery
     @nativeInvoke
@@ -486,15 +486,15 @@ external interface JQuery {
     fun fadeToggle(duration: String? = definedExternally /* null */, easing: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
     fun fadeToggle(options: JQueryAnimationOptions): JQuery
     fun finish(queue: String? = definedExternally /* null */): JQuery
-    fun hide(duration: Number? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
+    fun hide(duration: Number?, complete: Function<*>? = definedExternally /* null */): JQuery
     fun hide(duration: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
-    fun hide(duration: Number? = definedExternally /* null */, easing: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
-    fun hide(duration: String? = definedExternally /* null */, easing: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
+    fun hide(duration: Number? = definedExternally /* null */, easing: String? , complete: Function<*>? = definedExternally /* null */): JQuery
+    fun hide(duration: String? = definedExternally /* null */, easing: String? , complete: Function<*>? = definedExternally /* null */): JQuery
     fun hide(options: JQueryAnimationOptions): JQuery
-    fun show(duration: Number? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
+    fun show(duration: Number?, complete: Function<*>? = definedExternally /* null */): JQuery
     fun show(duration: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
-    fun show(duration: Number? = definedExternally /* null */, easing: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
-    fun show(duration: String? = definedExternally /* null */, easing: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
+    fun show(duration: Number? = definedExternally /* null */, easing: String?, complete: Function<*>? = definedExternally /* null */): JQuery
+    fun show(duration: String? = definedExternally /* null */, easing: String?, complete: Function<*>? = definedExternally /* null */): JQuery
     fun show(options: JQueryAnimationOptions): JQuery
     fun slideDown(duration: Number? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
     fun slideDown(duration: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
@@ -589,10 +589,10 @@ external interface JQuery {
     fun off(events: String, handler: (eventObject: JQueryEventObject, args: Any) -> Any): JQuery
     fun off(events: String, handler: (eventObject: JQueryEventObject) -> Any): JQuery
     fun off(events: Json, selector: String? = definedExternally /* null */): JQuery
-    fun on(events: String, handler: (eventObject: JQueryEventObject, args: Any) -> Any): JQuery
-    fun on(events: String, data: Any, handler: (eventObject: JQueryEventObject, args: Any) -> Any): JQuery
-    fun on(events: String, selector: String, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any): JQuery
-    fun on(events: String, selector: String, data: Any, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any): JQuery
+    fun on(events: String, handler: (eventObject: JQueryEventObject, args: Any) -> Any?): JQuery
+    fun on(events: String, data: Any, handler: (eventObject: JQueryEventObject, args: Any) -> Any?): JQuery
+    fun on(events: String, selector: String, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any?): JQuery
+    fun on(events: String, selector: String, data: Any, handler: (eventObject: JQueryEventObject, eventData: Any?) -> Any): JQuery
     fun on(events: `T$2`, selector: String? = definedExternally /* null */, data: Any? = definedExternally /* null */): JQuery
     fun on(events: `T$3`, data: Any? = definedExternally /* null */): JQuery
     fun one(events: String, handler: (eventObject: JQueryEventObject) -> Any): JQuery
@@ -744,9 +744,9 @@ external interface JQuery {
     fun filter(func: (index: Number, element: Element) -> Boolean): JQuery
     fun filter(element: Element): JQuery
     fun filter(obj: JQuery): JQuery
-    fun find(selector: String): JQuery
-    fun find(element: Element): JQuery
-    fun find(obj: JQuery): JQuery
+    fun find(selector: String): JQuery?
+    fun find(element: Element): JQuery?
+    fun find(obj: JQuery): JQuery?
     fun first(): JQuery
     fun has(selector: String): JQuery
     fun has(contained: Element): JQuery
