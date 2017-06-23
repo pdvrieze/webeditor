@@ -23,7 +23,6 @@ define(['jquery', 'lodash', 'webeditor'], function ($, _, webeditor) {
 
     // pending taks URLs
     var URL_PENDING = URL_PE + 'pendingTasks/';
-    var URL_ALLPENDING = URL_PE + 'allPendingTasks/';
 
     /**
      * Update interval
@@ -195,7 +194,7 @@ define(['jquery', 'lodash', 'webeditor'], function ($, _, webeditor) {
 
             // run
             $.get(URL_INSTANCES).then(function (xml) {
-                var $inst = $(xml).find('[processModel="' + self.model + '"]');
+                var $inst = $(xml).find('[processModel="' + self.model + '"][state="STARTED"]');
 
                 // make sure something is changed
                 if ($inst.attr('handle') !== self.handle) {
@@ -205,7 +204,7 @@ define(['jquery', 'lodash', 'webeditor'], function ($, _, webeditor) {
 
                 if (self.handle) {
                     // search for tasks
-                    $.get(URL_ALLPENDING).then(function (xml) {
+                    $.get(URL_PENDING).then(function (xml) {
                         var selector = '[instancehandle="' + self.handle + '"]';
                         var $task = $(xml).find(selector);
 

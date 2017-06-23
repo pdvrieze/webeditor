@@ -22,9 +22,9 @@ define(['jquery', 'store/task', 'webeditor'],
         var $list = $html.find('#list');
         var $load = template.load($list);
         var manager = new store.PendingTaskManager(function (tasks) {
-            var $html = render($list, tasks);
-            if ($load) $load.resolve($html);
-            else $list.html($html);
+            var $html2 = render($list, tasks);
+            if ($load) $load.resolve($html2);
+            else $list.html($html2);
         });
 
         initListeners($list, manager);
@@ -79,7 +79,7 @@ define(['jquery', 'store/task', 'webeditor'],
             $div.collapse('show');
 
             renderInside($div, task);
-            if (task.state != 'Taken') {
+            if (task.state != 'Taken' && task.state!='Started') {
                 $div.find('input,select,button').prop('disabled', true);
             }
 

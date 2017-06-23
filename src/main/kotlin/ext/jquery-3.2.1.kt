@@ -75,8 +75,15 @@ external interface JQueryCallback {
 }
 external interface JQueryGenericPromise<T> {
     fun <U> then(doneFilter: (value: T? /*= null*/, values: Any) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((reasons: Any) -> Any)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<U>
+    fun <U> then(doneFilter: (value: T? /*= null*/) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((reasons: Any) -> Any)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<U>
     fun then(doneFilter: (value: T? /*= null*/, values: Any) -> Unit, failFilter: ((reasons: Any) -> Any)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<Unit>
+    fun then(doneFilter: (value: T? /*= null*/) -> Unit, failFilter: ((reasons: Any) -> Any)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<Unit>
 }
+
+inline fun JQueryPromiseCallback(noinline body: () -> Unit) = body as JQueryPromiseCallback<Any>
+inline fun<T> JQueryPromiseCallback(noinline body: (value:T) -> Unit) = body as JQueryPromiseCallback<T>
+inline fun<T> JQueryPromiseCallback(noinline body: (value:T, args:Array<Any?>) -> T) = body as JQueryPromiseCallback<T>
+
 external interface JQueryPromiseCallback<T> {
     @nativeInvoke
     operator fun invoke(value: T? = definedExternally /* null */, vararg args: Any)
@@ -93,7 +100,7 @@ external interface JQueryPromiseOperator<T, U> {
 }
 external interface JQueryPromise<T> : JQueryGenericPromise<T> {
     fun state(): String
-    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbackN: JQueryPromiseCallback<Any> = definedExternally): JQueryPromise<T>
     fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
     fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
     fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
@@ -101,8 +108,8 @@ external interface JQueryPromise<T> : JQueryGenericPromise<T> {
     fun done(doneCallback1: JQueryPromiseCallback<T>? = definedExternally /* null */, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryPromise<T>
     fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = definedExternally /* null */, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryPromise<T>
     fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = definedExternally /* null */, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryPromise<T>
-    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
-    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbackN: JQueryPromiseCallback<Any> = definedExternally): JQueryPromise<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
     fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
     fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
     fun progress(progressCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>

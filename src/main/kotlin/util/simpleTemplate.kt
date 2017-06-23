@@ -62,7 +62,7 @@ object simpleTemplate {
      * @return {Object} jQuery html
      */
     @JsName("render")
-    fun render(name: String, view: dynamic): JQuery {
+    fun render(name: String, view: dynamic = null): JQuery {
         if (templates[name]==null) { // if template is not there, fail
             throw Error("Layout \"$name\" not found");
         }
@@ -80,7 +80,7 @@ object simpleTemplate {
         if (_html.length.toInt() > 1) _html = jQuery(html = "<div>").append(_html);
 
         // substitute inner inserts
-        _html.find("insert[name]").each({ index, elem ->
+        _html.find("insert[name]")?.each({ index, elem ->
                                             var insert = jQuery(elem).attr("name");
                                             jQuery(elem).replaceWith(render(insert, view));
                                         });
@@ -118,10 +118,10 @@ object simpleTemplate {
      */
     private fun applyLayout(name: String, view: dynamic, _sections: JQuery): JQuery {
         val _html = render(name, view);
-        _html.find("insert[section]").each({ index, elem ->
+        _html.find("insert[section]")?.each({ index, elem ->
                                                val jElem = jQuery(elem)
                                                var selector = "section[name=${jElem.attr("section")}]";
-                                               jElem.replaceWith(_sections.find(selector).children());
+                                               jElem.replaceWith(_sections.find(selector)?.children() ?: jQuery());
                                            });
         return _html;
     }
@@ -142,7 +142,8 @@ object simpleTemplate {
         var _def = jQuery.Deferred<JQuery>();
 
         _def.then({ _html, _ ->
-                      _target.removeClass("loader").append(_html!!);
+                      _target.removeClass("loader")
+                      if(_html!=null) _target.append(_html);
                   });
 
         return _def;

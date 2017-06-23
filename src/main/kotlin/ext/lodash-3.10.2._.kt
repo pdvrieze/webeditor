@@ -47,8 +47,8 @@ external interface LoDashStatic {
     fun <W, T> findLastIndex(array: List<T>, predicate: W? = definedExternally /* null */): Number
     fun <T> first(array: List<T>): T
     fun <T> flatten(array: ListOfRecursiveArraysOrValues<T>, isDeep: Boolean): Array<T>
-    fun <T> flatten(array: List<dynamic /* T | Array<T> */>): Array<T>
-    fun <T> flatten(array: ListOfRecursiveArraysOrValues<T>): RecursiveArray<T>
+    fun <T> flatten(dynarray: List<dynamic /* T | Array<T> */>): Array<T>
+    fun <T> flatten(recarray: ListOfRecursiveArraysOrValues<T>): RecursiveArray<T>
     fun <T> flattenDeep(array: ListOfRecursiveArraysOrValues<T>): Array<T>
     fun <T> head(array: List<T>): T
     fun <T> indexOf(array: List<T>, value: T, fromIndex: Boolean? = definedExternally /* null */): Number
