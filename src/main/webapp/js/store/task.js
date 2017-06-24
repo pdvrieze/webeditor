@@ -140,7 +140,7 @@ define(['jquery', 'lodash', 'webeditor'], function ($, _, webeditor) {
          */
         cancel: function (task) {
             $.post(URL_PENDING + task, {
-                state: 'Finished'
+                state: 'Cancelled'
             }).fail(function (e) { console.log('Cannot cancel task', e); }); 
         },
 
