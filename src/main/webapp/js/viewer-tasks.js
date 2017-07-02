@@ -8,6 +8,7 @@ define(['jquery', 'store/task', 'webeditor'],
     "use strict";
 
     var template=webeditor.simpleTemplate
+    var manager=null
 
     /**
      * Initialisation of the viewer
@@ -21,7 +22,7 @@ define(['jquery', 'store/task', 'webeditor'],
 
         var $list = $html.find('#list');
         var $load = template.load($list);
-        var manager = new store.PendingTaskManager(function (tasks) {
+        manager = new store.PendingTaskManager(function (tasks) {
             var $html2 = render($list, tasks);
             if ($load) $load.resolve($html2);
             else $list.html($html2);
@@ -47,6 +48,7 @@ define(['jquery', 'store/task', 'webeditor'],
 
             if (task.state != 'Acknowledged') {
                 $html.find('.clickable.accept').hide();
+                manager.update(false)
             }
 
             list.push($html);
@@ -59,6 +61,7 @@ define(['jquery', 'store/task', 'webeditor'],
             e.preventDefault();
             var task = $(this).parent().parent().data('task');
             manager.accept(task.handle);
+            $(this).hide();
             return false;
         });
 
