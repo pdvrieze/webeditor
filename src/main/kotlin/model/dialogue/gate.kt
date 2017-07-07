@@ -1,5 +1,6 @@
+import jquery.JQuery
+import jquery.jQuery
 import org.w3c.dom.Element
-import org.w3c.dom.Node
 
 /*
  * Copyright (c) 2017. 

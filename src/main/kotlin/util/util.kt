@@ -16,10 +16,10 @@
 
 package util
 
+import jquery.JQueryDeferred
+import jquery.jQuery
 import org.w3c.dom.events.Event
 import org.w3c.xhr.XMLHttpRequest
-import JQueryDeferred
-import jQuery
 
 /**
  * Utilities and shared functions

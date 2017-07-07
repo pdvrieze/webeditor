@@ -16,8 +16,9 @@
 
 package share.auth
 
-import JQueryPromise
-import jQuery
+import jquery.JQueryPromise
+import jquery.jQuery
+import org.w3c.dom.events.Event
 import org.w3c.xhr.XMLHttpRequest
 import util.getAsync
 import kotlin.js.json
@@ -44,7 +45,7 @@ fun logout():JQueryPromise<Unit> {
 
 @JsName("tryLogin")
 fun tryLogin(onload: dynamic, onfail:dynamic) {
-    getAsync(LOGIN_LOCATION, {onfail(it)}) { event ->
+    getAsync(LOGIN_LOCATION, {onfail(it)}) { event: Event ->
         val responseText = (event.target as XMLHttpRequest).responseText
         if (responseText.startsWith("login:")) {
             username = responseText.substring(6)

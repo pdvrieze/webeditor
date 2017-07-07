@@ -2,9 +2,9 @@
 @file:[JsQualifier("_") JsModule("lodash")]
 package lodash
 
+import es6.JSArray
+import es6.JSFunction
 import kotlin.js.*
-import JSFunction
-import JSArray
 
 external interface LoDashStatic {
     @nativeInvoke

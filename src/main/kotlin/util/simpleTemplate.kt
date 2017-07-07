@@ -1,4 +1,7 @@
-import jquery.jq
+import jquery.JQuery
+import jquery.JQueryDeferred
+import jquery.JQueryPromise
+import jquery.jQuery
 import kotlin.browser.document
 import kotlin.js.Json
 

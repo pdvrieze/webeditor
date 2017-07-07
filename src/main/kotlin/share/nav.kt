@@ -1,10 +1,3 @@
-import org.w3c.dom.Window
-import org.w3c.dom.events.Event
-import share.auth.isLoggedIn
-import kotlin.browser.window
-import kotlin.js.Json
-import kotlin.js.json
-
 /*
  * Copyright (c) 2017.
  *
@@ -20,6 +13,17 @@ import kotlin.js.json
  * You should have received a copy of the GNU Lesser General Public License along with ProcessManager.  If not,
  * see <http://www.gnu.org/licenses/>.
  */
+
+package share
+
+import bootstrap
+import jquery.*
+import lodash.lodash
+import org.w3c.dom.events.Event
+import share.auth.isLoggedIn
+import simpleTemplate
+import kotlin.browser.window
+import kotlin.js.*
 
 /**
  * Navigation controller
@@ -73,26 +77,26 @@ object nav {
      * Initialise login button in the navigation bar
      */
     private fun initLoginBtn() {
-        jQuery(selector = "#btn_login").click(fun(e: Event) {
+        val loginButton = jQuery(selector = "#btn_login").bootstrap
+        loginButton.click(fun(e: Event) {
             e.preventDefault()
             if (isLoggedIn()) return // already logged in
 
-            val _this = jQuery(this).bootstrap
-            _this.button("loading") // start button loading animation
+            loginButton.button("loading") // start button loading animation
 
             // try to login with credentials
-            share.auth.login(jQuery(selector = "#user").`val`() as String, jQuery(selector = "#pass").`val`() as String).then({ value ->
+            share.auth.login(jQuery(selector = "#user").`val`() as String, jQuery(selector = "#pass").`val`() as String).then({ _: Any? ->
                 jQuery(selector = "#alert_login_shown").remove() // remove alert if exists
                 jQuery(selector = "#dialogue_auth").bootstrap.modal("hide")
                 login()
             }).fail(JQueryPromiseCallback<Any> { value ->
                 // show error if it doesn't
-                var _login = jQuery(selector = "#alert_login")
+                val _login = jQuery(selector = "#alert_login")
                 _login.clone().attr("id", "alert_login_shown")
                     .removeClass("hidden")
                     .insertAfter(_login)
             }).always(JQueryPromiseCallback { ->
-                _this.button("reset") // end button loading animation
+                loginButton.button("reset") // end button loading animation
             })
         })
     }
@@ -105,7 +109,7 @@ object nav {
             e.preventDefault()
             if (!share.auth.isLoggedIn()) return // already logged out
 
-            share.auth.logout().then({value ->
+            share.auth.logout().then({ _:Any? ->
                 logout()
             }).fail(JQueryPromiseCallback {
                 console.error("Loggin out failed", e)
