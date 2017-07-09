@@ -4,11 +4,12 @@
  * @module Dialogue
  */
 define(['jquery', 'webeditor', 'store/model'],
-       function ($, webeditor, store) {
+       function ($, webeditor, storex) {
     "use strict";
 
-    var template = webeditor.simpleTemplate
-    var util = webeditor.util.util
+    var template = webeditor.simpleTemplate;
+    var util = webeditor.util.util;
+    var store = webeditor.store.model;
 
     /** 
      * Xml Dialogue class

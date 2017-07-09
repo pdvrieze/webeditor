@@ -144,7 +144,7 @@ object simpleTemplate {
 
         var _def = jQuery.Deferred<JQuery>();
 
-        _def.then({ _html, _ ->
+        _def.then({ _html->
                       _target.removeClass("loader")
                       if(_html!=null) _target.append(_html);
                   });

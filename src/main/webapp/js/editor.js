@@ -44,14 +44,15 @@
      */
     function main(template, $load) {
         // load auth and navigation controllers
-        var controllers = [ './webeditor', 'share/nav' ];
+        var controllers = [ './webeditor' ];
 
         // render page html
         var $html = template.render('editor');
         $load.resolve($html);
 
-        require(controllers, function (webeditor, nav) {
+        require(controllers, function (webeditor) {
             var auth = webeditor.share.auth;
+            var nav = webeditor.share.nav;
 
             nav.init('editor-models'); // initialise navigation bar
             nav.createOther('viewer');

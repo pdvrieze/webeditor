@@ -82,7 +82,7 @@ object nav {
             e.preventDefault()
             if (isLoggedIn()) return // already logged in
 
-            loginButton.button("loading") // start button loading animation
+            jQuery(element=js("this")).bootstrap.button("loading") // start button loading animation
 
             // try to login with credentials
             share.auth.login(jQuery(selector = "#user").`val`() as String, jQuery(selector = "#pass").`val`() as String).then({ _: Any? ->

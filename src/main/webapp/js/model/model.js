@@ -7,10 +7,13 @@
  */
 define(['jquery', 'joint', 'lodash', './node', 'store/model', 'webeditor',
         './dialogue', 'dagre'],
-        function ($, joint, _, Nodes, store, webeditor, Dialogue, dagre) {
+        function ($, joint, _, Nodes, storex, webeditor, Dialogue, dagre) {
     "use strict";
 
-    var util = webeditor.util.util
+    var store = webeditor.store.model;
+
+    var util = webeditor.util.util;
+    // var Dialogue = webeditor.model.Dialogue;
 
     /** 
      * @class Model

@@ -2,6 +2,8 @@ package es6
 
 import org.w3c.dom.Element
 import org.w3c.dom.events.EventTarget
+import kotlin.js.Json
+import kotlin.js.json
 
 /*
  * Copyright (c) 2017.
@@ -245,4 +247,12 @@ external interface Event {
     val AT_TARGET: Number
     val BUBBLING_PHASE: Number
     val CAPTURING_PHASE: Number
+}
+
+fun json(input:Map<String, Any>):Json {
+    return json().apply {
+        for ((key, value) in input.entries) {
+            this[key]=value
+        }
+    }
 }

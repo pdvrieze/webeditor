@@ -57,7 +57,7 @@ object util {
      * @return {Promise}
      */
     @JsName("upload")
-    fun upload(url:String, name:String, data:String, nobody:Boolean): JQueryDeferred<dynamic> {
+    fun upload(url:String, name:String, data:String, nobody:Boolean=false): JQueryDeferred<dynamic> {
         var def = jQuery.Deferred<dynamic>(); // we will return promise
 
         var boundary = "---------------------------7da24f2e50046";
@@ -103,7 +103,7 @@ object util {
      * @return {String} replaced string
      */
     @JsName("replaceAttr")
-    fun replaceAttr(str:String, attr:String, value:String?, replace:String): String {
+    fun replaceAttr(str:String, attr:String, value:String?=null, replace:String=""): String {
         if (value!=null) return str.replace("$attr=\"$value\"",
                                             "$attr=\"$replace\"");
         else {

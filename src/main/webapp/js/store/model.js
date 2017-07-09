@@ -8,7 +8,7 @@
  */
 define(['jquery', 'webeditor'], function ($, webeditor) {
     "use strict";
-    var util = webeditor.util.util
+    var util = webeditor.util.util;
 
     var models = {}; // model storage
     var $def = null; // global deferred object

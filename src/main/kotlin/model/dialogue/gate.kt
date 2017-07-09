@@ -1,6 +1,11 @@
+package model.dialogue
+
+import BootstrapJQuery
+import bootstrap
 import jquery.JQuery
 import jquery.jQuery
 import org.w3c.dom.Element
+import simpleTemplate
 
 /*
  * Copyright (c) 2017. 

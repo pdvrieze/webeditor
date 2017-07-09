@@ -7,7 +7,9 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'webeditor'],
        function ($, joint, Dialogue, _, webeditor) {
     "use strict";
 
-    var util = webeditor.util.util
+    var util = webeditor.util.util;
+    // var Dialogue = webeditor.model.Dialogue;
+
 
     /**
      * Single element size on the graph

@@ -53,7 +53,7 @@
 
         require(controllers, function (webeditor) {
             var auth = webeditor.share.auth;
-            var nav = webeditor.nav
+            var nav = webeditor.share.nav;
 
             nav.init('viewer-tasks'); // initialise navigation bar
             nav.createOther('editor');

@@ -6,9 +6,11 @@
  *
  * @module ControllerWorkspace
  */
-define(['jquery', 'joint', 'model/model', 'model/node', 'store/model'],
-       function ($, joint, Model, Nodes, store) {
+define(['jquery', 'joint', 'model/model', 'model/node', 'store/model', 'webeditor'],
+       function ($, joint, Model, Nodes, storex, webeditor) {
     "use strict";
+
+    var store = webeditor.store.model;
 
     /**
      * Zooming multiplier for the phone
