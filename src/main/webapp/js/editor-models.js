@@ -6,9 +6,9 @@
  *
  * @module ControllerEditor
  */
-define(['jquery', 'store/model', 'webeditor', 'joint',
+define(['jquery', 'webeditor', 'joint',
        'model/model', 'model/node', 'store/task'],
-       function ($, storeX, webeditor, joint, Model, Nodes,
+       function ($, webeditor, joint, Model, Nodes,
                  taskStore) {
     "use strict";
 

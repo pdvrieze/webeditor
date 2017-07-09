@@ -71,7 +71,7 @@ object simpleTemplate {
         }
 
         // get template
-        var _html: JQuery = jQuery(html = getHtml(name, view))
+        var _html: JQuery = jQuery(getHtml(name, view))
 
         // apply outer layout
         if (_html.`is`("layout")) {
@@ -80,7 +80,7 @@ object simpleTemplate {
         }
 
         // wrap in div to access full html
-        if (_html.length.toInt() > 1) _html = jQuery(html = "<div>").append(_html);
+        if (_html.length.toInt() > 1) _html = jQuery("<div>").append(_html);
 
         // substitute inner inserts
         _html.find("insert[name]")?.each({ index, elem ->
@@ -160,7 +160,7 @@ object simpleTemplate {
      * @param view {Object} view
      */
     @JsName("renderTo")
-    fun renderTo(_where: JQuery, what: String, view: dynamic) {
+    fun renderTo(_where: JQuery, what: String, view: dynamic = null) {
         _where.empty().append(render(what, view));
     }
 

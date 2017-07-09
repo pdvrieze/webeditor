@@ -16,25 +16,52 @@
 
 package model.dialogue
 
+import BootstrapJQuery
+import bootstrap
 import jquery.JQuery
+import jquery.jQuery
+import simpleTemplate
+import util.util
 
 /**
  * Kotlin wrapper for the xml class
  */
-typealias ModelType = Any
+external interface ModelType {
+    var handle: Long
+    fun  reload()
+    fun  toXml(): String
 
-external interface XmlStatic {
-    operator fun invoke(model:ModelType): Xml
 }
 
-external interface Xml {
-    var model: ModelType
+
+object XmlStatic {
+    operator fun invoke(model:ModelType): Xml = Xml(model)
+}
+
+class Xml(model: ModelType) {
+    var model: ModelType = model
     @JsName("\$target")
-    var _target: JQuery
+    var _target: BootstrapJQuery = jQuery(selector = "#dialogue").bootstrap
     @JsName("\$body")
-    var _body: JQuery
+    var _body: JQuery = _target.find(".modal-body")!!
+
+    init {
+        simpleTemplate.renderTo(_body, "dialogue-xml");
+        _target.apply {
+            find("#save")?.off()?.click {
+              store.model.updateModel(model.handle, _body.find("textarea")?.value() as String).then { _ ->
+                  _target.modal("hide")
+                  model.reload()
+              }.fail({ e:Any ->
+                  alert("could not save XML")
+                  console.error("XML Saving Failed", e)
+              })
+
+            }
+            modal("show")
+        }
+        _body.find("textarea")?.value(util.formatXml(this.model.toXml()))
+    }
 }
 
-@JsModule("model/dialogue/xml")
-@JsNonModule
-external val xml:XmlStatic = definedExternally
+val xml:XmlStatic = XmlStatic

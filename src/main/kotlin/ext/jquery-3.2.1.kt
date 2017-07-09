@@ -304,7 +304,7 @@ external interface JQueryStatic {
     @nativeInvoke
     operator fun invoke(): JQuery
     @nativeInvoke
-    operator fun invoke(html: String, ownerDocument: Document? = definedExternally /* null */): JQuery
+    operator fun invoke(html: String, ownerDocument: Document? /* null */): JQuery
     @nativeInvoke
     operator fun invoke(html: String, attributes: Any): JQuery
     fun noConflict(removeAll: Boolean? = definedExternally /* null */): JQueryStatic
@@ -416,11 +416,21 @@ external interface JQuery {
     fun toggleClass(className: String, swtch: Boolean? = definedExternally /* null */): JQuery
     fun toggleClass(swtch: Boolean? = definedExternally /* null */): JQuery
     fun toggleClass(func: (index: Number, className: String, swtch: Boolean) -> String, swtch: Boolean? = definedExternally /* null */): JQuery
+    @Deprecated("Use kotlin friendly name", ReplaceWith("value()"))
     fun `val`(): Any
+    @Deprecated("Use kotlin friendly name", ReplaceWith("value(value)"))
     fun `val`(value: String): JQuery
+    @Deprecated("Use kotlin friendly name", ReplaceWith("value(value)"))
     fun `val`(value: Array<String>): JQuery
+    @Deprecated("Use kotlin friendly name", ReplaceWith("value(value)"))
     fun `val`(value: Number): JQuery
+    @Deprecated("Use kotlin friendly name", ReplaceWith("value(func)"))
     fun `val`(func: (index: Number, value: String) -> String): JQuery
+    @JsName("val") fun value(): Any
+    @JsName("val") fun value(value: String): JQuery
+    @JsName("val") fun value(value: Array<String>): JQuery
+    @JsName("val") fun value(value: Number): JQuery
+    @JsName("val") fun value(func: (index: Number, value: String) -> String): JQuery
     fun css(propertyName: String): String
     fun css(propertyNames: Array<String>): Any
     fun css(propertyName: String, value: String): JQuery

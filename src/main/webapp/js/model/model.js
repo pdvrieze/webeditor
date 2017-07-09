@@ -5,9 +5,9 @@
  * 
  * @module Model
  */
-define(['jquery', 'joint', 'lodash', './node', 'store/model', 'webeditor',
+define(['jquery', 'joint', 'lodash', './node', 'webeditor',
         './dialogue', 'dagre'],
-        function ($, joint, _, Nodes, storex, webeditor, Dialogue, dagre) {
+        function ($, joint, _, Nodes, webeditor, Dialogue, dagre) {
     "use strict";
 
     var store = webeditor.store.model;

@@ -3,8 +3,8 @@
  *
  * @module Dialogue
  */
-define(['jquery', 'webeditor', 'store/model'],
-       function ($, webeditor, storex) {
+define(['jquery', 'webeditor'],
+       function ($, webeditor) {
     "use strict";
 
     var template = webeditor.simpleTemplate;

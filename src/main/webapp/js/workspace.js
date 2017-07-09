@@ -6,8 +6,8 @@
  *
  * @module ControllerWorkspace
  */
-define(['jquery', 'joint', 'model/model', 'model/node', 'store/model', 'webeditor'],
-       function ($, joint, Model, Nodes, storex, webeditor) {
+define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
+       function ($, joint, Model, Nodes, webeditor) {
     "use strict";
 
     var store = webeditor.store.model;
