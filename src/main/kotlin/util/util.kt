@@ -38,7 +38,7 @@ object util {
      * @return {String} fixed selector
      */
     @JsName("xmlSel")
-    fun xmlSel(sel:String): String {
+    fun xmlSel(sel: String): String {
         var split = sel.split(':');
         return sel.replace(":", "\\:") + ',' + split[1];
     }
@@ -57,7 +57,7 @@ object util {
      * @return {Promise}
      */
     @JsName("upload")
-    fun upload(url:String, name:String, data:String, nobody:Boolean=false): JQueryDeferred<dynamic> {
+    fun upload(url:String, name:String, data:String, nobody:Boolean=false): JQueryDeferred<String> {
         var def = jQuery.Deferred<dynamic>(); // we will return promise
 
         var boundary = "---------------------------7da24f2e50046";

@@ -75,8 +75,10 @@ object simpleTemplate {
 
         // apply outer layout
         if (_html.`is`("layout")) {
-            var layout = _html.attr("name");
-            _html = applyLayout(layout, view, _html)
+            _html.attr("name")?.let { layout ->
+                _html = applyLayout(layout, view, _html)
+            }
+
         }
 
         // wrap in div to access full html
@@ -84,7 +86,7 @@ object simpleTemplate {
 
         // substitute inner inserts
         _html.find("insert[name]")?.each({ index, elem ->
-                                            var insert = jQuery(elem).attr("name");
+                                            var insert = jQuery(elem).attr("name")!!
                                             jQuery(elem).replaceWith(render(insert, view));
                                         });
 
@@ -99,6 +101,7 @@ object simpleTemplate {
      * @param view {Object} view
      *
      * @return {String} template html substituted
+     * @todo make view not dynamic, but a map
      */
     private fun getHtml(name: String, view: dynamic): String {
         var html: String? = templates[name] as String?
