@@ -2,8 +2,7 @@ package es6
 
 import org.w3c.dom.Element
 import org.w3c.dom.events.EventTarget
-import kotlin.js.Json
-import kotlin.js.json
+import kotlin.js.*
 
 /*
  * Copyright (c) 2017.
@@ -50,6 +49,8 @@ external interface JSFunction {
     val arguments: dynamic
     val caller: JSFunction
 }
+
+fun <T> jsArray():JSArray<T> = js("[]")
 
 @JsName("Array")
 external interface JSArray<T> {

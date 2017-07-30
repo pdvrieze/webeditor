@@ -393,7 +393,7 @@ external interface JQuery {
     fun addClass(className: String): JQuery
     fun addClass(func: (index: Number, className: String) -> String): JQuery
     fun addBack(selector: String? = definedExternally /* null */): JQuery
-    fun attr(attributeName: String): String
+    fun attr(attributeName: String): String?
     fun attr(attributeName: String, value: String): JQuery
     fun attr(attributeName: String, value: Number): JQuery
     fun attr(attributeName: String, value: Nothing?): JQuery
@@ -730,7 +730,6 @@ external interface JQuery {
     fun wrapInner(wrappingElement: String): JQuery
     fun wrapInner(func: (index: Number) -> String): JQuery
     fun each(func: (index: Number, elem: Element) -> dynamic /* Boolean | Unit */): JQuery
-    fun get(index: Number): HTMLElement
     fun get(): Array<HTMLElement>
     fun index(): Number
     fun index(selector: String): Number

@@ -1,7 +1,3 @@
-package ext
-
-import es6.Event
-
 /*
  * Copyright (c) 2017.
  *
@@ -18,15 +14,12 @@ import es6.Event
  * see <http://www.gnu.org/licenses/>.
  */
 
+package ext
+
+import kotlin.js.Json
+
 /**
- * Missing externals from the default
+ * Helper functions needed to make things work.
  */
 
-external abstract class PopStateEvent: Event {
-    val state: Any?
-}
-
-external interface JsMap<V> {
-    operator fun get(propertyName: String): V?
-    operator fun set(propertyName: String, value: V): Unit
-}
+inline fun Json.hasOwnProperty(name:String):Boolean = asDynamic().hasOwnProperty(name)
