@@ -11,7 +11,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^3.3.6",
-    "jointjs": "^0.9.7",
+    "jointjs": "^1.0.4",
     "requirejs": "^2.2.0",
     "Sortable": "RubaXa/Sortable#^1.4.2",
     "jquery": "^3.2.1"
