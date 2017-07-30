@@ -114,7 +114,7 @@ object gate {
 
                 // if button has hardcoded values save them to attributes
                 // and propogate to inputs
-                if (_this.attr("min").isNotBlank()) {
+                if (_this.attr("min")?.isNotBlank() ?: false) {
                     self.attrs.min = _this.attr("min")
                     self.attrs.max = _this.attr("max")
                     self._in?.`val`(self.attrs.min as Number)
