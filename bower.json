@@ -10,10 +10,10 @@
   "homepage": "",
   "private": true,
   "dependencies": {
-    "bootstrap": "^3.3.6",
-    "jointjs": "^1.0.4",
-    "requirejs": "^2.2.0",
-    "Sortable": "RubaXa/Sortable#^1.4.2",
-    "jquery": "^3.2.1"
+    "bootstrap": "3.3.7",
+    "jointjs": "1.1.0",
+    "requirejs": "2.3.4",
+    "Sortable": "RubaXa/Sortable#1.6.0",
+    "jquery": "3.2.1"
   }
 }
