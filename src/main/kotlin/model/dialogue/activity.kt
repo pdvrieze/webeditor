@@ -205,7 +205,7 @@ class Activity(var node: NodeClass, var storage: Array<Any?>) {
             self._body.find("a[href=\"#$href\"]")?.addClass("active")
 
             // get index name and view, and render
-            var index = href.replace(Regex("^activity_item_"), "").toInt()
+            var index = href!!.replace(Regex("^activity_item_"), "").toInt()
             val view:ElementT? = self.attrs.elements[index]
             var name = "activity-selector"
             simpleTemplate.renderTo(_this, name, view)

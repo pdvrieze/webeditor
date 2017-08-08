@@ -33,8 +33,8 @@ import model.dialogue.gate as GateDialogue
  */
 
 external interface Coordinate {
-    var x:Int
-    var y:Int
+    var x: Int
+    var y: Int
 }
 
 @Deprecated("Replace with nodeinstancestate")
@@ -59,11 +59,13 @@ object node {
     // half the size
     val HSIZE = SIZE / 2
 
-    fun NodeAttrs(image: Json) = (js("{}") as NodeAttrs).apply {  }
-    interface NodeAttrs: Json {
+    fun NodeAttrs(image: Json) = (js("{}") as NodeAttrs).apply { }
+    interface NodeAttrs : Json {
         var image: Json?
             get() = asDynamic().image
-            set(value: Json?) { asDynamic().image = value }
+            set(value: Json?) {
+                asDynamic().image = value
+            }
     }
 
     /**
@@ -72,7 +74,7 @@ object node {
      * @class NodeClass
      * @extends joint.dia.Element
      */
-    class NodeClass: Element {
+    class NodeClass : Element {
         val markup = "<g transform=\"translate(-$HSIZE, -$HSIZE)\">" +
                      "<image width=\"$SIZE\" height=\"$SIZE\" xlink:href=\"svg/end.svg\"/>" +
                      "<text x=\"15\" y=\"17\" font-family=\"sans-serif\" font-size=\"7\" text-anchor=\"middle\" />" +
@@ -80,10 +82,11 @@ object node {
                      "</g>"
 
         init {
-            asDynamic().defaults = joint.util.deepSupplement(kotlin.js.json("type" to "node"), js("joint.dia.Element.prototype.defaults"))
+            asDynamic().defaults = joint.util.deepSupplement(kotlin.js.json("type" to "node"),
+                                                             js("joint.dia.Element.prototype.defaults"))
         }
 
-        var  attrs: NodeAttrs
+        var attrs: NodeAttrs
 
         constructor(position: Point, attrs: NodeAttrs) {
             asDynamic().position = position
@@ -95,11 +98,11 @@ object node {
     var random = 1
 
 
-    interface LinkLimit{
+    interface LinkLimit {
         @JsName("input")
-        var input:Int
+        var input: Int
         @JsName("output")
-        var output:Int
+        var output: Int
     }
 
     fun LinkLimit(input: Int = 1, output: Int = 1): LinkLimit {
@@ -108,7 +111,6 @@ object node {
             override var output: Int = output
         }
     }
-
 
 
     /**
@@ -129,27 +131,27 @@ object node {
         var eid: String? = null // to be specified
 
         /**
-        * Link limit setup
-        */
+         * Link limit setup
+         */
         var linkLimit: LinkLimit = LinkLimit() // 1 in 1 out default
 
         /**
-        * Set to true if node has edit dialogue
-        *
-        * @property canEdit
-        * @type Boolean
-        * @default false
-        */
-        var canEdit: Boolean= false // by default node is not to be edited
+         * Set to true if node has edit dialogue
+         *
+         * @property canEdit
+         * @type Boolean
+         * @default false
+         */
+        var canEdit: Boolean = false // by default node is not to be edited
 
         var label: String? = null
         var cell: NodeClass? = null
         var paper: Paper? = null
         var attrs: dynamic = null
 
-        private val  model: Model? = null
+        private val model: Model? = null
 
-        constructor(offset:Point, id:String? = null) {
+        constructor(offset: Point, id: String? = null) {
             this.eid = id ?: this.type + random++; // random ID if needed
             this.label = null; // label is missing by default
             this.cell = NodeClass(offset, NodeAttrs(image = json("xlink:href" to "svg/${type}.svg"))/*{
@@ -159,11 +161,11 @@ object node {
         }
 
         /**
-        * Sets text in the centre of a node
-        *
-        * @method setText
-        * @param text {String} text to set
-        */
+         * Sets text in the centre of a node
+         *
+         * @method setText
+         * @param text {String} text to set
+         */
         fun setText(text: String) {
             var id = cell!!.findView(paper!!).id
             var _node = jQuery('#' + id).find("text")
@@ -171,19 +173,19 @@ object node {
             styleText(_node!!)
         }
 
-        fun String.toState(): NodeState? = when(this) {
-            "Complete" -> NodeState.Complete
+        fun String.toState(): NodeState? = when (this) {
+            "Complete"     -> NodeState.Complete
             "Acknowledged" -> NodeState.Acknowledged
-            "Started" -> NodeState.Started
-            "Taken" -> NodeState.Taken
-            else -> null
+            "Started"      -> NodeState.Started
+            "Taken"        -> NodeState.Taken
+            else           -> null
         }
 
         /**
-        * Allows to set state to the node
-        *
-        * @param state {String} state
-        */
+         * Allows to set state to the node
+         *
+         * @param state {String} state
+         */
         fun setState(state: String) {
             setState(state.toState())
         }
@@ -193,12 +195,12 @@ object node {
             var _node = jQuery('#' + id).find("rect")
 
             // choose colour depending on state
-            val colour = when(state) {
-                NodeState.Complete -> "green"
+            val colour = when (state) {
+                NodeState.Complete     -> "green"
                 NodeState.Acknowledged -> "red"
-                NodeState.Started -> "orange"
-                NodeState.Taken -> "orange"
-                else -> "transparent"
+                NodeState.Started      -> "orange"
+                NodeState.Taken        -> "orange"
+                else                   -> "transparent"
             }
 
             // colour the links on graph
@@ -215,31 +217,31 @@ object node {
         }
 
         /**
-        * Override to style text
-        *
-        * @method styleText
-        */
+         * Override to style text
+         *
+         * @method styleText
+         */
         open fun styleText(_node: JQuery) {}
 
         /**
-        * Returns cell position for the tooltip hence the name
-        *
-        * @method tooltip
-        * @param callback {Function} callback to pass arguments to
-        */
-        fun tooltip(callback: (Number, Number)->Unit) {
+         * Returns cell position for the tooltip hence the name
+         *
+         * @method tooltip
+         * @param callback {Function} callback to pass arguments to
+         */
+        fun tooltip(callback: (Number, Number) -> Unit) {
             callback(cell!!.position().x, cell!!.position().y)
         }
 
         /**
-        * Override in to output advanced XML
-        *
-        * @method fromXml
-        */
+         * Override in to output advanced XML
+         *
+         * @method fromXml
+         */
 
         open fun fromXml(_xml: JQuery) {}
 
-        abstract fun toXml(predecessors:dynamic = null): JQuery
+        abstract fun toXml(predecessors: dynamic = null): JQuery
     }
 
     class Start : Base {
@@ -263,7 +265,7 @@ object node {
      * @param _define {Object} jQuery define element
      * @param text {String} string to include in define
      */
-    private fun formatDefine(_define: JQuery, _text:String) {
+    private fun formatDefine(_define: JQuery, _text: String) {
         // uglyass url
         var url = "http://adaptivity.nl/ProcessEngine/activity"
 
@@ -273,7 +275,7 @@ object node {
 
         // find global values
         var match = text.match(js("/%#(\\w+)\\.(\\w+)/"))
-        if (match!=null && match.isNotEmpty()) {
+        if (match != null && match.isNotEmpty()) {
             var activity = match[1]
             var ref = match[2]
 
@@ -303,7 +305,7 @@ object node {
         jQuery("<result>", json(
             "xpath" to "/umh:result/umh:value[@name='" + value.asDynamic().name + "']/text()",
             "name" to rname
-        )).appendTo(_cell)
+                               )).appendTo(_cell)
     }
 
     /**
@@ -314,7 +316,7 @@ object node {
      * @param value {Object} element that needs to be added
      * @param name {String} attibute name
      */
-    fun addItem(_cell: JQuery, _item: JQuery, value: Json, name:String) {
+    fun addItem(_cell: JQuery, _item: JQuery, value: Json, name: String) {
         // add define
         var dname = "d_${value.asDynamic().eid}_$name"
         var _define = jQuery("<define>", json("name" to dname)).appendTo(_cell)
@@ -334,14 +336,14 @@ object node {
      *
      * @return {String}
      */
-    fun parseDefine(define: String):String {
+    fun parseDefine(define: String): String {
         var _define = jQuery(define)
         var text = jQuery(define).html()
         text = text.replace(Regex("< *jbi:value. * ?value=\"d_(.+?)\".*?/>", RegexOption.IGNORE_CASE), "%@$1")
 
         var refnode = _define.attr("refnode")
         var refname = _define.attr("refname")
-        if (refnode!=null && refname!=null) {
+        if (refnode != null && refname != null) {
             refname = refname.substring(2)
             var replace = "%#$refnode.$refname"
             text = text.replace(Regex("<jbi:value.*?>"), replace)
@@ -369,7 +371,9 @@ object node {
         fun init() {
             val self = this.asDynamic()
 
-            if (self.attrs && self.attrs.label) { setText(self.attrs.label) }
+            if (self.attrs && self.attrs.label) {
+                setText(self.attrs.label)
+            }
         }
 
         fun fromXml(_xml: JQuery, _model: JQuery) {
@@ -419,93 +423,90 @@ object node {
             this.attrs = attrs
         }
 
+        val JSON_POSTTASK = json("type" to "application/soap+xml",
+                                 "serviceNS" to "http://adaptivity.nl/userMessageHandler",
+                                 "serviceName" to "userMessageHandler",
+                                 "endpoint" to "internal",
+                                 "operation" to "postTask")
 
-               /** @override */
-               override fun toXml(predecessors: dynamic): JQuery {
-               var params = js("""{
-                       id: this.eid,
-                       x: this.cell.attributes.position.x,
-                       y: this.cell.attributes.position.y,
-                   }""")
+        /** @override */
+        override fun toXml(predecessors: dynamic): JQuery {
+            var params = json("id" to eid,
+                              "x" to cell!!.attributes.asDynamic().position.x,
+                              "y" to cell!!.attributes.asDynamic().position.y)
 
-               // set default attributes
-               if (!this.attrs) this.attrs = {}
-               if (!this.attrs.elements) this.attrs.elements = js("[]")
+            // set default attributes
+            if (!this.attrs) this.attrs = {}
+            if (!this.attrs.elements) this.attrs.elements = js("[]")
 
-               // set label and predecessor
-               if (this.attrs.label) params.label = this.attrs.label
-               if (predecessors.length == 1) {
-                   params.predecessor = predecessors[0].eid
-               }
+            // set label and predecessor
+            if (this.attrs.label) params["label"] = this.attrs.label
+            if (predecessors.length == 1) {
+                params["predecessor"] = predecessors[0].eid
+            }
 
-               // big nothing start --------------------
-               var _cell = jQuery(html="<activity>", attributes = params)
+            // big nothing start --------------------
+            var _cell = jQuery(html = "<activity>", attributes = params)
 
-               if (!this.attrs.elements.length) return _cell
+            if (!this.attrs.elements.length) return _cell
 
-               var _message = jQuery("<message>", attributes = js("""{
-                   type: 'application/soap+xml',
-                   serviceNS: 'http://adaptivity.nl/userMessageHandler',
-                   serviceName: 'userMessageHandler',
-                   endpoint: 'internal',
-                   operation: 'postTask'
-               }""")).appendTo(_cell)
+            var _message = createTag("message",
+                                     "type" to "application/soap+xml",
+                                     "serviceNS" to "http://adaptivity.nl/userMessageHandler",
+                                     "serviceName" to "userMessageHandler",
+                                     "endpoint" to "internal",
+                                     "operation" to "postTask").appendTo(_cell)
 
-               var _envelope = jQuery("<Envelope>", attributes = js("""{
-                   'xmlns:env': 'http://www.w3.org/2003/05/soap-envelope',
-                   encodingStyle: 'http://www.w3.org/2003/05/soap-encoding'
-               }""")).appendTo(_message)
+            var _envelope = createTag("Envelope", "xmlns:env" to "http://www.w3.org/2003/05/soap-envelope",
+                                      "encodingStyle" to "http://www.w3.org/2003/05/soap-encoding"
+                                     ).appendTo(_message)
 
-               var _body = jQuery("<Body>").appendTo(_envelope)
-               var _postTask = jQuery("<postTask>", attributes = js("""{
-                       'xmlns:umh': 'http://adaptivity.nl/userMessageHandler'
-                   }""")).appendTo(_body)
+            var _body = createTag("Body").appendTo(_envelope)
+            var _postTask = createTag("postTask",  "xmlns:umh" to "http://adaptivity.nl/userMessageHandler").appendTo(_body)
 
-               var _repliesParam = jQuery("<repliesParam>").appendTo(_postTask)
-               jQuery("<element>", attributes = js("""{
-                       'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
-                       value: 'endpoint'
-                   }""")).appendTo(_repliesParam)
+            var _repliesParam = jQuery("<repliesParam>").appendTo(_postTask)
+            createTag("<element>", "xmlns:jbi" to "http://adaptivity.nl/ProcessEngine/activity",
+                      "value" to "endpoint").appendTo(_repliesParam)
 
-               var _taskParam = jQuery("<taskParam>").appendTo(_postTask)
-               var _task = jQuery("<task>").appendTo(_taskParam)
-                       jQuery("<attribute>", attributes = js("""{
-                       "xmlns:jbi": 'http://adaptivity.nl/ProcessEngine/activity',
-                       value: 'instancehandle',
-                       name: 'instancehandle'
-                   }""")).appendTo(_task)
-               jQuery("<attribute>", attributes = js("""{
-                       'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
-                       value: 'handle',
-                       name: 'remotehandle'
-                   }""")).appendTo(_task)
-               jQuery("<attribute>", attributes = js("""{
-                       'xmlns:jbi': 'http://adaptivity.nl/ProcessEngine/activity',
-                       value: 'owner',
-                       name: 'owner'
-                   }""")).appendTo(_task)
-               // big nothing end --------------------------
+            var _taskParam = jQuery("<taskParam>").appendTo(_postTask)
+            var _task = jQuery("<task>").appendTo(_taskParam)
+            createTag("<attribute>",
+                            "xmlns:jbi" to "http://adaptivity.nl/ProcessEngine/activity",
+                            "value" to "instancehandle",
+                            "name" to "instancehandle"
+                   ).appendTo(_task)
+            createTag("<attribute>",
+                      "xmlns:jbi" to "http://adaptivity.nl/ProcessEngine/activity",
+                      "value" to "handle",
+                      "name" to "remotehandle"
+                     ).appendTo(_task)
+            createTag("<attribute>",
+                      "xmlns:jbi" to "http://adaptivity.nl/ProcessEngine/activity",
+                      "value" to "owner",
+                      "name" to "owner"
+                     ).appendTo(_task)
+            // big nothing end --------------------------
 
-               // add elements
-               jQuery.each(this.attrs.elements,  { i:Number, value:dynamic ->
-               var _item = jQuery("<item>", json("name" to value.name, "type" to value.type)).appendTo(_task)
+            // add elements
+            jQuery.each(this.attrs.elements, { i: Number, value: dynamic ->
+                var _item = jQuery("<item>", json("name" to value.name, "type" to value.type)).appendTo(_task)
 
-               for (key in value) {
+                for (key in value) {
 //               if (!value[key]) continue
 //               if (['name', 'type', 'eid'].indexOf(key) !== -1) continue
 //               addItem(_cell, _item, value, key)
-                   when (value[key]) {
-                       "name", "type", "eid" -> addItem(_cell, _item, value, key)
-                   }
-               }
+                    when (value[key]) {
+                        "name", "type", "eid" -> addItem(_cell, _item, value, key)
+                    }
+                }
 
-               // add defines and results
-               if (value.type != "label") addResult(_cell, value)
-           })
+                // add defines and results
+                if (value.type != "label") addResult(_cell, value)
+            })
 
-               return _cell
-           }
-           }
+            return _cell
+        }
+    }
 
     /**
      * Gate Node
@@ -513,7 +514,7 @@ object node {
      * @class Gate
      * @extends Base
      */
-    abstract class Gate: Base {
+    abstract class Gate : Base {
 
         constructor(type: String, offset: Point, id: String? = null) : super(offset, id) {
             this.type = type
@@ -522,80 +523,80 @@ object node {
         }
 
 
-           /**
-            * Open edit dialogue
-            */
+        /**
+         * Open edit dialogue
+         */
         fun edit(): model.dialogue.gate.Gate {
-           return GateDialogue.Gate(this as org.w3c.dom.Element)
+            return GateDialogue.Gate(this as org.w3c.dom.Element)
         }
 
-           /** @override */
+        /** @override */
         override fun styleText(_text: JQuery) {
-           _text.get(0)?.run { textContent = textContent?.toUpperCase() }
-           _text.attr("style", "font-weight: bold;")
+            _text.get(0)?.run { textContent = textContent?.toUpperCase() }
+            _text.attr("style", "font-weight: bold;")
         }
 
-           /**
-            * Initialisation in graph
-            */
+        /**
+         * Initialisation in graph
+         */
         fun init() {
-           if (!this.attrs) this.attrs = js("{ min: 2; max: 2 }")
+            if (!this.attrs) this.attrs = js("{ min: 2; max: 2 }")
 
-           // and ?
-           if (this.attrs.min == 2 && this.attrs.max == 2) {
-               this.setText("and")
-           }
+            // and ?
+            if (this.attrs.min == 2 && this.attrs.max == 2) {
+                this.setText("and")
+            }
 
-           // or ?
-           else if (this.attrs.min == 1 && this.attrs.max == 2) {
-               this.setText("or")
-           }
+            // or ?
+            else if (this.attrs.min == 1 && this.attrs.max == 2) {
+                this.setText("or")
+            }
 
-           // xor ?
-           else if (this.attrs.min == 1 && this.attrs.max == 1) {
-               this.setText("xor")
-           }
+            // xor ?
+            else if (this.attrs.min == 1 && this.attrs.max == 1) {
+                this.setText("xor")
+            }
         }
 
-           /** @override */
+        /** @override */
         override fun fromXml(_xml: JQuery) {
-           this.attrs = js("{ min: -1, max: -1 }")
-            _xml.attr("label") ?.let { this.attrs.label = it }
-            _xml.attr("min") ?.let { this.attrs.min = it.toInt() }
-            _xml.attr("max") ?.let { this.attrs.max = it.toInt() }
+            this.attrs = json("min" to -1, "max" to -1)
+            _xml.attr("label")?.let { this.attrs.label = it }
+            _xml.attr("min")?.let { this.attrs.min = it.toInt() }
+            _xml.attr("max")?.let { this.attrs.max = it.toInt() }
         }
 
-           /** @override */
+        /** @override */
         override fun toXml(predecessors: dynamic): JQuery {
-           var params = js("""{
-               id: this.eid,
-               x: this.cell.attributes.position.x,
-               y: this.cell.attributes.position.y
-           }""")
+            var params = json(
+               "id" to this.eid,
+               "x" to this.cell!!.attributes.asDynamic().position.x,
+               "y" to this.cell!!.attributes.asDynamic().position.y
+           )
 
-           // default attributes
-           if (!this.attrs) this.attrs = {}
-           if (this.attrs.min >= 0) params.min = this.attrs.min
-           if (this.attrs.max >= 0) params.max = this.attrs.max
+            // default attributes
+            if (!this.attrs) this.attrs = {}
+            if (this.attrs.min >= 0) params["min"] = this.attrs.min
+            if (this.attrs.max >= 0) params["max"] = this.attrs.max
 
-           // predecessors
-           if (this.type == "split" && predecessors.length) {
-               params.predecessor = predecessors[0].eid
-           }
+            // predecessors
+            if (this.type == "split" && predecessors.length) {
+                params["predecessor"] = predecessors[0].eid
+            }
 
-           // create cell
-           var _cell = jQuery("<${this.type}>", attributes = params)
+            // create cell
+            var _cell = jQuery("<${this.type}>", attributes = params)
 
-           // join special predecessors
-           if (this.type == "join" && predecessors.length) {
-               jQuery.each(predecessors, {  i: Number, value: dynamic ->
-                   jQuery("<predecessor>${value.eid}</predecessor>")
-                   .appendTo(_cell)
-               })
-           }
+            // join special predecessors
+            if (this.type == "join" && predecessors.length) {
+                jQuery.each(predecessors, { i: Number, value: dynamic ->
+                    jQuery("<predecessor>${value.eid}</predecessor>")
+                        .appendTo(_cell)
+                })
+            }
 
-           return _cell
-       }
+            return _cell
+        }
     }
 
     /**
@@ -604,11 +605,11 @@ object node {
      * @class Split
      * @extends Gate
      */
-    class Split : Gate{
+    class Split : Gate {
         constructor(offset: Point, id: String?) : super("split", offset, id)
 
         init {
-            linkLimit = LinkLimit(1,-1)
+            linkLimit = LinkLimit(1, -1)
         }
     }
 
@@ -622,9 +623,9 @@ object node {
         constructor(offset: Point, id: String?) : super("join", offset, id)
 
         init {
-          linkLimit = LinkLimit(-1, 1)
+            linkLimit = LinkLimit(-1, 1)
         }
-   }
+    }
 
     /**
      * End Node
@@ -643,19 +644,21 @@ object node {
 
 
         override fun toXml(predecessors: dynamic): JQuery {
-              var params = js("""{
-                  id: this.eid,
-                  x: this.cell.attributes.position.x,
-                  y: this.cell.attributes.position.y
-              }""")
+            var params = json(
+                  "id" to this.eid,
+                  "x" to this.cell!!.attributes.asDynamic().position.x,
+                  "y" to this.cell!!.attributes.asDynamic().position.y
+              )
 
-              // predecessors
-              if (predecessors.length) {
-                  params.predecessor = predecessors[0].eid
-              }
+            // predecessors
+            if (predecessors.length) {
+                params["predecessor"] = predecessors[0].eid
+            }
 
-              return jQuery("<end>", attributes=params)
-          }
+            return jQuery("<end>", attributes = params)
+        }
     }
 
 }
+
+fun createTag(name: String, vararg attrs: Pair<String, String>) = jQuery("<$name>", json(*attrs))

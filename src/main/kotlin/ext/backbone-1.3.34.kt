@@ -101,7 +101,7 @@ external open class ModelBase : Events {
     open fun sync(vararg arg: Any): JQueryXHR = definedExternally
 }
 external open class Model(attributes: Any? = definedExternally /* null */, options: Any? = definedExternally /* null */) : ModelBase {
-    open var attributes: Any = definedExternally
+    open var attributes: Json = definedExternally
     open var changed: Array<Any> = definedExternally
     open var cidPrefix: String = definedExternally
     open var cid: String = definedExternally

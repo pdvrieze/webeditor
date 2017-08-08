@@ -122,8 +122,8 @@ object model {
         val _def = jQuery.Deferred<Long>() // sucess on model re-fetch
         util.upload(URL, "processUpload", xml).thenPromise<Long>({ model ->
             val _xml = jQuery(model as Any) // newly fetched model
-            val handle = _xml.attr("handle").toLong() // now we know its handle
-            fetchModel(handle, _xml.attr("name")).thenPromise<Long>({ _ ->
+            val handle = _xml.attr("handle")!!.toLong() // now we know its handle
+            fetchModel(handle, _xml.attr("name")!!).thenPromise<Long>({ _ ->
                 _def.resolve(handle) // success
             })
         }).fail({ e:Any -> _def.reject(e); })
@@ -179,17 +179,17 @@ object model {
     fun update(): JQueryGenericPromise<Json> {
         // we need list of deferreds
         _def = jQuery.Deferred()
-        val deferreds = mutableListOf<JQueryGenericPromise<out Any?>>()
+        val deferreds = mutableListOf<JQueryPromise<out Any?>>()
 
         jQuery.get(URL).then(doneFilter = { xml ->
             models = mutableMapOf() // empty list
             jQuery(`obj`=xml!!).find("processModel")!!.each({ _, elem ->
                 val _elem: JQuery = jQuery(elem)
-                val handle = _elem.attr("handle").toLong() // get handle
+                val handle = _elem.attr("handle")!!.toLong() // get handle
                 // fetch model
-                deferreds.add(fetchModel(handle, _elem.attr("name")))
+                deferreds.add(fetchModel(handle, _elem.attr("name")!!))
             })
-            jQuery.`when`(*deferreds.toTypedArray()).thenPromise(doneFilterPromise = {
+            jQuery.`when`(*deferreds.toTypedArray<Any>()).thenPromise(doneFilterPromise = {
                 // notify that everything is resolved
                 _def!!.resolve(json(models))
             }).fail({ e:Any ->

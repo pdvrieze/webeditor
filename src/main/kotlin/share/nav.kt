@@ -60,7 +60,7 @@ object nav {
         // links with .a_content will automatically change page
         jQuery(selector = "#page").on("click", "a.a_content", { e: JQueryEventObject, _ ->
             e.preventDefault() // no url change
-            changePage(jQuery(this).attr("href").replace(Regex("^#"), ""))
+            jQuery(this).attr("href")?.let { changePage((it.replace(Regex("^#"), ""))) }
         })
 
         // initialise history
