@@ -17,7 +17,7 @@
 @file:JsQualifier("dia")
 package joint.dia
 
-import es6.Event
+import org.w3c.dom.events.Event
 import ext.JsMap
 import joint.Padding
 import jquery.JQuery

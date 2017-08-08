@@ -1,6 +1,6 @@
 package ext
 
-import es6.Event
+import org.w3c.dom.events.Event
 
 /*
  * Copyright (c) 2017.
@@ -21,10 +21,10 @@ import es6.Event
 /**
  * Missing externals from the default
  */
-
-external abstract class PopStateEvent: Event {
-    val state: Any?
-}
+//
+//external abstract class PopStateEvent: Event {
+//    val state: Any?
+//}
 
 external interface JsMap<V> {
     operator fun get(propertyName: String): V?

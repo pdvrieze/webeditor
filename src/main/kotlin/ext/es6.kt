@@ -225,30 +225,30 @@ external interface JSArray<T> {
     operator fun get(n: Int): T
 }
 
-
-external interface Event {
-    val bubbles: Boolean
-    var cancelBubble: Boolean
-    val cancelable: Boolean
-    val currentTarget: EventTarget
-    val defaultPrevented: Boolean
-    val eventPhase: Number
-    val isTrusted: Boolean
-    var returnValue: Boolean
-    val srcElement: Element?
-    val target: EventTarget
-    val timeStamp: Number
-    val type: String
-    val scoped: Boolean
-    fun initEvent(eventTypeArg: String, canBubbleArg: Boolean, cancelableArg: Boolean)
-    fun preventDefault()
-    fun stopImmediatePropagation()
-    fun stopPropagation()
-    fun deepPath(): Array<EventTarget>
-    val AT_TARGET: Number
-    val BUBBLING_PHASE: Number
-    val CAPTURING_PHASE: Number
-}
+//
+//external interface Event {
+//    val bubbles: Boolean
+//    var cancelBubble: Boolean
+//    val cancelable: Boolean
+//    val currentTarget: EventTarget
+//    val defaultPrevented: Boolean
+//    val eventPhase: Number
+//    val isTrusted: Boolean
+//    var returnValue: Boolean
+//    val srcElement: Element?
+//    val target: EventTarget
+//    val timeStamp: Number
+//    val type: String
+//    val scoped: Boolean
+//    fun initEvent(eventTypeArg: String, canBubbleArg: Boolean, cancelableArg: Boolean)
+//    fun preventDefault()
+//    fun stopImmediatePropagation()
+//    fun stopPropagation()
+//    fun deepPath(): Array<EventTarget>
+//    val AT_TARGET: Number
+//    val BUBBLING_PHASE: Number
+//    val CAPTURING_PHASE: Number
+//}
 
 fun json(input:Map<String, Any>):Json {
     return json().apply {
