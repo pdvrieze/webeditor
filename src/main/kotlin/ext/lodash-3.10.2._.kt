@@ -2,7 +2,7 @@
 @file:[JsQualifier("_") JsModule("lodash")]
 package lodash
 
-import es6.JSArray
+import es6.JsArray
 import es6.JSFunction
 import kotlin.js.*
 
@@ -2049,7 +2049,7 @@ external interface LoDashExplicitArrayWrapper<T> : LoDashExplicitWrapperBase<Arr
 }
 external interface LoDashImplicitNumberArrayWrapper : LoDashImplicitArrayWrapper<Number>
 external interface LoDashExplicitNumberArrayWrapper : LoDashExplicitArrayWrapper<Number>
-external interface RecursiveArray<T> : JSArray<dynamic>
+external interface RecursiveArray<T> : JsArray<dynamic>
 external interface ListOfRecursiveArraysOrValues<T> : List<dynamic /* T | RecursiveArray<T> */>
 external interface FunctionBind {
     var placeholder: Any

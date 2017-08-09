@@ -16,7 +16,6 @@
 
 package model
 
-import es6.JSArray
 import joint.dia.Cell
 import joint.dia.CellView
 import joint.dia.Graph
@@ -45,7 +44,7 @@ external interface ExtractResult {
 
 external interface Model {
     var graph: Graph?
-    var nodes: JSArray<NodeT>
+    var nodes: Array<NodeT>
     var selected: NodeT?
     var mode: Any?
     var paper: Paper?
