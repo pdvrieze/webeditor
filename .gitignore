@@ -25,3 +25,4 @@ out/*
 
 ### Node ###
 /node_modules
+/src/typescript/node_modules/
