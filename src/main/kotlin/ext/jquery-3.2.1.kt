@@ -1,7 +1,8 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package jquery
 
-import org.w3c.dom.events.Event
+import es6.Event
+import es6.JsEvent
 import org.w3c.dom.*
 import org.w3c.xhr.XMLHttpRequest
 import kotlin.js.*
@@ -144,7 +145,7 @@ external interface JQueryDeferred<T> : JQueryGenericPromise<T> {
     fun promise(target: Any? = definedExternally /* null */): JQueryPromise<T>
     fun pipe(doneFilter: ((x: Any) -> Any)? = definedExternally /* null */, failFilter: ((x: Any) -> Any)? = definedExternally /* null */, progressFilter: ((x: Any) -> Any)? = definedExternally /* null */): JQueryPromise<Any>
 }
-external interface BaseJQueryEventObject : Event {
+external interface BaseJQueryEventObject : JsEvent {
     override var currentTarget: Element
     var data: Any
     var delegateTarget: Element

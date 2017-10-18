@@ -15,6 +15,7 @@
  */
 
 @file:JsQualifier("shapes")
+@file:JsModule("joint")
 package joint.shapes
 
 import joint.dia.CSSSelector

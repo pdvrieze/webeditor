@@ -57,3 +57,15 @@ fun json(input:Map<String, Any>):Json {
         }
     }
 }
+
+typealias JsEvent=Event
+external interface Event {
+    fun stopImmediatePropagation()
+    fun stopPropagation()
+    fun preventDefault()
+
+    fun initEvent(eventTypeArg: String, canBubbleArg: Boolean, cancelableArg: Boolean)
+
+    var target: Element
+    var currentTarget: Element
+}

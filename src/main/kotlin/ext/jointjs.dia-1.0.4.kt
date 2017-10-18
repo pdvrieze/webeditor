@@ -14,6 +14,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
+@file:JsModule("joint")
 @file:JsQualifier("dia")
 package joint.dia
 
@@ -66,7 +67,7 @@ external interface ParentRelativeOptions { var parentRelative: Boolean }
 external interface DirectionOptions { var direction: String? /*'left' | 'right' | 'top' | 'bottom' | 'top-right' | 'top-left' | 'bottom-left' | 'bottom-right'*/}
 external interface FitEmbedOptions: DeepOptions { var padding: Padding? }
 
-external class Graph : Backbone.Model {
+external class Graph : backbone.Model {
     constructor(attributes: Any? = definedExternally, options: GradientOptions? = definedExternally)
     fun addCell(cell: Cell): Graph
     fun addCell(cell: Array<Cell>): Graph
@@ -121,7 +122,7 @@ external class Graph : Backbone.Model {
     fun stopBatch(name: String, data: Any? = definedExternally): Any
 }
 
-external open class Cell : Backbone.Model {
+external open class Cell : backbone.Model {
     @JsName("id")
     var strid: String
     fun toJSON(): Json
@@ -245,7 +246,7 @@ external interface ManhattanRouterArgs {
     var endDirections: String?//?: ['left' | 'right' | 'top' | 'bottom']
 }
 
-external interface PaperOptions : Backbone.ViewOptions<Graph> {
+external interface PaperOptions : backbone.ViewOptions<Graph> {
 //    override var el: Any? //String? | JQuery? | HTMLElement?
     var width: Number?
     var height: Number?
@@ -300,7 +301,7 @@ external interface FitToContentOptions {
     var maxHeight: Number?
 }
 
-external class Paper : Backbone.View<Graph> {
+external class Paper : backbone.View<Graph> {
     constructor(options: PaperOptions?)
     var options: PaperOptions
     var svg: SVGElement
@@ -372,7 +373,7 @@ external interface GradientOptions {
 }
 
 external class GeometryOptions {var useModelGeometry: Boolean?}
-external open class CellViewGeneric<T:Backbone.Model> : Backbone.View<T> {
+external open class CellViewGeneric<T: backbone.Model> : backbone.View<T> {
     fun getBBox(options: GeometryOptions?): BBox
     fun highlight(el: Any?, options: Any?): CellViewGeneric<T>
     fun unhighlight(el: Any?, options: Any?): CellViewGeneric<T>
@@ -389,7 +390,7 @@ external open class CellViewGeneric<T:Backbone.Model> : Backbone.View<T> {
     fun mouseover(evt: Event): Unit
     fun mousewheel(evt: Event, x: Number, y: Number, delta: Number): Unit
     fun notify(eventName: String): Unit
-    fun onChangeAttrs(cell: Cell, attrs: Backbone.ViewOptions<T>, options: Any?): CellViewGeneric<T>
+    fun onChangeAttrs(cell: Cell, attrs: backbone.ViewOptions<T>, options: Any?): CellViewGeneric<T>
     fun onSetTheme(oldTheme: String, newTheme: String): Unit
     fun pointerclick(evt: Event, x: Number, y: Number): Unit
     fun pointerdblclick(evt: Event, x: Number, y: Number): Unit
@@ -428,7 +429,7 @@ external open class ElementView : CellView<Element> {
     fun renderMarkup(): Unit
     fun resize(): Unit
     fun rotate(): Unit
-    fun translate(model: Backbone.Model, changes: Any?, options: Any?): Unit
+    fun translate(model: backbone.Model, changes: Any?, options: Any?): Unit
     fun update(cell: Cell, renderingOnlyAttrs: Any?): Unit
 }
 

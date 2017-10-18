@@ -108,9 +108,11 @@ war {
         exclude 'bower_components/jquery/test'
         include '**/*.js'
         include '**/*.min.map'
+        include '**/*.min.*.map'
         include '**/*.css'
         include 'bootstrap/dist/fonts/*'
         include 'jquery/dist/jquery.js'
+        include 'jquery/dist/jquery.min.js'
         includeEmptyDirs = false
         into 'bower_components'
     }

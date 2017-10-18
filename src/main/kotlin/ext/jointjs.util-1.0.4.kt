@@ -15,6 +15,7 @@
  */
 
 @file:JsQualifier("util")
+@file:JsModule("joint")
 package joint.util
 
 import joint.dia.BBox

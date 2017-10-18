@@ -1,7 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
-@file:[JsQualifier("Backbone") JsModule("Backbone")]
 
-package Backbone
+@file:JsModule("backbone")
+package backbone
 
 import jquery.*
 import org.w3c.dom.HTMLElement
@@ -292,7 +292,7 @@ external open class History : Events {
 }
 external interface ViewOptions<TModel : Model> {
     var model: TModel? get() = definedExternally; set(value) = definedExternally
-    var collection: Backbone.Collection<Model>? get() = definedExternally; set(value) = definedExternally
+    var collection: backbone.Collection<Model>? get() = definedExternally; set(value) = definedExternally
     var el: Any? get() = definedExternally; set(value) = definedExternally
     var events: EventsHash? get() = definedExternally; set(value) = definedExternally
     var id: String? get() = definedExternally; set(value) = definedExternally

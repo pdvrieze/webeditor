@@ -119,7 +119,7 @@ object node {
      * @class Base
      * @extends Backbone.Model
      */
-    abstract class Base : Backbone.Model {
+    abstract class Base : backbone.Model {
         /**
          * Node Type name
          */
