@@ -17,6 +17,7 @@
 package share
 
 import bootstrap
+import es6.PopStateEvent
 import jquery.*
 import lodash.lodash
 import org.w3c.dom.events.Event
@@ -64,13 +65,14 @@ object nav {
         })
 
         // initialise history
-        window.onpopstate = fun(e: Event) {
-            val state = e.asDynamic().state
+        window.onpopstate = (fun(e: PopStateEvent) {
+            val state = e.state as PageState?
 
-            if (state?.page!=null) {
-                changePage(state.page, state.args)
+            val page = state?.page
+            if (page!=null) {
+                changePage(page, state.args)
             }
-        }
+        }) as ((Event) -> dynamic)
     }
 
     /**
@@ -148,11 +150,11 @@ object nav {
      * @return {Promise}
      */
     @JsName("changePage")
-    fun changePage(page:String, vararg args:String): JQueryDeferred<JQuery> {
-        var _load = simpleTemplate.load("#content")
+    fun changePage(page:String, args:Any?=null): JQueryDeferred<JQuery> {
+        val _load = simpleTemplate.load("#content")
 
         // render new page in content section
-        var _html = simpleTemplate.render(page)
+        val _html = simpleTemplate.render(page)
 
         // unload current page if needed
         if (destroy!=null) {
@@ -168,14 +170,22 @@ object nav {
         jQuery(selector = "[show-page][show-page!=\"$page\"]").hide()
         jQuery(selector = "[show-page=\"$page\"]").show()
 
-        val state = window.history.state.asDynamic()
+        val state = window.history.state as PageState?
         if (state==null || state.page != page || state.args != args) {
             var url = page
-            if (args.isNotEmpty()) url = (arrayOf(url)+args).joinToString("/")
 
-            var newState = json("page" to page, "args" to args)
 
-            if (state && state.page == "index") {
+            if (args != null) {
+                if(jQuery.isArray(args)) {
+                    url=(arrayOf(url)+(args.unsafeCast<Array<Any?>>())).joinToString("/")
+                } else {
+                    url = "$url/$args"
+                }
+            }
+
+            val newState = PageState(page, args)
+
+            if (state?.page == "index") {
                 window.history.replaceState(newState, page, '#' + url)
             }
             else window.history.pushState(newState, page, '#' + url)
@@ -184,19 +194,19 @@ object nav {
         // load controller if page has one in the hardcoded list
         if (controllers.indexOf(page) !== -1) {
             val requirejs = js("require")
-            requirejs(arrayOf(page), fun (controller:dynamic) {
+            requirejs(arrayOf(page), fun (controller: Controller) {
                 // run its initialisation method
-                controller.init(_html, args).then(fun (_html:JQuery, args:dynamic) {
+                controller.init(_html, args).then<Unit>(fun (_html:JQuery?, args:Any?):Unit {
                     _load.resolve(_html)
 
                     // setup destroy fun
-                    if (controller.destroy) {
-                        destroy = fun () { controller.destroy(args); }
+                    if (controller.asDynamic().destroy) {
+                        destroy = fun () { (controller as DestroyableController).destroy(args); }
                     }
 
                     // controller may run pos-html-append stuff, that is
                     // when all elements are rendered on the page
-                    if (controller.post) controller.post(_html, args)
+                    if (controller.asDynamic().post) (controller as PostableController).post(_html, args)
                 })
             })
         }
@@ -217,8 +227,8 @@ object nav {
         if (window.location.hash.isNotBlank() && window.location.hash != "#index") {
             // remove hash and separate arguments, but make sure no
             // consequtive slashes are used
-            var url = window.location.hash.substring(1).split(Regex("/+"))
-            var name = url[0] // name is the first element
+            val url = window.location.hash.substring(1).split(Regex("/+"))
+            val name = url[0] // name is the first element
 
             if (simpleTemplate.has(name)) {
                 page = name // definitely not 404
@@ -228,7 +238,7 @@ object nav {
         }
 
         // change to this page
-        return changePage(page!!, *args)
+        return changePage(page!!, args)
     }
 
     /**
@@ -241,4 +251,26 @@ object nav {
         jQuery(selector = "#other_app").attr("href", name + ".html")
             .html("Open " + lodash.capitalize(name))
     }
+}
+
+external interface PageState{
+    var page: String?
+    var args: Any?
+}
+
+class _PageState(override var page:String?, override var args: Any?): PageState
+
+inline fun PageState(page: String, args: Any?): PageState = _PageState(page, args)
+
+external interface Controller {
+    fun init(_html: JQuery, args: Any? = definedExternally): JQueryDeferred<JQuery?>
+
+}
+
+external interface DestroyableController: Controller {
+    fun destroy(args: Any?= definedExternally)
+}
+
+external interface PostableController: Controller {
+    fun post(html: JQuery?, args: Any? = definedExternally)
 }

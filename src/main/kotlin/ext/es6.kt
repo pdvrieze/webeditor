@@ -69,3 +69,8 @@ external interface Event {
     var target: Element
     var currentTarget: Element
 }
+
+@JsName("PopStateEvent")
+external interface PopStateEvent: JsEvent {
+    val state: Any?
+}
