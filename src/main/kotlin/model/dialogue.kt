@@ -13,8 +13,12 @@
  * You should have received a copy of the GNU Lesser General Public License along with ProcessManager.  If not,
  * see <http://www.gnu.org/licenses/>.
  */
-
+@file:JsModule("model/dialogue")
 package model
+
+external val Gate: model.dialogue.gate.Gate
+external val Activity: model.dialogue.Activity
+external val Xml: model.dialogue.Xml
 /*
 
 import model.dialogue.activity
