@@ -33,7 +33,7 @@ define(['jquery', 'joint', 'model/dialogue', 'lodash', 'webeditor'],
         markup: '<g transform="translate(-' + HSIZE + ', -' + HSIZE + ')">' +
                     '<image width="' + SIZE + '" height="' + SIZE + '" ' +
                            'xlink:href="svg/end.svg"/>' +
-                    '<text x="15" y="17" font-family="sans-serif" ' +
+                    '<text x="15" y="37" font-family="sans-serif" ' +
                           'font-size="7" text-anchor="middle"></text>' +
                     '<rect x="0" y="0" width="30" height="30" ' +
                           'stroke="transparent" fill="transparent" ' +
