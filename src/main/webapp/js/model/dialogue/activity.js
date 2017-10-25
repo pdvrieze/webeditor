@@ -7,8 +7,6 @@ define(['jquery', 'webeditor', 'Sortable'],
        function ($, webeditor, Sortable) {
     "use strict";
 
-    var template=webeditor.simpleTemplate
-
     /**
      * Activity Dialogue class
      *
@@ -54,7 +52,7 @@ define(['jquery', 'webeditor', 'Sortable'],
             var views = [];
             $.each(this.attrs.elements, function (i, val) {
                 // generate view for each element
-                views.push(template.render('activity-row', toView(val, i)));
+                views.push(webeditor.simpleTemplate.render('activity-row', toView(val, i)));
             });
             $content.empty().append(views);
         },
@@ -69,7 +67,7 @@ define(['jquery', 'webeditor', 'Sortable'],
             this.$body = this.$target.find('.modal-body');
 
             // render template
-            template.renderTo(this.$body, 'dialogue-activity');
+            webeditor.simpleTemplate.renderTo(this.$body, 'dialogue-activity');
             this.$content = this.$body.find('.list-group');
 
             // make elements sortable
@@ -192,7 +190,7 @@ define(['jquery', 'webeditor', 'Sortable'],
                 var index = href.replace(/^activity_item_/, '');
                 var view = self.attrs.elements[index];
                 var name = 'activity-selector';
-                template.renderTo($this, name, view);
+                webeditor.simpleTemplate.renderTo($this, name, view);
 
                 // setup lisetener for type change
                 var $type = $this.find('.element-type');
@@ -212,7 +210,7 @@ define(['jquery', 'webeditor', 'Sortable'],
                     );
 
                     // render
-                    template.renderTo($content, name, newview);
+                    webeditor.simpleTemplate.renderTo($content, name, newview);
 
                     // initialise storage vars
                     $content.find('.dropdown-button').each(function (i) {
