@@ -259,7 +259,7 @@ define(['jquery', 'lodash', 'webeditor'], function ($, _, webeditor) {
                 });
 
                 // execture callback when done
-                if (!$preds.size()) self.callback();
+                if ($preds.length<=0) self.callback();
 
             }).fail(function () {
                 console.error('Cannot load task');

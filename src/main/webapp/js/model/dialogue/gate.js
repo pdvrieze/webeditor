@@ -108,7 +108,7 @@ define(['jquery', 'webeditor'], function ($, webeditor) {
 
                 // find what button is selected
                 var text = self.$body.find('.active').val();
-                if (self.$body.find('[value=other].active').size()) {
+                if (self.$body.find('[value=other].active').length) {
                     // manually apply attributes when other is selected
                     self.attrs.min = self.$in.val(); 
                     self.attrs.max = self.$out.val(); 
