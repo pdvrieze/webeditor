@@ -6,15 +6,12 @@
 define(function () {
     "use strict";
 
-    // Backbone: '../bower_components/backbone/backbone',
     require.config({
         baseUrl: 'js/',
         paths: {
-            jquery: '../bower_components/jquery/dist/jquery.min',
+            jquery: '../bower_components/jquery/dist/jquery',
             bootstrap: '../bower_components/bootstrap/dist/js/bootstrap.min',
-            joint: '../bower_components/jointjs/dist/joint.min',
-            'joint.util': '../bower_components/jointjs/dist/joint.util.min',
-            'joint.dia': '../bower_components/jointjs/dist/joint.dia.min',
+            joint: '../bower_components/jointjs/dist/joint',
             lodash: '../bower_components/lodash/lodash.min',
             underscore: '../bower_components/underscore/underscore-min',
             backbone: '../bower_components/backbone/backbone',
