@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="33.0" height="33.0"><rect x="0.5" y="0.5" width="32.0" height="32.0" rx="8.0" ry="8.0" style="stroke:none;fill: #ffffff; "/><rect x="0.5" y="0.5" width="32.0" height="32.0" rx="8.0" ry="8.0" style="stroke: #000000; stroke-width: 1.0; fill:none; "/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="33.0" height="33.0">
+    <rect x="0.5" y="0.5" width="32.0" height="32.0" rx="8.0" ry="8.0" style="stroke:none; fill: #ffffff; " />
+    <rect x="0.5"
+          y="0.5"
+          width="32.0"
+          height="32.0"
+          rx="8.0"
+          ry="8.0"
+          style="stroke: #000000; stroke-width: 1.0; fill:none; " />
+</svg>
