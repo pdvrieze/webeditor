@@ -195,8 +195,13 @@ object nav {
         if (controllers.indexOf(page) !== -1) {
             val requirejs = js("require")
             requirejs(arrayOf(page), fun (controller: Controller) {
+                val realArgs: Array<Any?> = when {
+                    args==null           -> emptyArray<Any?>()
+                    jQuery.isArray(args) -> args.unsafeCast<Array<Any?>>()
+                  else                 -> arrayOf<Any?>(args)
+                }
                 // run its initialisation method
-                controller.init(_html, args).then<Unit>(fun (_html:JQuery?, args:Any?):Unit {
+                controller.init(_html, *realArgs).then<Unit>(fun (_html:JQuery?, args:Any?):Unit {
                     _load.resolve(_html)
 
                     // setup destroy fun
@@ -263,7 +268,7 @@ class _PageState(override var page:String?, override var args: Any?): PageState
 inline fun PageState(page: String, args: Any?): PageState = _PageState(page, args)
 
 external interface Controller {
-    fun init(_html: JQuery, args: Any? = definedExternally): JQueryDeferred<JQuery?>
+    fun init(_html: JQuery, vararg args: Any? = definedExternally): JQueryDeferred<JQuery?>
 
 }
 
