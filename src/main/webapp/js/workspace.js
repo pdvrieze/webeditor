@@ -127,8 +127,10 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
         // initialise paper
         var paper = new joint.dia.Paper({
             el: $board,
+/*
             width: $board.width(), // this is actually probably 0
             height: $board.height(), // this too
+*/
             model: graph,
             interactive: function(cellView) {
                 // turn off interactions with arrow-links
@@ -169,11 +171,12 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
 
             // calculate distance to the bottom of the screen
             joint.paper.$el.height($(window).height() - top);
+            joint.paper.$el.width("100%");
 
             var offset = 8; // ideal offset for most screens
 
-            var width = joint.paper.$el.width() - offset;
-            var height = joint.paper.$el.height() - offset;
+            var width = joint.paper.$el.parent().width() - offset;
+            var height = joint.paper.$el.parent().height() - offset;
             if (width > 0 && height > 0) { // make sure we are in real world
                 // scale to fit the screen
                 joint.paper.setDimensions(width, height);
@@ -204,7 +207,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
     function initScroll(joint) {
         joint.paper.$el.on('mousewheel.pe DOMMouseScroll.pe', function(event) {
             // make sure we are not inside the dialogue
-            if ($('#dialogue:visible').size()) return;
+            if ($('#dialogue:visible').length>0) return;
 
             // cross-browser way of doing this
             var oe = event.originalEvent;
@@ -249,7 +252,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
         joint.paper.on('blank:pointerup', function (event, x, y) {
             // make sure that we are not in the dialogue
             // and make sure we've not just moved (paned)
-            if (joint.moved || $('#dialogue:visible').size()) return;
+            if (joint.moved || $('#dialogue:visible').length) return;
 
             // we don't care about two finger events for tooltips
             var oe = event.originalEvent;
@@ -264,7 +267,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
             // in this case navigation menu
             if (oe.pageY < $('nav').height()) return;
 
-            if ($('.workspace-tooltip:visible').size()) {
+            if ($('.workspace-tooltip:visible').length>0) {
                 // clicked on a blank space and tooltip is visible - we need
                 // to hide it then
                 $('.workspace-tooltip').hide();
@@ -304,7 +307,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
         joint.paper.on('cell:pointerup', function (cellView, event) {
             // make sure we not just moved the cell
             // and we are not in the dialogue
-            if (joint.cellmoved || $('#dialogue:visible').size()) return;
+            if (joint.cellmoved || $('#dialogue:visible').length>0) return;
 
             // event if not needed lets make sure the create tooltip is hidden
             $('.workspace-tooltip').hide();
@@ -396,6 +399,7 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
                     oe = oe.changedTouches[0];
                 }
 
+                if (! joint.origin) { joint.origin = [0,0]; }
                 // calculate new origin from dragging
                 joint.origin[0] -= joint.dragging[0] - oe.pageX;
                 joint.origin[1] -= joint.dragging[1] - oe.pageY;
@@ -482,13 +486,13 @@ define(['jquery', 'joint', 'model/model', 'model/node', 'webeditor'],
      *
      * @param $tooltip {Object} jquery tooltip to display
      * @param x {Integer}
-     * @param y {Integer}
+     * @param y {Integer} Top of the tooltip
      */
     function showTooltip($tooltip, x, y) {
         $('.workspace-tooltip').hide();
         $tooltip.show() .offset({
             left: x - $tooltip.width() / 2,
-            top: y - $tooltip.height() / 2
+            top: y
         });
     }
 
